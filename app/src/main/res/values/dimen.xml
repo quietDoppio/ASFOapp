@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="margin_empty_space">4dp</dimen>
-    <dimen name="margin_bottom_layout_horizontal">16dp</dimen>
-    <dimen name="margin_bottom_layout_vertical">8dp</dimen>
+    <dimen name="spacing_buttons_empty">4dp</dimen>
+    <dimen name="spacing_bottom_buttons_horizontal">16dp</dimen>
+    <dimen name="spacing_bottom_buttons_vertical">8dp</dimen>
+    <dimen name="size_button_title_favorites">14sp</dimen>
+    <dimen name="corner_radius_button">8dp</dimen>
 </resources>
