@@ -19,18 +19,19 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            style="@style/ASFOappStyleNavButton"
+            style="@style/ASFOapp.StyleNavButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/figma_dark_blue" />
+            android:backgroundTint="@color/figma_dark_blue"
+            android:text="@string/button_text_categories"/>
 
         <Space
             android:layout_width="@dimen/spacing_buttons_empty"
             android:layout_height="match_parent" />
 
         <Button
-            style="@style/ASFOappStyleNavButton"
+            style="@style/ASFOapp.StyleNavButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ASFOapp</string>
     <string name="button_text_favorites">Избранное</string>
+    <string name="button_text_categories">Категории</string>
 </resources>
