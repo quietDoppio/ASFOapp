@@ -1,9 +1,10 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ASFOapp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources >
+    <style name="Base.Theme.ASFOapp" parent="Theme.Material3.Light.NoActionBar">
     </style>
 
-    <style name="Theme.ASFOapp" parent="Base.Theme.ASFOapp" />
+    <style name="Theme.ASFOapp" parent="Base.Theme.ASFOapp">
+        <item name="android:windowBackground">@color/figma_background_color</item>
+        <item name="android:statusBarColor">@color/figma_background_color</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
 </resources>
