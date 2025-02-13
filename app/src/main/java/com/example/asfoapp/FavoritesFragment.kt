@@ -5,20 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.asfoapp.databinding.FragmentCategoriesListBinding
+import com.example.asfoapp.databinding.FragmentFavoritesBinding
 
-class CategoriesListFragment : Fragment() {
-    private var _binding: FragmentCategoriesListBinding? = null
+class FavoritesFragment : Fragment() {
+    private var _binding: FragmentFavoritesBinding? = null
     private val binding
         get() = _binding
-            ?: throw IllegalStateException("binding for CategoriesListFragment must not be null")
+            ?: throw IllegalStateException("binding for FavoritesFragment must not be null")
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCategoriesListBinding.inflate(inflater, container, false)
+        _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         val view = binding.root
 
         return view

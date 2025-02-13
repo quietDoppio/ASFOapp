@@ -11,14 +11,14 @@
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/llButtonContainer"
+        app:layout_constraintBottom_toTopOf="@+id/layoutButtonContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </androidx.fragment.app.FragmentContainerView>
     <LinearLayout
-        android:id="@+id/llButtonContainer"
+        android:id="@+id/layoutButtonContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing_bottom_buttons_horizontal"
@@ -29,6 +29,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
+            android:id="@+id/buttonCategories"
             style="@style/ASFOapp.StyleNavButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -41,6 +42,7 @@
             android:layout_height="match_parent" />
 
         <Button
+            android:id="@+id/buttonFavorites"
             style="@style/ASFOapp.StyleNavButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
