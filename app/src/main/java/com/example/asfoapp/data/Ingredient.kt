@@ -1,8 +1,7 @@
 package com.example.asfoapp.data
 
-class Ingredient(
-    val quantity: Double,
+data class Ingredient(
+    val quantity: String,
     val unitOfMeasure: String,
     val description: String,
-) {
-}
+)
