@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
+import com.example.asfoapp.recycler.CategoriesListAdapter
 
 class CategoriesListFragment : Fragment() {
     private var _binding: FragmentCategoriesListBinding? = null
@@ -20,6 +22,9 @@ class CategoriesListFragment : Fragment() {
     ): View? {
         _binding = FragmentCategoriesListBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        val adapter = CategoriesListAdapter(STUB.getCategories())
+        binding.rvCategories.adapter = adapter
 
         return view
     }
