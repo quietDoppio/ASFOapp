@@ -1,8 +1,9 @@
-package com.example.asfoapp.recycler
+package com.example.asfoapp.ui.categories
 
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
@@ -13,36 +14,39 @@ import com.example.asfoapp.databinding.ItemCategoryBinding
 class CategoriesListAdapter(private val dataSet: List<Category>) :
     Adapter<CategoriesListAdapter.CategoryItemViewHolder>() {
 
-    class CategoryItemViewHolder(binding: ItemCategoryBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        private val cardImage = binding.cardViewImage
-        private val cardTitle = binding.cardViewTitle
-        private val cardDescription = binding.cardViewDescription
+    class CategoryItemViewHolder(view: View) :
+        RecyclerView.ViewHolder(view) {
+        private val binding = ItemCategoryBinding.bind(view)
 
         companion object {
             fun inflateFrom(parent: ViewGroup): CategoryItemViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemCategoryBinding.inflate(layoutInflater, parent, false)
-                return CategoryItemViewHolder(binding)
+                val view = layoutInflater.inflate(R.layout.item_category, parent, false)
+                return CategoryItemViewHolder(view)
             }
         }
 
         fun bind(item: Category) {
-            cardTitle.text = item.title
-            cardDescription.text = item.description
+            binding.cardViewTitle.text = item.title
+            binding.cardViewDescription.text = item.description
             try {
-                cardImage.setImageDrawable(
-                    Drawable.createFromStream(itemView.context.assets.open(item.imageUrl), null)
-                )
+                val inputStream = itemView.context.assets.open(item.imageUrl)
+                val image = Drawable.createFromStream(inputStream, null)
+                binding.cardViewImage.setImageDrawable(image)
             } catch (e: Exception) {
-                Log.i("CategoriesListAdapter", "bind: image for ${item.imageUrl} not found")
-                cardImage.setImageResource(R.drawable.img_error)
+                val stackTrace = Log.getStackTraceString(e)
+                Log.e(
+                    "CategoriesListAdapter",
+                    "Image - ${item.imageUrl} not found in assets\n$stackTrace"
+                )
+                binding.cardViewImage.setImageResource(R.drawable.img_error)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryItemViewHolder {
-        return CategoryItemViewHolder.inflateFrom(parent)
+        val holder = CategoryItemViewHolder.inflateFrom(parent)
+        return holder
     }
 
     override fun onBindViewHolder(holder: CategoryItemViewHolder, position: Int) {

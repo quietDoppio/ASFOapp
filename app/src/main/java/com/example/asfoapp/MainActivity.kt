@@ -6,6 +6,8 @@ import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.asfoapp.databinding.ActivityMainBinding
+import com.example.asfoapp.ui.categories.CategoriesListFragment
+import com.example.asfoapp.ui.favorites.FavoritesFragment
 
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
