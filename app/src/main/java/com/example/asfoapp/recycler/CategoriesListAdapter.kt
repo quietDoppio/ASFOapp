@@ -3,17 +3,12 @@ package com.example.asfoapp.recycler
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import com.example.asfoapp.R
 import com.example.asfoapp.data.Category
 import com.example.asfoapp.databinding.ItemCategoryBinding
-import java.io.InputStream
 
-class CategoriesListAdapter(private val data: List<Category>) :
+class CategoriesListAdapter(private val dataSet: List<Category>) :
     Adapter<CategoriesListAdapter.CategoryItemViewHolder>() {
 
     class CategoryItemViewHolder(private val binding: ItemCategoryBinding) :
@@ -29,6 +24,9 @@ class CategoriesListAdapter(private val data: List<Category>) :
         fun bind(item: Category) {
             binding.cardViewTitle.text = item.title
             binding.cardViewDescription.text = item.description
+            binding.cardViewImage.setImageDrawable(
+                Drawable.createFromStream(this.itemView.context.assets.open(item.imageUrl), null)
+            )
         }
     }
 
@@ -37,12 +35,12 @@ class CategoriesListAdapter(private val data: List<Category>) :
     }
 
     override fun onBindViewHolder(holder: CategoryItemViewHolder, position: Int) {
-        holder.bind(data[position])
-
+        val item = dataSet[position]
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return dataSet.size
     }
 
 }
