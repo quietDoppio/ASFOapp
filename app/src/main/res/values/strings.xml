@@ -2,4 +2,7 @@
     <string name="app_name">ASFOapp</string>
     <string name="button_text_favorites">Избранное</string>
     <string name="button_text_categories">Категории</string>
+    <string name="description_food_picture">food picture</string>
+    <string name="cardview_description_burger">Рецепты всех популярных видов бургеров</string>
+    <string name="cardview_title_burger">Бургеры</string>
 </resources>

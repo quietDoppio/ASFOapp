@@ -2,7 +2,7 @@
 <resources>
 
     <style name="ASFOapp.StyleTitle14" parent="TextAppearance.AppCompat">
-        <item name="android:textSize">@dimen/size_button_title</item>
+        <item name="android:textSize">@dimen/size_title_medium</item>
         <item name="android:fontFamily">@font/montserrat_alternates_semi_bold</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/white</item>
@@ -10,6 +10,17 @@
 
     <style name="ASFOapp.StyleNavButton" parent="Widget.Material3.Button">
         <item name="android:textAppearance">@style/ASFOapp.StyleTitle14</item>
-        <item name="cornerRadius">@dimen/corner_radius_button</item>
+        <item name="cornerRadius">@dimen/corner_radius_medium_8dp</item>
+    </style>
+
+    <style name="ASFOapp.StyleTitle20" parent="ASFOapp.StyleTitle14">
+        <item name="android:textSize">@dimen/size_header_title</item>
+        <item name="android:textColor">@color/figma_purple</item>
+    </style>
+
+    <style name="ASFOapp.StyleDescriptionCardView" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/size_cardview_description</item>
+        <item name="android:textColor">@color/figma_gray</item>
+        <item name="fontFamily">@font/montserrat_medium</item>
     </style>
 </resources>
