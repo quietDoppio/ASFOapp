@@ -5,8 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import com.example.asfoapp.R
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
+import com.example.asfoapp.ui.categories.recipes.RecipesListFragment
 
 class CategoriesListFragment : Fragment() {
     private var _binding: FragmentCategoriesListBinding? = null
@@ -30,10 +34,30 @@ class CategoriesListFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun initRecycler(binding: FragmentCategoriesListBinding) {
+        val categoriesList = STUB.getCategories()
+        val adapter = CategoriesListAdapter(categoriesList)
+        adapter.setOnItemClickListener(
+            object : CategoriesListAdapter.OnItemClickListener {
+                override fun onItemClick() {
+                    openRecipesByCategoryId()
+                }
+            }
+        )
+        binding.rvCategories.adapter = adapter
+    }
+
+    private fun openRecipesByCategoryId() {
+        requireActivity().supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<RecipesListFragment>(R.id.mainContainer)
+            addToBackStack("CategoriesListFragment")
+        }
+    }
 }
 
-fun initRecycler(binding: FragmentCategoriesListBinding) {
-    val categoriesList = STUB.getCategories()
-    val adapter = CategoriesListAdapter(categoriesList)
-    binding.rvCategories.adapter = adapter
-}
+
+
+
+

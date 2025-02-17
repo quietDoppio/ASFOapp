@@ -11,11 +11,20 @@ import com.example.asfoapp.databinding.ItemCategoryBinding
 
 class CategoriesListAdapter(private val dataSet: List<Category>) :
     Adapter<CategoriesListAdapter.CategoryItemViewHolder>() {
+    interface OnItemClickListener {
+        fun onItemClick()
+    }
+
+    private var itemClickListener: OnItemClickListener? = null
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        itemClickListener = listener
+    }
 
     class CategoryItemViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Category) {
+        fun bind(item: Category, itemClickListener: OnItemClickListener?) {
             binding.cardViewTitle.text = item.title
             binding.cardViewDescription.text = item.description
             try {
@@ -30,6 +39,9 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
                     "Image - ${item.imageUrl} not found in assets\n$stackTrace"
                 )
             }
+            binding.root.setOnClickListener {
+                itemClickListener?.onItemClick()
+            }
         }
     }
 
@@ -41,7 +53,7 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
 
     override fun onBindViewHolder(holder: CategoryItemViewHolder, position: Int) {
         val item = dataSet[position]
-        holder.bind(item)
+        holder.bind(item, itemClickListener)
     }
 
     override fun getItemCount(): Int {
