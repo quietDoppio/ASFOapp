@@ -1,10 +1,11 @@
-package com.example.asfoapp
+package com.example.asfoapp.ui.categories
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
 
 class CategoriesListFragment : Fragment() {
@@ -20,6 +21,7 @@ class CategoriesListFragment : Fragment() {
     ): View? {
         _binding = FragmentCategoriesListBinding.inflate(inflater, container, false)
         val view = binding.root
+        initRecycler(binding)
 
         return view
     }
@@ -28,4 +30,10 @@ class CategoriesListFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+}
+
+fun initRecycler(binding: FragmentCategoriesListBinding) {
+    val categoriesList = STUB.getCategories()
+    val adapter = CategoriesListAdapter(categoriesList)
+    binding.rvCategories.adapter = adapter
 }

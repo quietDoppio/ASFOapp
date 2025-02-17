@@ -5,4 +5,5 @@
     <string name="description_food_picture">food picture</string>
     <string name="cardview_description_burger">Рецепты всех популярных видов бургеров</string>
     <string name="cardview_title_burger">Бургеры</string>
+    <string name="category_image_content_description">Карточка категории</string>
 </resources>
