@@ -16,6 +16,7 @@
     <style name="ASFOapp.StyleTitle20" parent="ASFOapp.StyleTitle14">
         <item name="android:textSize">@dimen/size_header_title</item>
         <item name="android:textColor">@color/figma_purple</item>
+        <item name="android:background">@drawable/shape_header_title20</item>
     </style>
 
     <style name="ASFOapp.StyleDescriptionCardView" parent="TextAppearance.AppCompat">
