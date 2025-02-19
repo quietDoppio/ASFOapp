@@ -16,6 +16,7 @@
     <dimen name="padding_header_title">10dp</dimen>
 
     <dimen name="layout_height_categories_header">224dp</dimen>
+    <dimen name="layout_height_recipe_card_image">100dp</dimen>
     <dimen name="layout_height_categories_card_image">130dp</dimen>
     <dimen name="layout_width_cardview_description">140dp</dimen>
 </resources>

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 
 class RecipesListFragment : Fragment() {
@@ -28,20 +29,33 @@ class RecipesListFragment : Fragment() {
         categoryName = requireArguments().getString("ARG_CATEGORY_NAME")
         categoryImageUrl = requireArguments().getString("ARG_CATEGORY_IMAGE_URL")
 
-        try {
-            val inputStream = requireContext().assets.open(categoryImageUrl!!)
-            val drawable = Drawable.createFromStream(inputStream, null)
-            binding.categoryImage.setImageDrawable(drawable)
-            binding.categoryName.text = categoryName
-        } catch (e: Exception) {
-            val stackTrace = Log.getStackTraceString(e)
-            Log.e(
-                "RecipesListFragment",
-                "Image - $categoryImageUrl not found in assets\n$stackTrace"
-            )
-        }
+        setInfo()
+        initRecycler()
 
         return view
+    }
+    private fun initRecycler(){
+        categoryId?.let {
+            val adapter = RecipesListAdapter(STUB.getRecipesByCategoryId(it))
+            binding.rvRecipes.adapter = adapter
+        }
+
+    }
+    private fun setInfo(){
+        binding.categoryName.text = categoryName
+        categoryImageUrl?.let { image ->
+            try {
+                val inputStream = requireContext().assets.open(image)
+                val drawable = Drawable.createFromStream(inputStream, null)
+                binding.categoryImage.setImageDrawable(drawable)
+            } catch (e: Exception) {
+                val stackTrace = Log.getStackTraceString(e)
+                Log.e(
+                    "RecipesListFragment",
+                    "Image - $image not found in assets\n$stackTrace"
+                )
+            }
+        }
     }
 
     override fun onDestroyView() {

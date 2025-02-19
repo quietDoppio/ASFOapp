@@ -6,6 +6,8 @@
     <string name="content_description_category_image">Карточка категории</string>
     <string name="cardview_description_category">Рецепты популярных блюд</string>
     <string name="cardview_title_category">Категория</string>
+    <string name="cardview_title_recipe">Рецепт</string>
     <string name="title_recipes">Рецепты</string>
+
 
 </resources>
