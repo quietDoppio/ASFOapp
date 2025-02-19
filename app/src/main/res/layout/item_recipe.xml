@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/spacing_medium_8dp"
-    android:layout_marginTop="@dimen/spacing_medium_8dp"
+    android:layout_marginVertical="@dimen/spacing_medium_8dp"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="@dimen/corner_radius_medium_8dp"
     android:elevation="@dimen/elevation_card">
     
@@ -18,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_height_recipe_card_image"
             android:scaleType="centerCrop"
+            android:contentDescription="@string/cardview_title_recipe"
             android:src="@drawable/img_error"/>
         <TextView
             android:id="@+id/recipeName"
