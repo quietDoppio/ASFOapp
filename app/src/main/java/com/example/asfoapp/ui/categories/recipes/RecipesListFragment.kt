@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
+import com.example.asfoapp.ui.categories.ARG_CATEGORY_ID
+import com.example.asfoapp.ui.categories.ARG_CATEGORY_IMAGE_URL
+import com.example.asfoapp.ui.categories.ARG_CATEGORY_NAME
 
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentRecipesListBinding? = null
@@ -22,9 +25,9 @@ class RecipesListFragment : Fragment() {
     ): View? {
         _binding = FragmentRecipesListBinding.inflate(layoutInflater, container, false)
         val view = binding.root
-        categoryId = requireArguments().getInt("ARG_CATEGORY_ID")
-        categoryName = requireArguments().getString("ARG_CATEGORY_NAME")
-        categoryImageUrl = requireArguments().getString("ARG_CATEGORY_IMAGE_URL")
+        categoryId = requireArguments().getInt(ARG_CATEGORY_ID)
+        categoryName = requireArguments().getString(ARG_CATEGORY_NAME)
+        categoryImageUrl = requireArguments().getString(ARG_CATEGORY_IMAGE_URL)
 
         binding.testText.text = "id: $categoryId\ntitle - $categoryName\nimage - $categoryImageUrl"
 
