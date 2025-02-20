@@ -12,7 +12,7 @@ import com.example.asfoapp.databinding.ItemCategoryBinding
 class CategoriesListAdapter(private val dataSet: List<Category>) :
     Adapter<CategoriesListAdapter.CategoryItemViewHolder>() {
     interface OnItemClickListener {
-        fun onItemClick()
+        fun onItemClick(categoryId: Int)
     }
 
     private var itemClickListener: OnItemClickListener? = null
@@ -40,7 +40,7 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
                 )
             }
             binding.root.setOnClickListener {
-                itemClickListener?.onItemClick()
+                itemClickListener?.onItemClick(item.id)
             }
         }
     }
