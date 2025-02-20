@@ -54,18 +54,20 @@ class CategoriesListFragment : Fragment() {
     }
 
     private fun openRecipesByCategoryId(categoryId: Int) {
-        val category = STUB.getCategories()
-        val categoryName = category.find { it.id == categoryId }?.title
-        val categoryImageUrl = category.find { it.id == categoryId }?.imageUrl
-        requireActivity().supportFragmentManager.commit {
-            val bundle = bundleOf(
-                ARG_CATEGORY_ID to categoryId,
-                ARG_CATEGORY_NAME to categoryName,
-                ARG_CATEGORY_IMAGE_URL to categoryImageUrl
-            )
-            setReorderingAllowed(true)
-            replace<RecipesListFragment>(R.id.mainContainer, args = bundle)
-            addToBackStack("CategoriesListFragment")
+        val category = STUB.getCategories().find { it.id == categoryId }
+        category?.let {
+            val categoryName = it.title
+            val categoryImageUrl = it.imageUrl
+            requireActivity().supportFragmentManager.commit {
+                val bundle = bundleOf(
+                    ARG_CATEGORY_ID to categoryId,
+                    ARG_CATEGORY_NAME to categoryName,
+                    ARG_CATEGORY_IMAGE_URL to categoryImageUrl
+                )
+                setReorderingAllowed(true)
+                replace<RecipesListFragment>(R.id.mainContainer, args = bundle)
+                addToBackStack("CategoriesListFragment")
+            }
         }
     }
 }
