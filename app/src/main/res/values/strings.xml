@@ -1,13 +1,16 @@
 <resources>
     <string name="app_name">ASFOapp</string>
+
     <string name="button_text_favorites">Избранное</string>
     <string name="button_text_categories">Категории</string>
-    <string name="content_description_header_food_picture">Изображение еды</string>
-    <string name="content_description_category_image">Карточка категории</string>
-    <string name="cardview_description_category">Рецепты популярных блюд</string>
-    <string name="cardview_title_category">Категория</string>
-    <string name="cardview_title_recipe">Рецепт</string>
-    <string name="title_recipes">Рецепты</string>
+
+    <string name="content_description_default_header_food_picture">Изображение еды</string>
+    <string name="content_description_default_category_image">Карточка категории</string>
+
+    <string name="cardview_description_default_category">Рецепты популярных блюд</string>
+    <string name="cardview_title_default_category">Категория</string>
+    <string name="cardview_title_default_recipe">Рецепт</string>
+    <string name="header_title_default_recipes">Рецепты</string>
 
 
 </resources>

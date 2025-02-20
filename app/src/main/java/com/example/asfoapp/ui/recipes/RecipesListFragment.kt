@@ -1,4 +1,4 @@
-package com.example.asfoapp.ui.categories.recipes
+package com.example.asfoapp.ui.recipes
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -13,8 +13,9 @@ import com.example.asfoapp.R
 import com.example.asfoapp.data.Recipe
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
+import com.example.asfoapp.interfaces.OnItemClickListener
 
-class RecipesListFragment : Fragment() {
+class RecipesListFragment : Fragment(){
     private var _binding: FragmentRecipesListBinding? = null
     private val binding
         get() = _binding
@@ -33,7 +34,7 @@ class RecipesListFragment : Fragment() {
         categoryName = requireArguments().getString("ARG_CATEGORY_NAME")
         categoryImageUrl = requireArguments().getString("ARG_CATEGORY_IMAGE_URL")
 
-        setInfo()
+        setViewContent()
         initRecycler()
 
         return view
@@ -44,10 +45,9 @@ class RecipesListFragment : Fragment() {
             val recipesList = STUB.getRecipesByCategoryId(categoryId)
             val adapter = RecipesListAdapter(recipesList)
             adapter.setOnItemClickListener(
-                object : RecipesListAdapter.OnItemClickListener {
-                    override fun onItemClick(recipeId: Int) {
-
-                        openRecipeByRecipeId(recipesList, recipeId)
+                object : OnItemClickListener {
+                    override fun onItemClick(itemId: Int) {
+                        openRecipeByRecipeId(recipesList, itemId)
                     }
                 }
             )
@@ -56,16 +56,15 @@ class RecipesListFragment : Fragment() {
 
     }
     private fun openRecipeByRecipeId(recipesList: List<Recipe>, recipeId: Int){
-        val recipe = recipesList.find { it.id == recipeId }
-
+        val recipe = recipesList.first { it.id == recipeId }
         requireActivity().supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<RecipeFragment>(R.id.mainContainer)
-            addToBackStack("RecipesFragment")
+            addToBackStack("RecipesListFragment")
         }
     }
 
-    private fun setInfo() {
+    private fun setViewContent() {
         binding.categoryName.text = categoryName
         categoryImageUrl?.let { imageUrl ->
             try {

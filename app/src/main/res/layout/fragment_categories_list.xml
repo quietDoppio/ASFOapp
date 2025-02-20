@@ -17,7 +17,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/content_description_header_food_picture"
+            android:contentDescription="@string/content_description_default_header_food_picture"
             android:scaleType="centerCrop"
             android:src="@drawable/bcg_categories"
             app:layout_constraintEnd_toEndOf="parent"

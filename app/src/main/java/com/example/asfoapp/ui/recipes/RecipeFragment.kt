@@ -1,4 +1,4 @@
-package com.example.asfoapp.ui.categories.recipes
+package com.example.asfoapp.ui.recipes
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

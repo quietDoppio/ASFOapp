@@ -22,7 +22,7 @@
             android:layout_height="@dimen/layout_height_categories_card_image"
             android:scaleType="centerCrop"
             android:src="@drawable/img_error"
-            android:contentDescription="@string/content_description_category_image"/>
+            android:contentDescription="@string/content_description_default_category_image"/>
 
         <TextView
             android:id="@+id/cardViewTitle"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium_8dp"
             android:layout_marginTop="@dimen/spacing_medium_8dp"
-            android:text="@string/cardview_title_category"
+            android:text="@string/cardview_title_default_category"
             android:textColor="@color/figma_purple" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_medium_8dp"
             android:layout_marginVertical="@dimen/spacing_medium_8dp"
-            android:text="@string/cardview_description_category" />
+            android:text="@string/cardview_description_default_category" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

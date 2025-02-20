@@ -8,12 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.asfoapp.data.Category
 import com.example.asfoapp.databinding.ItemCategoryBinding
+import com.example.asfoapp.interfaces.OnItemClickListener
 
 class CategoriesListAdapter(private val dataSet: List<Category>) :
-    Adapter<CategoriesListAdapter.CategoryItemViewHolder>() {
-    interface OnItemClickListener {
-        fun onItemClick(categoryId: Int)
-    }
+    Adapter<CategoriesListAdapter.CategoryItemViewHolder>(){
 
     private var itemClickListener: OnItemClickListener? = null
 

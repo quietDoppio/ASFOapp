@@ -1,4 +1,4 @@
-package com.example.asfoapp.ui.categories.recipes
+package com.example.asfoapp.ui.recipes
 
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -8,12 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.asfoapp.data.Recipe
 import com.example.asfoapp.databinding.ItemRecipeBinding
+import com.example.asfoapp.interfaces.OnItemClickListener
 
 class RecipesListAdapter(private val dataSet: List<Recipe>) :
     Adapter<RecipesListAdapter.RecipeItemViewHolder>() {
-    interface OnItemClickListener {
-        fun onItemClick(recipeId: Int)
-    }
 
     private var itemClickListener: OnItemClickListener? = null
 
