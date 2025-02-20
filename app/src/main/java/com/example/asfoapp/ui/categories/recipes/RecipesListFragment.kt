@@ -57,12 +57,7 @@ class RecipesListFragment : Fragment() {
     }
     private fun openRecipeByRecipeId(recipesList: List<Recipe>, recipeId: Int){
         val recipe = recipesList.find { it.id == recipeId }
-        recipe?.let {  it ->
-            val recipeName = it.title
-            val recipeIngredients = it.ingredients
-            val recipeMethod = it.method
-            val recipeImageUrl = it.imageUrl
-        }
+
         requireActivity().supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<RecipeFragment>(R.id.mainContainer)
