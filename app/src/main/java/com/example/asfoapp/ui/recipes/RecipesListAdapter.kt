@@ -1,4 +1,4 @@
-package com.example.asfoapp.ui.categories
+package com.example.asfoapp.ui.recipes
 
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import com.example.asfoapp.data.Category
-import com.example.asfoapp.databinding.ItemCategoryBinding
+import com.example.asfoapp.data.Recipe
+import com.example.asfoapp.databinding.ItemRecipeBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 
-class CategoriesListAdapter(private val dataSet: List<Category>) :
-    Adapter<CategoriesListAdapter.CategoryItemViewHolder>(){
+class RecipesListAdapter(private val dataSet: List<Recipe>) :
+    Adapter<RecipesListAdapter.RecipeItemViewHolder>() {
 
     private var itemClickListener: OnItemClickListener? = null
 
@@ -19,21 +19,20 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
         itemClickListener = listener
     }
 
-    class CategoryItemViewHolder(private val binding: ItemCategoryBinding) :
+    class RecipeItemViewHolder(private val binding: ItemRecipeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Category, itemClickListener: OnItemClickListener?) {
-            binding.cardViewTitle.text = item.title
-            binding.cardViewDescription.text = item.description
+        fun bind(item: Recipe, itemClickListener: OnItemClickListener?) {
+            binding.recipeName.text = item.title
             try {
                 val inputStream = itemView.context.assets.open(item.imageUrl)
                 val image = Drawable.createFromStream(inputStream, null)
-                binding.cardViewImage.setImageDrawable(image)
-                binding.cardViewImage.contentDescription = "${item.title} - ${item.description}"
+                binding.recipeImage.setImageDrawable(image)
+                binding.recipeImage.contentDescription = "$item.title"
             } catch (e: Exception) {
                 val stackTrace = Log.getStackTraceString(e)
                 Log.e(
-                    "CategoriesListAdapter",
+                    "RecipesListAdapter",
                     "Image - ${item.imageUrl} not found in assets\n$stackTrace"
                 )
             }
@@ -43,19 +42,16 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeItemViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemCategoryBinding.inflate(layoutInflater, parent, false)
-        return CategoryItemViewHolder(binding)
+        val binding = ItemRecipeBinding.inflate(layoutInflater, parent, false)
+        return RecipeItemViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: CategoryItemViewHolder, position: Int) {
+    override fun getItemCount(): Int = dataSet.size
+
+    override fun onBindViewHolder(holder: RecipeItemViewHolder, position: Int) {
         val item = dataSet[position]
         holder.bind(item, itemClickListener)
     }
-
-    override fun getItemCount(): Int {
-        return dataSet.size
-    }
-
 }

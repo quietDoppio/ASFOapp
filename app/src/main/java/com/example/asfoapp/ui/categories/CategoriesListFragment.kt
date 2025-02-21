@@ -11,7 +11,8 @@ import androidx.fragment.app.replace
 import com.example.asfoapp.R
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
-import com.example.asfoapp.ui.categories.recipes.RecipesListFragment
+import com.example.asfoapp.interfaces.OnItemClickListener
+import com.example.asfoapp.ui.recipes.RecipesListFragment
 
 const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
 const val ARG_CATEGORY_NAME = "ARG_CATEGORY_NAME"
@@ -44,9 +45,9 @@ class CategoriesListFragment : Fragment() {
         val categoriesList = STUB.getCategories()
         val adapter = CategoriesListAdapter(categoriesList)
         adapter.setOnItemClickListener(
-            object : CategoriesListAdapter.OnItemClickListener {
-                override fun onItemClick(categoryId: Int) {
-                    openRecipesByCategoryId(categoryId)
+            object : OnItemClickListener {
+                override fun onItemClick(itemId: Int) {
+                    openRecipesByCategoryId(itemId)
                 }
             }
         )

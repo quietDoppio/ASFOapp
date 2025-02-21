@@ -1,8 +1,8 @@
 <resources >
-    <style name="Base.Theme.ASFOapp" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Base.Theme.ASFOapp.Light" parent="Theme.Material3.Light.NoActionBar">
     </style>
 
-    <style name="Theme.ASFOapp" parent="Base.Theme.ASFOapp">
+    <style name="Theme.ASFOapp" parent="Base.Theme.ASFOapp.Light">
         <item name="android:windowBackground">@color/figma_background_color</item>
         <item name="android:statusBarColor">@color/figma_background_color</item>
         <item name="android:windowLightStatusBar">true</item>
