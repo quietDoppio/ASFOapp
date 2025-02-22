@@ -38,7 +38,7 @@ class RecipeFragment : Fragment() {
     }
     private fun setContentView(){
         recipe?.let {
-            binding.testText.text = recipe.toString()
+            binding.testText.text = it.title
         }
     }
 }
