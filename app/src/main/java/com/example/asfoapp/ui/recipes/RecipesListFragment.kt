@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.asfoapp.R
@@ -14,7 +15,7 @@ import com.example.asfoapp.data.Recipe
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
-
+const val ARG_RECIPE = "ARG_RECIPE"
 class RecipesListFragment : Fragment(){
     private var _binding: FragmentRecipesListBinding? = null
     private val binding
@@ -47,7 +48,7 @@ class RecipesListFragment : Fragment(){
             adapter.setOnItemClickListener(
                 object : OnItemClickListener {
                     override fun onItemClick(itemId: Int) {
-                        openRecipeByRecipeId(recipesList, itemId)
+                        openRecipeByRecipeId(itemId, recipesList,)
                     }
                 }
             )
@@ -55,11 +56,12 @@ class RecipesListFragment : Fragment(){
         }
 
     }
-    private fun openRecipeByRecipeId(recipesList: List<Recipe>, recipeId: Int){
-        val recipe = recipesList.first { it.id == recipeId }
+    private fun openRecipeByRecipeId(recipeId: Int, recipesList: List<Recipe>,){
+        val recipe = STUB.getRecipeById(recipeId, recipesList)
+        val bundle = bundleOf(ARG_RECIPE to recipe)
         requireActivity().supportFragmentManager.commit {
             setReorderingAllowed(true)
-            replace<RecipeFragment>(R.id.mainContainer)
+            replace<RecipeFragment>(R.id.mainContainer, args = bundle)
             addToBackStack("RecipesListFragment")
         }
     }
