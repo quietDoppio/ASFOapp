@@ -14,9 +14,7 @@ import com.example.asfoapp.databinding.FragmentCategoriesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.ui.recipes.RecipesListFragment
 
-const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
-const val ARG_CATEGORY_NAME = "ARG_CATEGORY_NAME"
-const val ARG_CATEGORY_IMAGE_URL = "ARG_CATEGORY_IMAGE_URL"
+const val ARG_CATEGORY = "ARG_CATEGORY"
 
 class CategoriesListFragment : Fragment() {
     private var _binding: FragmentCategoriesListBinding? = null
@@ -28,7 +26,7 @@ class CategoriesListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCategoriesListBinding.inflate(inflater, container, false)
         val view = binding.root
         initRecycler(binding)
@@ -57,14 +55,8 @@ class CategoriesListFragment : Fragment() {
     private fun openRecipesByCategoryId(categoryId: Int) {
         val category = STUB.getCategories().find { it.id == categoryId }
         category?.let {
-            val categoryName = it.title
-            val categoryImageUrl = it.imageUrl
             requireActivity().supportFragmentManager.commit {
-                val bundle = bundleOf(
-                    ARG_CATEGORY_ID to categoryId,
-                    ARG_CATEGORY_NAME to categoryName,
-                    ARG_CATEGORY_IMAGE_URL to categoryImageUrl
-                )
+                val bundle = bundleOf(ARG_CATEGORY to it)
                 setReorderingAllowed(true)
                 replace<RecipesListFragment>(R.id.mainContainer, args = bundle)
                 addToBackStack("CategoriesListFragment")

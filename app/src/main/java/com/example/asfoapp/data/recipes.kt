@@ -2,7 +2,10 @@ package com.example.asfoapp.data
 
 object STUB {
     fun getCategories(): List<Category> = categories
-    fun getRecipesByCategoryId(categoryId: Int) = if(categoryId == 0) burgerRecipes else emptyList()
+    fun getRecipesByCategoryId(categoryId: Int) =
+        if(categoryId == 0) burgerRecipes else emptyList()
+    fun getRecipeById(recipeId: Int, recipesList: List<Recipe>) =
+        recipesList.find { it.id == recipeId }
 
     private var categories: List<Category> = listOf(
         Category(0, "Бургеры", "Рецепты всех популярных бургеров", "burger.png"),
