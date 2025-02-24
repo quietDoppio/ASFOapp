@@ -7,4 +7,5 @@
     <color name="figma_bright_red">#E13E3E</color>
     <color name="figma_purple">#5F3678</color>
     <color name="figma_gray">#666666</color>
+    <color name="figma_gray_light">#D5D5D5</color>
 </resources>
