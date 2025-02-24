@@ -18,6 +18,7 @@ import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.ui.categories.ARG_CATEGORY
+import com.example.asfoapp.ui.recipes.adapters.RecipesListAdapter
 
 const val ARG_RECIPE = "ARG_RECIPE"
 

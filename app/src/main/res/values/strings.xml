@@ -11,6 +11,11 @@
     <string name="cardview_title_default_category">Категория</string>
     <string name="cardview_title_default_recipe">Рецепт</string>
     <string name="header_title_default_recipes">Рецепты</string>
+    <string name="cocking_method">Способ приготовления</string>
+    <string name="ingredient">Ингредиент</string>
+    <string name="unit_of_measure">ед. измерения</string>
+    <string name="ingredients">Ингредиенты</string>
+    <string name="portions">Порции</string>
 
 
 </resources>

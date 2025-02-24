@@ -12,16 +12,22 @@
         <item name="android:textAppearance">@style/ASFOapp.StyleTitle14</item>
         <item name="cornerRadius">@dimen/corner_radius_medium_8dp</item>
     </style>
-
     <style name="ASFOapp.StyleTitle20" parent="ASFOapp.StyleTitle14">
         <item name="android:textSize">@dimen/size_header_title</item>
         <item name="android:textColor">@color/figma_purple</item>
+    </style>
+    <style name="ASFOapp.StyleHeaderTitle20" parent="ASFOapp.StyleTitle20">
         <item name="android:background">@drawable/shape_header_title20</item>
     </style>
+
 
     <style name="ASFOapp.StyleDescriptionCardView" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/size_cardview_description</item>
         <item name="android:textColor">@color/figma_gray</item>
         <item name="fontFamily">@font/montserrat_medium</item>
+    </style>
+    <style name="ASFOapp.StyleTextRecipeRecycler" parent="ASFOapp.StyleDescriptionCardView">
+        <item name="android:textSize">@dimen/size_title_medium</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 </resources>

@@ -1,13 +1,17 @@
 package com.example.asfoapp.ui.recipes
 
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.asfoapp.data.Recipe
 import com.example.asfoapp.databinding.FragmentRecipeBinding
+import com.example.asfoapp.ui.recipes.adapters.IngredientsAdapter
+import com.example.asfoapp.ui.recipes.adapters.MethodAdapter
 
 class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
@@ -29,6 +33,7 @@ class RecipeFragment : Fragment() {
         }
 
         setContentView()
+        initAdapter()
         return view
     }
 
@@ -37,8 +42,29 @@ class RecipeFragment : Fragment() {
         _binding = null
     }
     private fun setContentView(){
-        recipe?.let {
-            binding.testText.text = it.title
+        recipe?.let { recipe ->
+            binding.recipeTitle.text = recipe.title
+            try {
+            val inputStream = requireContext().assets.open(recipe.imageUrl)
+            val image = Drawable.createFromStream(inputStream, null)
+            binding.recipeImage.setImageDrawable(image)
+            } catch (e: Exception) {
+                val stackTrace = Log.getStackTraceString(e)
+                Log.e(
+                    "RecipesFragment",
+                    "Image - ${recipe.imageUrl} not found in assets\n$stackTrace"
+                )
+            }
         }
+    }
+    private fun initAdapter(){
+        recipe?.let {
+            Log.i("initAdapter", "recipe.method - ${it.method}", )
+            val ingredientsAdapter = IngredientsAdapter(it.ingredients)
+            val methodAdapter = MethodAdapter(it.method)
+            binding.rvIngredients.adapter = ingredientsAdapter
+            binding.rvMethod.adapter = methodAdapter
+        }
+
     }
 }
