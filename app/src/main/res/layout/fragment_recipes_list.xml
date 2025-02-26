@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/categoryName"
-            style="@style/ASFOapp.StyleTitle20"
+            style="@style/ASFOapp.StyleHeaderTitle20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium_16dp"

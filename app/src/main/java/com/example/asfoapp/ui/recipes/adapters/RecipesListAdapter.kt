@@ -1,4 +1,4 @@
-package com.example.asfoapp.ui.recipes
+package com.example.asfoapp.ui.recipes.adapters
 
 import android.graphics.drawable.Drawable
 import android.util.Log
