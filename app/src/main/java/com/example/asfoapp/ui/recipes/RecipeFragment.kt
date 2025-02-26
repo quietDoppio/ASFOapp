@@ -73,6 +73,7 @@ class RecipeFragment : Fragment() {
                 setDividerInsetEndResource(requireContext(), R.dimen.spacing_medium_8dp)
                 setDividerInsetStartResource(requireContext(), R.dimen.spacing_medium_8dp)
                 setDividerColorResource(requireContext(), R.color.figma_gray_light)
+                isLastItemDecorated = false
             }
             binding.rvIngredients.adapter = ingredientsAdapter
             binding.rvIngredients.addItemDecoration(divider)
