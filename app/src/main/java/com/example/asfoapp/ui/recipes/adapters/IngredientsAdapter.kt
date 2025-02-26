@@ -7,7 +7,13 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.asfoapp.data.Ingredient
 import com.example.asfoapp.databinding.ItemIngredientBinding
 
-class IngredientsAdapter(private val dataSet: List<Ingredient>) : Adapter<IngredientsAdapter.IngredientsItemViewHolder>(){
+class IngredientsAdapter(dataSet: List<Ingredient>) : Adapter<IngredientsAdapter.IngredientsItemViewHolder>(){
+    var dataSet:List<Ingredient> = dataSet
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     class IngredientsItemViewHolder(private val binding: ItemIngredientBinding) : ViewHolder(binding.root){
         fun bind(item: Ingredient){
             binding.cuantity.text = "%s ".format(item.quantity)

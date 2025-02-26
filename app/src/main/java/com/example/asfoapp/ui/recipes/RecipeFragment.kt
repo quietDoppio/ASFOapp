@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
 import com.example.asfoapp.data.Recipe
@@ -23,6 +24,8 @@ class RecipeFragment : Fragment() {
 
     private var recipe: Recipe? = null
 
+    private var ingredientsAdapter: IngredientsAdapter? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -37,6 +40,7 @@ class RecipeFragment : Fragment() {
 
         setContentView()
         initRecycler()
+
         return view
     }
 
@@ -63,10 +67,9 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        recipe?.let {
-            Log.i("initAdapter", "recipe.method - ${it.method}")
-            val ingredientsAdapter = IngredientsAdapter(it.ingredients)
-            val methodAdapter = MethodAdapter(it.method)
+        recipe?.let { recipe ->
+            ingredientsAdapter = IngredientsAdapter(recipe.ingredients)
+            val methodAdapter = MethodAdapter(recipe.method)
             val divider = MaterialDividerItemDecoration(
                 requireContext(), VERTICAL
             ).apply {
@@ -79,6 +82,26 @@ class RecipeFragment : Fragment() {
             binding.rvIngredients.addItemDecoration(divider)
             binding.rvMethod.adapter = methodAdapter
             binding.rvMethod.addItemDecoration(divider)
+            binding.seekBar.setOnSeekBarChangeListener(
+                object : SeekBar.OnSeekBarChangeListener{
+                    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                        val newIngredients = recipe.ingredients.map {
+                            if(seekBar?.progress!! > progress){
+                                if(it.quantity.toIntOrNull() == null) it.copy(quantity = (it.quantity.toDouble() / progress).toString())
+                                else it.copy(quantity = (it.quantity.toInt() / progress).toString())
+                            } else {
+                                if(it.quantity.toIntOrNull() == null) it.copy(quantity = (it.quantity.toDouble() * progress).toString())
+                                else it.copy(quantity = (it.quantity.toInt() * progress).toString())
+                            }
+                        }
+                        newIngredients.let { ingredientsAdapter?.dataSet = newIngredients }
+                    }
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                    }
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    }
+                }
+            )
         }
 
     }
