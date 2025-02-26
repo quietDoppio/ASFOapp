@@ -53,6 +53,7 @@ class RecipeFragment : Fragment() {
     private fun setContentView() {
         recipe?.let { recipe ->
             binding.recipeTitle.text = recipe.title
+            binding.portions.text = getString(R.string.portions, 1)
             try {
                 val inputStream = requireContext().assets.open(recipe.imageUrl)
                 val image = Drawable.createFromStream(inputStream, null)
@@ -101,6 +102,7 @@ class RecipeFragment : Fragment() {
                         else it.copy(quantity = (it.quantity.toDouble() * progress).toString())
                     }
                 }
+                binding.portions.text = getString(R.string.portions, progress)
                 newIngredients?.let { ingredientsAdapter?.dataSet = it }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {

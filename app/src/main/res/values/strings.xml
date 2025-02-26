@@ -15,7 +15,7 @@
     <string name="ingredient">Ингредиент</string>
     <string name="unit_of_measure">ед. измерения</string>
     <string name="ingredients">Ингредиенты</string>
-    <string name="portions">Порции</string>
+    <string name="portions">Порции: %d</string>
 
 
 </resources>
