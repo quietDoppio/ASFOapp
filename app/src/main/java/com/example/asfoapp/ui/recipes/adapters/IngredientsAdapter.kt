@@ -39,7 +39,7 @@ class IngredientsAdapter(dataSet: List<Ingredient>) : Adapter<IngredientsAdapter
     fun updateIngredientsQuantity(progress: Int){
           val newIngredients = dataSet.mapIndexed { index, ingredient ->
                if(defaultQuantities[index].isDigitsOnly()){
-                   ingredient.copy(quantity = (defaultQuantities[index].toInt() * 10).toString())
+                   ingredient.copy(quantity = (defaultQuantities[index].toInt() * progress).toString())
                } else {
                    ingredient.copy(quantity = (defaultQuantities[index].toDouble() * progress).toString())
                }
