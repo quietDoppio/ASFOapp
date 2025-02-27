@@ -57,6 +57,11 @@
             android:layout_marginVertical="@dimen/spacing_small_6dp"
             android:text="@string/portions" />
 
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvIngredients"
             android:layout_width="match_parent"

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
 import com.example.asfoapp.data.Recipe
@@ -23,6 +24,8 @@ class RecipeFragment : Fragment() {
 
     private var recipe: Recipe? = null
 
+    private var ingredientsAdapter: IngredientsAdapter? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -37,6 +40,8 @@ class RecipeFragment : Fragment() {
 
         setContentView()
         initRecycler()
+        initSeekBar()
+
         return view
     }
 
@@ -48,6 +53,7 @@ class RecipeFragment : Fragment() {
     private fun setContentView() {
         recipe?.let { recipe ->
             binding.recipeTitle.text = recipe.title
+            binding.portions.text = getString(R.string.portions, 1)
             try {
                 val inputStream = requireContext().assets.open(recipe.imageUrl)
                 val image = Drawable.createFromStream(inputStream, null)
@@ -63,10 +69,9 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        recipe?.let {
-            Log.i("initAdapter", "recipe.method - ${it.method}")
-            val ingredientsAdapter = IngredientsAdapter(it.ingredients)
-            val methodAdapter = MethodAdapter(it.method)
+        recipe?.let { recipe ->
+            ingredientsAdapter = IngredientsAdapter(recipe.ingredients)
+            val methodAdapter = MethodAdapter(recipe.method)
             val divider = MaterialDividerItemDecoration(
                 requireContext(), VERTICAL
             ).apply {
@@ -80,6 +85,23 @@ class RecipeFragment : Fragment() {
             binding.rvMethod.adapter = methodAdapter
             binding.rvMethod.addItemDecoration(divider)
         }
+    }
 
+    private fun initSeekBar() {
+        binding.seekBar.apply {
+            min = 1
+            max = 10
+            progress = 1
+            setOnSeekBarChangeListener(
+                object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(seekBar: SeekBar?, newProgress: Int, fromUser: Boolean) {
+                            binding.portions.text = getString(R.string.portions, newProgress)
+                            ingredientsAdapter?.updateIngredientsQuantity(newProgress)
+                    }
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+                }
+            )
+        }
     }
 }
