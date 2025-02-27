@@ -87,29 +87,21 @@ class RecipeFragment : Fragment() {
         }
     }
 
-    private fun initSeekBar(){
-        val onSeekBarChangeListener = object : SeekBar.OnSeekBarChangeListener{
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val previousProgress = seekBar?.progress ?: 0
-                val newIngredients = recipe?.ingredients?.map {
-                    val isQuantityInt = it.quantity.toIntOrNull() != null
-
-                    if(previousProgress > progress){
-                        if(isQuantityInt) it.copy(quantity = (it.quantity.toInt() / progress).toString())
-                        else it.copy(quantity = (it.quantity.toDouble() / progress).toString())
-                    } else {
-                        if(isQuantityInt) it.copy(quantity = (it.quantity.toInt() * progress).toString())
-                        else it.copy(quantity = (it.quantity.toDouble() * progress).toString())
+    private fun initSeekBar() {
+        binding.seekBar.apply {
+            min = 1
+            max = 10
+            progress = 1
+            setOnSeekBarChangeListener(
+                object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(seekBar: SeekBar?, newProgress: Int, fromUser: Boolean) {
+                            binding.portions.text = getString(R.string.portions, newProgress)
+                            ingredientsAdapter?.updateIngredientsQuantity(newProgress)
                     }
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {}
                 }
-                binding.portions.text = getString(R.string.portions, progress)
-                newIngredients?.let { ingredientsAdapter?.dataSet = it }
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-            }
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            }
+            )
         }
-        binding.seekBar.setOnSeekBarChangeListener(onSeekBarChangeListener)
     }
 }
