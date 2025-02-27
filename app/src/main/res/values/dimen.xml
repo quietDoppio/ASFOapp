@@ -10,6 +10,8 @@
     <dimen name="size_cardview_description">12sp</dimen>
     <dimen name="size_header_title">20sp</dimen>
 
+    <dimen name="corner_radius_small_2dp">2dp</dimen>
+    <dimen name="corner_radius_small_4dp">4dp</dimen>
     <dimen name="corner_radius_medium_8dp">8dp</dimen>
     <dimen name="corner_radius_medium_16dp">16dp</dimen>
 
@@ -22,4 +24,7 @@
     <dimen name="layout_height_categories_card_image">130dp</dimen>
     <dimen name="layout_width_cardview_description">140dp</dimen>
     <dimen name="layout_max_width_header_title">250dp</dimen>
+    <dimen name="layout_width_seekbar_thumb">8dp</dimen>
+    <dimen name="layout_height_seekbar_thumb">30dp</dimen>
+    <dimen name="layout_height_seekbar_progression">16dp</dimen>
 </resources>

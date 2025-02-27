@@ -30,4 +30,9 @@
         <item name="android:textSize">@dimen/size_title_medium</item>
         <item name="android:textAllCaps">true</item>
     </style>
+    
+    <style name="ASFOapp.StyleSeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:thumb">@drawable/shape_seekbar_thumb</item>
+        <item name="android:progressDrawable">@drawable/shape_seekbar_progress</item>
+    </style>
 </resources>
