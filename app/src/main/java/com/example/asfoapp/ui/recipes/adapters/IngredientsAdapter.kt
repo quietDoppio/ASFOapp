@@ -14,7 +14,7 @@ class IngredientsAdapter(dataSet: List<Ingredient>) : Adapter<IngredientsAdapter
             field = value
             notifyDataSetChanged()
         }
-    private val defaultQuantities = dataSet.map { it.quantity }
+    private var defaultQuantities = dataSet.map { it.quantity }
 
     class IngredientsItemViewHolder(private val binding: ItemIngredientBinding) : ViewHolder(binding.root){
         fun bind(item: Ingredient){
@@ -37,6 +37,10 @@ class IngredientsAdapter(dataSet: List<Ingredient>) : Adapter<IngredientsAdapter
         holder.bind(item)
     }
     fun updateIngredientsQuantity(progress: Int){
+        val quantitySequence = dataSet.asSequence().map { it.quantity }
+        if (defaultQuantities != quantitySequence){
+            defaultQuantities = quantitySequence.toList()
+        }
           val newIngredients = dataSet.mapIndexed { index, ingredient ->
                if(defaultQuantities[index].isDigitsOnly()){
                    ingredient.copy(quantity = (defaultQuantities[index].toInt() * progress).toString())
