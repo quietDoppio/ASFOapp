@@ -1,28 +1,36 @@
-package com.example.asfoapp.ui.recipes.adapters
+package com.example.asfoapp.ui.favorites.adapter
 
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.asfoapp.data.Recipe
 import com.example.asfoapp.databinding.ItemRecipeBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 
-class RecipesListAdapter(private val dataSet: List<Recipe>) :
-    Adapter<RecipesListAdapter.RecipeItemViewHolder>() {
-
+class FavoritesListAdapter(private val dataSet: List<Recipe?>) :
+    RecyclerView.Adapter<FavoritesListAdapter.FavoritesListViewHolder>() {
     private var itemClickListener: OnItemClickListener? = null
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
         itemClickListener = listener
     }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritesListViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ItemRecipeBinding.inflate(layoutInflater, parent, false)
+        return FavoritesListViewHolder(binding)
+    }
 
-    class RecipeItemViewHolder(private val binding: ItemRecipeBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    override fun onBindViewHolder(holder: FavoritesListViewHolder, position: Int) {
+        val item = dataSet[position]
+        holder.bind(item, itemClickListener)
+    }
 
-        fun bind(item: Recipe, itemClickListener: OnItemClickListener?) {
+    override fun getItemCount(): Int = dataSet.size
+    class FavoritesListViewHolder(private val binding: ItemRecipeBinding) : RecyclerView.ViewHolder(binding.root){
+        fun bind(item: Recipe?, itemClickListener: OnItemClickListener?){
+            item?.let {
             binding.tvRecipeName.text = item.title
             try {
                 val inputStream = itemView.context.assets.open(item.imageUrl)
@@ -40,18 +48,6 @@ class RecipesListAdapter(private val dataSet: List<Recipe>) :
                 itemClickListener?.onItemClick(item.id)
             }
         }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeItemViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemRecipeBinding.inflate(layoutInflater, parent, false)
-        return RecipeItemViewHolder(binding)
-    }
-
-    override fun getItemCount(): Int = dataSet.size
-
-    override fun onBindViewHolder(holder: RecipeItemViewHolder, position: Int) {
-        val item = dataSet[position]
-        holder.bind(item, itemClickListener)
+        }
     }
 }

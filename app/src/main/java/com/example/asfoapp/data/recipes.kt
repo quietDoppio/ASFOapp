@@ -6,7 +6,7 @@ object STUB {
         if(categoryId == 0) burgerRecipes else emptyList()
     fun getRecipeById(recipeId: Int, recipesList: List<Recipe>) =
         recipesList.find { it.id == recipeId }
-
+    fun getBurgerRecipes() = burgerRecipes
     private var categories: List<Category> = listOf(
         Category(0, "Бургеры", "Рецепты всех популярных бургеров", "burger.png"),
         Category(1, "Десерты", "Самые вкусные рецепты десертов специально для вас", "dessert.png"),
