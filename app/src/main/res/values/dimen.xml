@@ -27,4 +27,5 @@
     <dimen name="layout_width_seekbar_thumb">8dp</dimen>
     <dimen name="layout_height_seekbar_thumb">30dp</dimen>
     <dimen name="layout_height_seekbar_progression">16dp</dimen>
+    <dimen name="layout_size_image_button_favorites">40dp</dimen>
 </resources>

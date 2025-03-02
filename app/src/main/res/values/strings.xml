@@ -6,16 +6,19 @@
 
     <string name="content_description_default_header_food_picture">Изображение еды</string>
     <string name="content_description_default_category_image">Карточка категории</string>
+    <string name="add_to_favorites">Добвить в избранное</string>
 
     <string name="cardview_description_default_category">Рецепты популярных блюд</string>
     <string name="cardview_title_default_category">Категория</string>
     <string name="cardview_title_default_recipe">Рецепт</string>
     <string name="header_title_default_recipes">Рецепты</string>
+    <string name="header_title_default_favorites">Избранное</string>
     <string name="cocking_method">Способ приготовления</string>
     <string name="ingredient">Ингредиент</string>
     <string name="unit_of_measure">ед. измерения</string>
     <string name="ingredients">Ингредиенты</string>
     <string name="portions">Порции: %d</string>
 
+    <string name="recipe_id_set_preferences_key">RECIPE_ID_SET</string>
 
 </resources>
