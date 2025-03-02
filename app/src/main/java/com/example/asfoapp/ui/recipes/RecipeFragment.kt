@@ -55,12 +55,12 @@ class RecipeFragment : Fragment() {
 
     private fun setContentView() {
         recipe?.let { recipe ->
-            binding.recipeTitle.text = recipe.title
-            binding.portions.text = getString(R.string.portions, 1)
+            binding.tvRecipeTitle.text = recipe.title
+            binding.tvPortions.text = getString(R.string.portions, 1)
             try {
                 val inputStream = requireContext().assets.open(recipe.imageUrl)
                 val image = Drawable.createFromStream(inputStream, null)
-                binding.recipeImage.setImageDrawable(image)
+                binding.ivRecipeImage.setImageDrawable(image)
             } catch (e: Exception) {
                 val stackTrace = Log.getStackTraceString(e)
                 Log.e(
@@ -69,9 +69,9 @@ class RecipeFragment : Fragment() {
                 )
             }
 
-            binding.addToFavoritesButton.isSelected = getFavorites().contains(recipe.id.toString())
-            binding.addToFavoritesButton.setOnClickListener {
-                binding.addToFavoritesButton.isSelected = toggleFavoriteState()
+            binding.ibAddToFavoritesButton.isSelected = getFavorites().contains(recipe.id.toString())
+            binding.ibAddToFavoritesButton.setOnClickListener {
+                binding.ibAddToFavoritesButton.isSelected = toggleFavoriteState()
             }
         }
     }
@@ -103,7 +103,7 @@ class RecipeFragment : Fragment() {
             setOnSeekBarChangeListener(
                 object : SeekBar.OnSeekBarChangeListener {
                     override fun onProgressChanged(seekBar: SeekBar?, newProgress: Int, fromUser: Boolean) {
-                        binding.portions.text = getString(R.string.portions, newProgress)
+                        binding.tvPortions.text = getString(R.string.portions, newProgress)
                         ingredientsAdapter?.updateIngredientsQuantity(newProgress)
                     }
 
