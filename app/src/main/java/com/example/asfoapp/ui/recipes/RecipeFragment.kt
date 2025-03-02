@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
 import com.example.asfoapp.data.Recipe
@@ -64,6 +65,9 @@ class RecipeFragment : Fragment() {
                     "RecipesFragment",
                     "Image - ${recipe.imageUrl} not found in assets\n$stackTrace"
                 )
+            }
+            binding.addToFavoritesButton.setOnClickListener {
+                binding.addToFavoritesButton.isSelected = !binding.addToFavoritesButton.isSelected
             }
         }
     }
