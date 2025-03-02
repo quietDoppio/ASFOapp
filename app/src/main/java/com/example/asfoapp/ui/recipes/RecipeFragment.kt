@@ -1,5 +1,6 @@
 package com.example.asfoapp.ui.recipes
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -9,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
 import com.example.asfoapp.data.Recipe
@@ -18,10 +18,12 @@ import com.example.asfoapp.ui.recipes.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.adapters.MethodAdapter
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
+const val ID_SET_PREFS_KEY = "SET_ID_PREFERENCES_KEY"
+
 class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
     private val binding get() =
-        _binding ?: throw IllegalStateException("binding for RecipeFragment must not be null")
+            _binding ?: throw IllegalStateException("binding for RecipeFragment must not be null")
 
     private var recipe: Recipe? = null
 
@@ -66,8 +68,10 @@ class RecipeFragment : Fragment() {
                     "Image - ${recipe.imageUrl} not found in assets\n$stackTrace"
                 )
             }
+
+            binding.addToFavoritesButton.isSelected = getFavorites().contains(recipe.id.toString())
             binding.addToFavoritesButton.setOnClickListener {
-                binding.addToFavoritesButton.isSelected = !binding.addToFavoritesButton.isSelected
+                binding.addToFavoritesButton.isSelected = toggleFavoriteState()
             }
         }
     }
@@ -99,13 +103,50 @@ class RecipeFragment : Fragment() {
             setOnSeekBarChangeListener(
                 object : SeekBar.OnSeekBarChangeListener {
                     override fun onProgressChanged(seekBar: SeekBar?, newProgress: Int, fromUser: Boolean) {
-                            binding.portions.text = getString(R.string.portions, newProgress)
-                            ingredientsAdapter?.updateIngredientsQuantity(newProgress)
+                        binding.portions.text = getString(R.string.portions, newProgress)
+                        ingredientsAdapter?.updateIngredientsQuantity(newProgress)
                     }
+
                     override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                     override fun onStopTrackingTouch(seekBar: SeekBar?) {}
                 }
             )
         }
+    }
+
+    private fun saveFavorites(recipesIdSet: Set<String>) {
+        val sharedPreferences = requireContext().getSharedPreferences(
+            getString(R.string.recipe_id_set_preferences_key),
+            Context.MODE_PRIVATE
+        )
+        with(sharedPreferences.edit()) {
+            putStringSet(ID_SET_PREFS_KEY, recipesIdSet)
+            apply()
+        }
+    }
+
+    private fun getFavorites(): MutableSet<String> {
+        val sharedPreferences = requireContext().getSharedPreferences(
+            getString(R.string.recipe_id_set_preferences_key),
+            Context.MODE_PRIVATE
+        )
+        val savedSet =
+            sharedPreferences.getStringSet(ID_SET_PREFS_KEY, emptySet()) ?: emptySet()
+        return HashSet(savedSet)
+    }
+    private fun toggleFavoriteState(): Boolean {
+        val favoritesId = getFavorites()
+        recipe?.id?.let { id ->
+            val isFavorite = favoritesId.contains(id.toString())
+            if (isFavorite) {
+                favoritesId.remove(id.toString())
+                saveFavorites(favoritesId.toSet())
+            } else {
+                favoritesId.add(id.toString())
+                saveFavorites(favoritesId)
+            }
+            return !isFavorite
+        }
+        return false
     }
 }
