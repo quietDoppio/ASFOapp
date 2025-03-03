@@ -18,7 +18,8 @@ import com.example.asfoapp.ui.recipes.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.adapters.MethodAdapter
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
-const val ID_SET_PREFS_KEY = "SET_ID_PREFERENCES_KEY"
+const val ASFOAPP_PREFS_FILE_KEY = "ASFOAPP_PREFS_FILE_KEY"
+const val FAVORITES_PREFS_KEY = "FAVORITES_PREFS_KEY"
 
 class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
@@ -106,7 +107,6 @@ class RecipeFragment : Fragment() {
                         binding.tvPortions.text = getString(R.string.portions, newProgress)
                         ingredientsAdapter?.updateIngredientsQuantity(newProgress)
                     }
-
                     override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                     override fun onStopTrackingTouch(seekBar: SeekBar?) {}
                 }
@@ -116,24 +116,23 @@ class RecipeFragment : Fragment() {
 
     private fun saveFavorites(recipesIdSet: Set<String>) {
         val sharedPreferences = requireContext().getSharedPreferences(
-            getString(R.string.recipe_id_set_preferences_key),
+            ASFOAPP_PREFS_FILE_KEY,
             Context.MODE_PRIVATE
         )
         with(sharedPreferences.edit()) {
-            putStringSet(ID_SET_PREFS_KEY, recipesIdSet)
+            putStringSet(FAVORITES_PREFS_KEY, recipesIdSet)
             apply()
         }
     }
 
     private fun getFavorites(): MutableSet<String> {
         val sharedPreferences = requireContext().getSharedPreferences(
-            getString(R.string.recipe_id_set_preferences_key),
+            ASFOAPP_PREFS_FILE_KEY,
             Context.MODE_PRIVATE
         )
-        val savedSet =
-            sharedPreferences.getStringSet(ID_SET_PREFS_KEY, emptySet()) ?: emptySet()
-        return HashSet(savedSet)
+        return HashSet(sharedPreferences.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet())
     }
+
     private fun toggleFavoriteState(): Boolean {
         val favoritesId = getFavorites()
         recipe?.id?.let { id ->

@@ -23,12 +23,12 @@ class RecipesListAdapter(private val dataSet: List<Recipe>) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Recipe, itemClickListener: OnItemClickListener?) {
-            binding.recipeName.text = item.title
+            binding.tvRecipeName.text = item.title
             try {
                 val inputStream = itemView.context.assets.open(item.imageUrl)
                 val image = Drawable.createFromStream(inputStream, null)
-                binding.recipeImage.setImageDrawable(image)
-                binding.recipeImage.contentDescription = "$item.title"
+                binding.ivRecipeImage.setImageDrawable(image)
+                binding.ivRecipeImage.contentDescription = "$item.title"
             } catch (e: Exception) {
                 val stackTrace = Log.getStackTraceString(e)
                 Log.e(
