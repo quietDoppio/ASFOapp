@@ -27,8 +27,8 @@ class RecipesListAdapter(private val dataSet: List<Recipe>) :
             try {
                 val inputStream = itemView.context.assets.open(item.imageUrl)
                 val image = Drawable.createFromStream(inputStream, null)
-                binding.imRecipeImage.setImageDrawable(image)
-                binding.imRecipeImage.contentDescription = "$item.title"
+                binding.ivRecipeImage.setImageDrawable(image)
+                binding.ivRecipeImage.contentDescription = "$item.title"
             } catch (e: Exception) {
                 val stackTrace = Log.getStackTraceString(e)
                 Log.e(

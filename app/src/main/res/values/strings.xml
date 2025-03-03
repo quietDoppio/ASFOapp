@@ -19,6 +19,5 @@
     <string name="ingredients">Ингредиенты</string>
     <string name="portions">Порции: %d</string>
 
-    <string name="recipe_id_set_preferences_key">RECIPE_ID_SET</string>
 
 </resources>

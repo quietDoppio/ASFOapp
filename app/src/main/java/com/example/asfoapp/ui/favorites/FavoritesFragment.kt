@@ -15,7 +15,8 @@ import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentFavoritesBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.ui.recipes.ARG_RECIPE
-import com.example.asfoapp.ui.recipes.ID_SET_PREFS_KEY
+import com.example.asfoapp.ui.recipes.ASFOAPP_PREFS_FILE_KEY
+import com.example.asfoapp.ui.recipes.FAVORITES_PREFS_KEY
 import com.example.asfoapp.ui.recipes.RecipeFragment
 import com.example.asfoapp.ui.recipes.adapters.RecipesListAdapter
 
@@ -61,11 +62,10 @@ class FavoritesFragment : Fragment() {
     }
     private fun getFavoritesIds(): MutableSet<String>{
        val sharedPrefs = requireContext().getSharedPreferences(
-            getString(R.string.recipe_id_set_preferences_key),
+            ASFOAPP_PREFS_FILE_KEY,
             Context.MODE_PRIVATE
         )
-        val favoritesSet = sharedPrefs.getStringSet(ID_SET_PREFS_KEY, emptySet()) ?: emptySet()
-        return HashSet(favoritesSet)
+        return HashSet(sharedPrefs.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet())
     }
     override fun onDestroyView() {
         super.onDestroyView()
