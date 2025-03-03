@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.recipes.RecipesListFragment">
+    android:background="@color/figma_background_color"
+    tools:context=".ui.favorites.FavoritesFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_height_categories_header">
 
         <ImageView
-            android:id="@+id/categoryImage"
+            android:id="@+id/ivCategoryImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
@@ -24,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/categoryName"
+            android:id="@+id/tvCategoryName"
             style="@style/ASFOapp.StyleHeaderTitle20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

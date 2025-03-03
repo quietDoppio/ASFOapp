@@ -1,7 +1,6 @@
 package com.example.asfoapp.ui.favorites
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,24 +14,17 @@ import com.example.asfoapp.data.Recipe
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentFavoritesBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
-import com.example.asfoapp.ui.favorites.adapter.FavoritesListAdapter
 import com.example.asfoapp.ui.recipes.ARG_RECIPE
-import com.example.asfoapp.ui.recipes.ID_SET_PREFS_KEY
+import com.example.asfoapp.ui.recipes.ASFOAPP_PREFS_FILE_KEY
+import com.example.asfoapp.ui.recipes.FAVORITES_PREFS_KEY
 import com.example.asfoapp.ui.recipes.RecipeFragment
+import com.example.asfoapp.ui.recipes.adapters.RecipesListAdapter
 
 class FavoritesFragment : Fragment() {
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding
-            ?: throw IllegalStateException("binding for FavoritesFragment must not be null")
-    private var sharedPrefs: SharedPreferences? = null
+                ?: throw IllegalStateException("binding for FavoritesFragment must not be null")
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        sharedPrefs = requireContext().getSharedPreferences(
-            getString(R.string.recipe_id_set_preferences_key),
-            Context.MODE_PRIVATE
-        )
-    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,30 +37,35 @@ class FavoritesFragment : Fragment() {
         return view
     }
 
-    private fun initAdapter(){
-        val recipesId = sharedPrefs?.getStringSet(ID_SET_PREFS_KEY, emptySet()) ?: emptySet()
-        val recipes: List<Recipe> = recipesId.mapNotNull {
-            STUB.getRecipeById(it.toInt(), STUB.getBurgerRecipes())
-        }.toList()
-        val favoritesAdapter = FavoritesListAdapter(recipes)
-        favoritesAdapter.setOnItemClickListener(
+    private fun initAdapter() {
+        val recipesIdSet = getFavoritesIds().map { it.toInt() }.toSet()
+        val recipes: List<Recipe> = STUB.getRecipesByIds(recipesIdSet)
+        val recipesListAdapter = RecipesListAdapter(recipes)
+        recipesListAdapter.setOnItemClickListener(
             object : OnItemClickListener {
                 override fun onItemClick(itemId: Int) {
                     openRecipeByRecipeId(itemId, recipes)
                 }
-
             }
         )
-        binding.rvRecipes.adapter = favoritesAdapter
+        binding.rvRecipes.adapter = recipesListAdapter
     }
-    private fun openRecipeByRecipeId(recipeId: Int, recipesList: List<Recipe>,){
+
+    private fun openRecipeByRecipeId(recipeId: Int, recipesList: List<Recipe>) {
         val recipe = STUB.getRecipeById(recipeId, recipesList)
         val bundle = bundleOf(ARG_RECIPE to recipe)
         requireActivity().supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<RecipeFragment>(R.id.mainContainer, args = bundle)
-            addToBackStack("RecipesListFragment")
+            addToBackStack("FavoritesFragment")
         }
+    }
+    private fun getFavoritesIds(): MutableSet<String>{
+       val sharedPrefs = requireContext().getSharedPreferences(
+            ASFOAPP_PREFS_FILE_KEY,
+            Context.MODE_PRIVATE
+        )
+        return HashSet(sharedPrefs.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet())
     }
     override fun onDestroyView() {
         super.onDestroyView()
