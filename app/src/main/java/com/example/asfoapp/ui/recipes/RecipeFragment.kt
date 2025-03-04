@@ -23,7 +23,8 @@ const val FAVORITES_PREFS_KEY = "FAVORITES_PREFS_KEY"
 
 class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
-    private val binding get() =
+    private val binding
+        get() =
             _binding ?: throw IllegalStateException("binding for RecipeFragment must not be null")
 
     private var recipe: Recipe? = null
@@ -70,7 +71,8 @@ class RecipeFragment : Fragment() {
                 )
             }
 
-            binding.ibAddToFavoritesButton.isSelected = getFavorites().contains(recipe.id.toString())
+            binding.ibAddToFavoritesButton.isSelected =
+                getFavorites().contains(recipe.id.toString())
             binding.ibAddToFavoritesButton.setOnClickListener {
                 binding.ibAddToFavoritesButton.isSelected = toggleFavoriteState()
             }
@@ -103,10 +105,15 @@ class RecipeFragment : Fragment() {
             progress = 1
             setOnSeekBarChangeListener(
                 object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(seekBar: SeekBar?, newProgress: Int, fromUser: Boolean) {
+                    override fun onProgressChanged(
+                        seekBar: SeekBar?,
+                        newProgress: Int,
+                        fromUser: Boolean
+                    ) {
                         binding.tvPortions.text = getString(R.string.portions, newProgress)
                         ingredientsAdapter?.updateIngredientsQuantity(newProgress)
                     }
+
                     override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                     override fun onStopTrackingTouch(seekBar: SeekBar?) {}
                 }
@@ -130,7 +137,9 @@ class RecipeFragment : Fragment() {
             ASFOAPP_PREFS_FILE_KEY,
             Context.MODE_PRIVATE
         )
-        return HashSet(sharedPreferences.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet())
+        return HashSet(
+            sharedPreferences.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet()
+        )
     }
 
     private fun toggleFavoriteState(): Boolean {

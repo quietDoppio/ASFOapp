@@ -14,9 +14,21 @@ class RecipesListAdapter(private val dataSet: List<Recipe>) :
     Adapter<RecipesListAdapter.RecipeItemViewHolder>() {
 
     private var itemClickListener: OnItemClickListener? = null
-
     fun setOnItemClickListener(listener: OnItemClickListener) {
         itemClickListener = listener
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeItemViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ItemRecipeBinding.inflate(layoutInflater, parent, false)
+        return RecipeItemViewHolder(binding)
+    }
+
+    override fun getItemCount(): Int = dataSet.size
+
+    override fun onBindViewHolder(holder: RecipeItemViewHolder, position: Int) {
+        val item = dataSet[position]
+        holder.bind(item, itemClickListener)
     }
 
     class RecipeItemViewHolder(private val binding: ItemRecipeBinding) :
@@ -40,18 +52,5 @@ class RecipesListAdapter(private val dataSet: List<Recipe>) :
                 itemClickListener?.onItemClick(item.id)
             }
         }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeItemViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemRecipeBinding.inflate(layoutInflater, parent, false)
-        return RecipeItemViewHolder(binding)
-    }
-
-    override fun getItemCount(): Int = dataSet.size
-
-    override fun onBindViewHolder(holder: RecipeItemViewHolder, position: Int) {
-        val item = dataSet[position]
-        holder.bind(item, itemClickListener)
     }
 }

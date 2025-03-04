@@ -22,8 +22,9 @@ import com.example.asfoapp.ui.recipes.adapters.RecipesListAdapter
 
 class FavoritesFragment : Fragment() {
     private var _binding: FragmentFavoritesBinding? = null
-    private val binding get() = _binding
-                ?: throw IllegalStateException("binding for FavoritesFragment must not be null")
+    private val binding
+        get() = _binding
+            ?: throw IllegalStateException("binding for FavoritesFragment must not be null")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +36,11 @@ class FavoritesFragment : Fragment() {
         initAdapter()
 
         return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initAdapter() {
@@ -60,15 +66,13 @@ class FavoritesFragment : Fragment() {
             addToBackStack("FavoritesFragment")
         }
     }
-    private fun getFavoritesIds(): MutableSet<String>{
-       val sharedPrefs = requireContext().getSharedPreferences(
+
+    private fun getFavoritesIds(): MutableSet<String> {
+        val sharedPrefs = requireContext().getSharedPreferences(
             ASFOAPP_PREFS_FILE_KEY,
             Context.MODE_PRIVATE
         )
         return HashSet(sharedPrefs.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet())
     }
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+
 }
