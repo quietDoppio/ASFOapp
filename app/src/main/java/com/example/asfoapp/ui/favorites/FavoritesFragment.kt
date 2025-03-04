@@ -55,6 +55,7 @@ class FavoritesFragment : Fragment() {
             }
         )
         binding.rvRecipes.adapter = recipesListAdapter
+        handleRecyclerVisibleStatus(recipes)
     }
 
     private fun openRecipeByRecipeId(recipeId: Int, recipesList: List<Recipe>) {
@@ -73,6 +74,13 @@ class FavoritesFragment : Fragment() {
             Context.MODE_PRIVATE
         )
         return HashSet(sharedPrefs?.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet())
+    }
+
+   private fun handleRecyclerVisibleStatus(recipes: List<Recipe>) {
+        binding.apply {
+            tvEmptyListStub.visibility = View.VISIBLE.takeIf { recipes.isEmpty() } ?: View.GONE
+            rvRecipes.visibility = View.GONE.takeIf { recipes.isEmpty() } ?: View.VISIBLE
+        }
     }
 
 }

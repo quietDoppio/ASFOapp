@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/figma_background_color"
+    android:orientation="vertical"
     tools:context=".ui.favorites.FavoritesFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,9 +16,9 @@
             android:id="@+id/ivCategoryImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="@string/content_description_default_header_food_picture"
             android:scaleType="centerCrop"
             android:src="@drawable/bcg_favorites"
-            android:contentDescription="@string/content_description_default_header_food_picture"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,12 +37,26 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/tvEmptyListStub"
+        style="@style/ASFOapp.StyleDescriptionCardView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/spacing_medium_16dp"
+        android:gravity="center|top"
+        android:paddingTop="@dimen/padding_title_stub_no_favorites_recipes"
+        android:paddingHorizontal="@dimen/padding_horizontal_stub"
+        android:text="@string/stub_no_favorites_recipes"
+        android:textSize="@dimen/size_text_medium16sp"
+        android:visibility="visible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/spacing_medium_8dp"
         android:layout_marginTop="@dimen/spacing_medium_8dp"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_recipe"/>
+        tools:listitem="@layout/item_recipe" />
 </LinearLayout>
