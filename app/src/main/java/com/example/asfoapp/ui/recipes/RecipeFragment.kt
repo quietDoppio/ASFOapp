@@ -122,23 +122,25 @@ class RecipeFragment : Fragment() {
     }
 
     private fun saveFavorites(recipesIdSet: Set<String>) {
-        val sharedPreferences = requireContext().getSharedPreferences(
-            ASFOAPP_PREFS_FILE_KEY,
-            Context.MODE_PRIVATE
-        )
-        with(sharedPreferences.edit()) {
-            putStringSet(FAVORITES_PREFS_KEY, recipesIdSet)
-            apply()
+        context?.let { context ->
+            val sharedPreferences = context.getSharedPreferences(
+                ASFOAPP_PREFS_FILE_KEY,
+                Context.MODE_PRIVATE
+            )
+            with(sharedPreferences.edit()) {
+                putStringSet(FAVORITES_PREFS_KEY, recipesIdSet)
+                apply()
+            }
         }
     }
 
     private fun getFavorites(): MutableSet<String> {
-        val sharedPreferences = requireContext().getSharedPreferences(
+        val sharedPreferences = context?.getSharedPreferences(
             ASFOAPP_PREFS_FILE_KEY,
             Context.MODE_PRIVATE
         )
         return HashSet(
-            sharedPreferences.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet()
+            sharedPreferences?.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet()
         )
     }
 

@@ -68,11 +68,11 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun getFavoritesIds(): MutableSet<String> {
-        val sharedPrefs = requireContext().getSharedPreferences(
+        val sharedPrefs = context?.getSharedPreferences(
             ASFOAPP_PREFS_FILE_KEY,
             Context.MODE_PRIVATE
         )
-        return HashSet(sharedPrefs.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet())
+        return HashSet(sharedPrefs?.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet())
     }
 
 }
