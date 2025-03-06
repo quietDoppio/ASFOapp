@@ -18,11 +18,13 @@ import com.example.asfoapp.ui.recipes.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.adapters.MethodAdapter
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
-const val ID_SET_PREFS_KEY = "SET_ID_PREFERENCES_KEY"
+const val ASFOAPP_PREFS_FILE_KEY = "ASFOAPP_PREFS_FILE_KEY"
+const val FAVORITES_PREFS_KEY = "FAVORITES_PREFS_KEY"
 
 class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
-    private val binding get() =
+    private val binding
+        get() =
             _binding ?: throw IllegalStateException("binding for RecipeFragment must not be null")
 
     private var recipe: Recipe? = null
@@ -69,7 +71,8 @@ class RecipeFragment : Fragment() {
                 )
             }
 
-            binding.ibAddToFavoritesButton.isSelected = getFavorites().contains(recipe.id.toString())
+            binding.ibAddToFavoritesButton.isSelected =
+                getFavorites().contains(recipe.id.toString())
             binding.ibAddToFavoritesButton.setOnClickListener {
                 binding.ibAddToFavoritesButton.isSelected = toggleFavoriteState()
             }
@@ -80,18 +83,20 @@ class RecipeFragment : Fragment() {
         recipe?.let { recipe ->
             ingredientsAdapter = IngredientsAdapter(recipe.ingredients)
             val methodAdapter = MethodAdapter(recipe.method)
-            val divider = MaterialDividerItemDecoration(
-                requireContext(), VERTICAL
-            ).apply {
-                setDividerInsetEndResource(requireContext(), R.dimen.spacing_medium_8dp)
-                setDividerInsetStartResource(requireContext(), R.dimen.spacing_medium_8dp)
-                setDividerColorResource(requireContext(), R.color.figma_gray_light)
-                isLastItemDecorated = false
-            }
             binding.rvIngredients.adapter = ingredientsAdapter
-            binding.rvIngredients.addItemDecoration(divider)
             binding.rvMethod.adapter = methodAdapter
-            binding.rvMethod.addItemDecoration(divider)
+            context?.let { context ->
+                val divider = MaterialDividerItemDecoration(
+                    context, VERTICAL
+                ).apply {
+                    setDividerInsetEndResource(context, R.dimen.spacing_medium_8dp)
+                    setDividerInsetStartResource(context, R.dimen.spacing_medium_8dp)
+                    setDividerColorResource(context, R.color.figma_gray_light)
+                    isLastItemDecorated = false
+                }
+                binding.rvIngredients.addItemDecoration(divider)
+                binding.rvMethod.addItemDecoration(divider)
+            }
         }
     }
 
@@ -102,7 +107,11 @@ class RecipeFragment : Fragment() {
             progress = 1
             setOnSeekBarChangeListener(
                 object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(seekBar: SeekBar?, newProgress: Int, fromUser: Boolean) {
+                    override fun onProgressChanged(
+                        seekBar: SeekBar?,
+                        newProgress: Int,
+                        fromUser: Boolean
+                    ) {
                         binding.tvPortions.text = getString(R.string.portions, newProgress)
                         ingredientsAdapter?.updateIngredientsQuantity(newProgress)
                     }
@@ -115,25 +124,28 @@ class RecipeFragment : Fragment() {
     }
 
     private fun saveFavorites(recipesIdSet: Set<String>) {
-        val sharedPreferences = requireContext().getSharedPreferences(
-            getString(R.string.recipe_id_set_preferences_key),
-            Context.MODE_PRIVATE
-        )
-        with(sharedPreferences.edit()) {
-            putStringSet(ID_SET_PREFS_KEY, recipesIdSet)
-            apply()
+        context?.let { context ->
+            val sharedPreferences = context.getSharedPreferences(
+                ASFOAPP_PREFS_FILE_KEY,
+                Context.MODE_PRIVATE
+            )
+            with(sharedPreferences.edit()) {
+                putStringSet(FAVORITES_PREFS_KEY, recipesIdSet)
+                apply()
+            }
         }
     }
 
     private fun getFavorites(): MutableSet<String> {
-        val sharedPreferences = requireContext().getSharedPreferences(
-            getString(R.string.recipe_id_set_preferences_key),
+        val sharedPreferences = context?.getSharedPreferences(
+            ASFOAPP_PREFS_FILE_KEY,
             Context.MODE_PRIVATE
         )
-        val savedSet =
-            sharedPreferences.getStringSet(ID_SET_PREFS_KEY, emptySet()) ?: emptySet()
-        return HashSet(savedSet)
+        return HashSet(
+            sharedPreferences?.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet()
+        )
     }
+
     private fun toggleFavoriteState(): Boolean {
         val favoritesId = getFavorites()
         recipe?.id?.let { id ->

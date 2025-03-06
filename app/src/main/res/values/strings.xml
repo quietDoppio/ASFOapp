@@ -12,11 +12,13 @@
     <string name="cardview_title_default_category">Категория</string>
     <string name="cardview_title_default_recipe">Рецепт</string>
     <string name="header_title_default_recipes">Рецепты</string>
+    <string name="header_title_default_favorites">Избранное</string>
     <string name="cocking_method">Способ приготовления</string>
     <string name="ingredient">Ингредиент</string>
     <string name="unit_of_measure">ед. измерения</string>
     <string name="ingredients">Ингредиенты</string>
     <string name="portions">Порции: %d</string>
+    <string name="stub_no_favorites_recipes">Вы еще не добавили ни одного рецепта в избранное</string>
 
     <string name="recipe_id_set_preferences_key">RECIPE_ID_SET</string>
 

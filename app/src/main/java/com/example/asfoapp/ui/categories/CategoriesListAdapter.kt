@@ -11,17 +11,30 @@ import com.example.asfoapp.databinding.ItemCategoryBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 
 class CategoriesListAdapter(private val dataSet: List<Category>) :
-    Adapter<CategoriesListAdapter.CategoryItemViewHolder>(){
+    Adapter<CategoriesListAdapter.CategoryItemViewHolder>() {
 
     private var itemClickListener: OnItemClickListener? = null
-
     fun setOnItemClickListener(listener: OnItemClickListener) {
         itemClickListener = listener
     }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryItemViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ItemCategoryBinding.inflate(layoutInflater, parent, false)
+        return CategoryItemViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: CategoryItemViewHolder, position: Int) {
+        val item = dataSet[position]
+        holder.bind(item, itemClickListener)
+    }
+
+    override fun getItemCount(): Int {
+        return dataSet.size
+    }
+
     class CategoryItemViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bind(item: Category, itemClickListener: OnItemClickListener?) {
             binding.cardViewTitle.text = item.title
             binding.cardViewDescription.text = item.description
@@ -41,21 +54,6 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
                 itemClickListener?.onItemClick(item.id)
             }
         }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryItemViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemCategoryBinding.inflate(layoutInflater, parent, false)
-        return CategoryItemViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: CategoryItemViewHolder, position: Int) {
-        val item = dataSet[position]
-        holder.bind(item, itemClickListener)
-    }
-
-    override fun getItemCount(): Int {
-        return dataSet.size
     }
 
 }
