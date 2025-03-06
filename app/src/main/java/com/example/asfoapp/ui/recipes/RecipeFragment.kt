@@ -83,18 +83,20 @@ class RecipeFragment : Fragment() {
         recipe?.let { recipe ->
             ingredientsAdapter = IngredientsAdapter(recipe.ingredients)
             val methodAdapter = MethodAdapter(recipe.method)
-            val divider = MaterialDividerItemDecoration(
-                requireContext(), VERTICAL
-            ).apply {
-                setDividerInsetEndResource(requireContext(), R.dimen.spacing_medium_8dp)
-                setDividerInsetStartResource(requireContext(), R.dimen.spacing_medium_8dp)
-                setDividerColorResource(requireContext(), R.color.figma_gray_light)
-                isLastItemDecorated = false
-            }
             binding.rvIngredients.adapter = ingredientsAdapter
-            binding.rvIngredients.addItemDecoration(divider)
             binding.rvMethod.adapter = methodAdapter
-            binding.rvMethod.addItemDecoration(divider)
+            context?.let { context ->
+                val divider = MaterialDividerItemDecoration(
+                    context, VERTICAL
+                ).apply {
+                    setDividerInsetEndResource(context, R.dimen.spacing_medium_8dp)
+                    setDividerInsetStartResource(context, R.dimen.spacing_medium_8dp)
+                    setDividerColorResource(context, R.color.figma_gray_light)
+                    isLastItemDecorated = false
+                }
+                binding.rvIngredients.addItemDecoration(divider)
+                binding.rvMethod.addItemDecoration(divider)
+            }
         }
     }
 
