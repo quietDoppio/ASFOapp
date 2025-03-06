@@ -20,5 +20,6 @@
     <string name="portions">Порции: %d</string>
     <string name="stub_no_favorites_recipes">Вы еще не добавили ни одного рецепта в избранное</string>
 
+    <string name="recipe_id_set_preferences_key">RECIPE_ID_SET</string>
 
 </resources>
