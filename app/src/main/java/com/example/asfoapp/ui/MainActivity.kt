@@ -1,10 +1,11 @@
-package com.example.asfoapp
+package com.example.asfoapp.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.example.asfoapp.R
 import com.example.asfoapp.databinding.ActivityMainBinding
 import com.example.asfoapp.ui.categories.CategoriesListFragment
 import com.example.asfoapp.ui.favorites.FavoritesFragment

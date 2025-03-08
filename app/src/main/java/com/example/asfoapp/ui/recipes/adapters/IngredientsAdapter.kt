@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.example.asfoapp.data.Ingredient
+import com.example.asfoapp.model.Ingredient
 import com.example.asfoapp.databinding.ItemIngredientBinding
 
 class IngredientsAdapter(dataSet: List<Ingredient>) :

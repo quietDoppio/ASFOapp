@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.asfoapp.R
-import com.example.asfoapp.data.Recipe
+import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentFavoritesBinding
 import com.example.asfoapp.interfaces.OnItemClickListener

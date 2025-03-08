@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
-import com.example.asfoapp.data.Recipe
+import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.FragmentRecipeBinding
 import com.example.asfoapp.ui.recipes.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.adapters.MethodAdapter

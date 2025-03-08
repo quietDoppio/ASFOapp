@@ -1,5 +1,9 @@
 package com.example.asfoapp.data
 
+import com.example.asfoapp.model.Category
+import com.example.asfoapp.model.Ingredient
+import com.example.asfoapp.model.Recipe
+
 object STUB {
     fun getCategories(): List<Category> = categories
 
