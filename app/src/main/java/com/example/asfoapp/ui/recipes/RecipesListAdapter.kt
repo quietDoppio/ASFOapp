@@ -1,4 +1,4 @@
-package com.example.asfoapp.ui.recipes.adapters
+package com.example.asfoapp.ui.recipes
 
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import com.example.asfoapp.data.Recipe
+import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.ItemRecipeBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 

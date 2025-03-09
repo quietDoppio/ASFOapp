@@ -1,4 +1,4 @@
-package com.example.asfoapp.data
+package com.example.asfoapp.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
