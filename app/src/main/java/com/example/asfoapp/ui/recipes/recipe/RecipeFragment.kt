@@ -1,4 +1,4 @@
-package com.example.asfoapp.ui.recipes
+package com.example.asfoapp.ui.recipes.recipe
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -14,8 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
 import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.FragmentRecipeBinding
-import com.example.asfoapp.ui.recipes.adapters.IngredientsAdapter
-import com.example.asfoapp.ui.recipes.adapters.MethodAdapter
+import com.example.asfoapp.ui.recipes.recipe.adapters.IngredientsAdapter
+import com.example.asfoapp.ui.recipes.recipe.adapters.MethodAdapter
+import com.example.asfoapp.ui.recipes.ARG_RECIPE
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
 const val ASFOAPP_PREFS_FILE_KEY = "ASFOAPP_PREFS_FILE_KEY"

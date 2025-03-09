@@ -8,7 +8,7 @@ import androidx.fragment.app.replace
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.ActivityMainBinding
 import com.example.asfoapp.ui.categories.CategoriesListFragment
-import com.example.asfoapp.ui.favorites.FavoritesFragment
+import com.example.asfoapp.ui.recipes.favorites.FavoritesFragment
 
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null

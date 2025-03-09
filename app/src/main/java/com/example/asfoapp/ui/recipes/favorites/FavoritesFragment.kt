@@ -1,4 +1,4 @@
-package com.example.asfoapp.ui.favorites
+package com.example.asfoapp.ui.recipes.favorites
 
 import android.content.Context
 import android.os.Bundle
@@ -15,10 +15,10 @@ import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentFavoritesBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.ui.recipes.ARG_RECIPE
-import com.example.asfoapp.ui.recipes.ASFOAPP_PREFS_FILE_KEY
-import com.example.asfoapp.ui.recipes.FAVORITES_PREFS_KEY
-import com.example.asfoapp.ui.recipes.RecipeFragment
-import com.example.asfoapp.ui.recipes.adapters.RecipesListAdapter
+import com.example.asfoapp.ui.recipes.recipe.ASFOAPP_PREFS_FILE_KEY
+import com.example.asfoapp.ui.recipes.recipe.FAVORITES_PREFS_KEY
+import com.example.asfoapp.ui.recipes.recipe.RecipeFragment
+import com.example.asfoapp.ui.recipes.RecipesListAdapter
 
 class FavoritesFragment : Fragment() {
     private var _binding: FragmentFavoritesBinding? = null
