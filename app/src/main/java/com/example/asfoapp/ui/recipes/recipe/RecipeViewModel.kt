@@ -1,9 +1,20 @@
 package com.example.asfoapp.ui.recipes.recipe
 
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.asfoapp.model.Recipe
 
 class RecipeViewModel : ViewModel() {
+    private val _recipeState: MutableLiveData<RecipeState> = MutableLiveData()
+    val recipeState: LiveData<RecipeState> get() = _recipeState
+
+    init {
+        Log.i("LiveDataViewModel", "RecipeViewModel init. recipeState changed")
+            _recipeState.value = RecipeState(isFavorite = true)
+    }
+
     data class RecipeState(
         val recipe: Recipe = Recipe(
             id = 0,
@@ -13,6 +24,6 @@ class RecipeViewModel : ViewModel() {
             imageUrl = "null",
         ),
         val portionsCount: Int = 1,
-        val favoritesState: Boolean = false,
+        val isFavorite: Boolean = false,
     )
 }

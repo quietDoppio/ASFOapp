@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
 import com.example.asfoapp.model.Recipe
@@ -27,6 +29,7 @@ class RecipeFragment : Fragment() {
     private val binding
         get() =
             _binding ?: throw IllegalStateException("binding for RecipeFragment must not be null")
+    private val viewModel: RecipeViewModel by viewModels()
 
     private var recipe: Recipe? = null
 
@@ -42,6 +45,10 @@ class RecipeFragment : Fragment() {
             requireArguments().getParcelable(ARG_RECIPE, Recipe::class.java)
         } else {
             requireArguments().getParcelable(ARG_RECIPE) as? Recipe
+        }
+
+        viewModel.recipeState.observe(viewLifecycleOwner) { state ->
+            Log.i("LiveDataFragment", "${state.isFavorite}")
         }
 
         setContentView()
