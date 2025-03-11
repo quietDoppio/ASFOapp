@@ -2,7 +2,6 @@ package com.example.asfoapp.ui.recipes.recipe
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,14 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
-import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.FragmentRecipeBinding
 import com.example.asfoapp.ui.recipes.recipe.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.recipe.adapters.MethodAdapter
-import com.example.asfoapp.ui.recipes.ARG_RECIPE
+import com.example.asfoapp.ui.recipes.ARG_RECIPE_ID
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
 const val ASFOAPP_PREFS_FILE_KEY = "ASFOAPP_PREFS_FILE_KEY"
@@ -29,9 +26,8 @@ class RecipeFragment : Fragment() {
     private val binding
         get() =
             _binding ?: throw IllegalStateException("binding for RecipeFragment must not be null")
-    private val viewModel: RecipeViewModel by viewModels()
 
-    private var recipe: Recipe? = null
+    private val viewModel: RecipeViewModel by viewModels()
 
     private var ingredientsAdapter: IngredientsAdapter? = null
 
@@ -41,17 +37,7 @@ class RecipeFragment : Fragment() {
         _binding = FragmentRecipeBinding.inflate(layoutInflater, container, false)
         val view = binding.root
 
-        recipe = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requireArguments().getParcelable(ARG_RECIPE, Recipe::class.java)
-        } else {
-            requireArguments().getParcelable(ARG_RECIPE) as? Recipe
-        }
-
-        viewModel.recipeState.observe(viewLifecycleOwner) { state ->
-            Log.i("LiveDataFragment", "${state.isFavorite}")
-        }
-
-        setContentView()
+        initUi()
         initRecycler()
         initSeekBar()
 
@@ -63,34 +49,38 @@ class RecipeFragment : Fragment() {
         _binding = null
     }
 
-    private fun setContentView() {
-        recipe?.let { recipe ->
-            binding.tvRecipeTitle.text = recipe.title
-            binding.tvPortions.text = getString(R.string.portions, 1)
+    private fun initUi() {
+        viewModel.loadRecipe(requireArguments().getInt(ARG_RECIPE_ID))
+        viewModel.recipeState.value?.let { state ->
+            binding.tvRecipeTitle.text = state.recipe.title
+            binding.tvPortions.text = getString(R.string.portions, state.portionsCount)
             try {
-                val inputStream = requireContext().assets.open(recipe.imageUrl)
+                val inputStream = requireContext().assets.open(state.recipe.imageUrl)
                 val image = Drawable.createFromStream(inputStream, null)
                 binding.ivRecipeImage.setImageDrawable(image)
             } catch (e: Exception) {
                 val stackTrace = Log.getStackTraceString(e)
                 Log.e(
                     "RecipesFragment",
-                    "Image - ${recipe.imageUrl} not found in assets\n$stackTrace"
+                    "Image - ${state.recipe.imageUrl} not found in assets\n$stackTrace"
                 )
             }
 
-            binding.ibAddToFavoritesButton.isSelected =
-                getFavorites().contains(recipe.id.toString())
+            binding.ibAddToFavoritesButton.isSelected = state.isFavorite
             binding.ibAddToFavoritesButton.setOnClickListener {
-                binding.ibAddToFavoritesButton.isSelected = toggleFavoriteState()
+                viewModel.toggleFavoriteState()
+            }
+            viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
+                Log.i("LiveDataFragment", "isFavorite: ${newState.isFavorite}")
+                binding.ibAddToFavoritesButton.isSelected = newState.isFavorite
             }
         }
     }
 
     private fun initRecycler() {
-        recipe?.let { recipe ->
-            ingredientsAdapter = IngredientsAdapter(recipe.ingredients)
-            val methodAdapter = MethodAdapter(recipe.method)
+        viewModel.recipeState.value?.let { state ->
+        ingredientsAdapter = IngredientsAdapter(state.recipe.ingredients)
+            val methodAdapter = MethodAdapter(state.recipe.method)
             binding.rvIngredients.adapter = ingredientsAdapter
             binding.rvMethod.adapter = methodAdapter
             context?.let { context ->
@@ -129,44 +119,5 @@ class RecipeFragment : Fragment() {
                 }
             )
         }
-    }
-
-    private fun saveFavorites(recipesIdSet: Set<String>) {
-        context?.let { context ->
-            val sharedPreferences = context.getSharedPreferences(
-                ASFOAPP_PREFS_FILE_KEY,
-                Context.MODE_PRIVATE
-            )
-            with(sharedPreferences.edit()) {
-                putStringSet(FAVORITES_PREFS_KEY, recipesIdSet)
-                apply()
-            }
-        }
-    }
-
-    private fun getFavorites(): MutableSet<String> {
-        val sharedPreferences = context?.getSharedPreferences(
-            ASFOAPP_PREFS_FILE_KEY,
-            Context.MODE_PRIVATE
-        )
-        return HashSet(
-            sharedPreferences?.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet()
-        )
-    }
-
-    private fun toggleFavoriteState(): Boolean {
-        val favoritesIds = getFavorites()
-        recipe?.id?.let { id ->
-            val isFavorite = favoritesIds.contains(id.toString())
-            if (isFavorite) {
-                favoritesIds.remove(id.toString())
-                saveFavorites(favoritesIds.toSet())
-            } else {
-                favoritesIds.add(id.toString())
-                saveFavorites(favoritesIds)
-            }
-            return !isFavorite
-        }
-        return false
     }
 }
