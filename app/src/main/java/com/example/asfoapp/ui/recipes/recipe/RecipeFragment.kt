@@ -148,15 +148,15 @@ class RecipeFragment : Fragment() {
     }
 
     private fun toggleFavoriteState(): Boolean {
-        val favoritesId = getFavorites()
+        val favoritesIds = getFavorites()
         recipe?.id?.let { id ->
-            val isFavorite = favoritesId.contains(id.toString())
+            val isFavorite = favoritesIds.contains(id.toString())
             if (isFavorite) {
-                favoritesId.remove(id.toString())
-                saveFavorites(favoritesId.toSet())
+                favoritesIds.remove(id.toString())
+                saveFavorites(favoritesIds.toSet())
             } else {
-                favoritesId.add(id.toString())
-                saveFavorites(favoritesId)
+                favoritesIds.add(id.toString())
+                saveFavorites(favoritesIds)
             }
             return !isFavorite
         }
