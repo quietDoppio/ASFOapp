@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import com.example.asfoapp.data.Category
+import com.example.asfoapp.model.Category
 import com.example.asfoapp.databinding.ItemCategoryBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 

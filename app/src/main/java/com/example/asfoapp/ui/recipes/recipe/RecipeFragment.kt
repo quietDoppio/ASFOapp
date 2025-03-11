@@ -1,4 +1,4 @@
-package com.example.asfoapp.ui.recipes
+package com.example.asfoapp.ui.recipes.recipe
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -12,10 +12,11 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
-import com.example.asfoapp.data.Recipe
+import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.FragmentRecipeBinding
-import com.example.asfoapp.ui.recipes.adapters.IngredientsAdapter
-import com.example.asfoapp.ui.recipes.adapters.MethodAdapter
+import com.example.asfoapp.ui.recipes.recipe.adapters.IngredientsAdapter
+import com.example.asfoapp.ui.recipes.recipe.adapters.MethodAdapter
+import com.example.asfoapp.ui.recipes.ARG_RECIPE
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
 const val ASFOAPP_PREFS_FILE_KEY = "ASFOAPP_PREFS_FILE_KEY"
@@ -147,15 +148,15 @@ class RecipeFragment : Fragment() {
     }
 
     private fun toggleFavoriteState(): Boolean {
-        val favoritesId = getFavorites()
+        val favoritesIds = getFavorites()
         recipe?.id?.let { id ->
-            val isFavorite = favoritesId.contains(id.toString())
+            val isFavorite = favoritesIds.contains(id.toString())
             if (isFavorite) {
-                favoritesId.remove(id.toString())
-                saveFavorites(favoritesId.toSet())
+                favoritesIds.remove(id.toString())
+                saveFavorites(favoritesIds.toSet())
             } else {
-                favoritesId.add(id.toString())
-                saveFavorites(favoritesId)
+                favoritesIds.add(id.toString())
+                saveFavorites(favoritesIds)
             }
             return !isFavorite
         }

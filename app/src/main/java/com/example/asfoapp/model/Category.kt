@@ -1,13 +1,12 @@
-package com.example.asfoapp.data
+package com.example.asfoapp.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Recipe(
+data class Category(
     val id: Int,
     val title: String,
-    val ingredients: List<Ingredient>,
-    val method: List<String>,
+    val description: String,
     val imageUrl: String,
 ) : Parcelable

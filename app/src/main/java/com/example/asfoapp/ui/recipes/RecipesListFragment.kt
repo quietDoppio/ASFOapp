@@ -12,13 +12,13 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.asfoapp.R
-import com.example.asfoapp.data.Category
-import com.example.asfoapp.data.Recipe
+import com.example.asfoapp.model.Category
+import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.ui.categories.ARG_CATEGORY
-import com.example.asfoapp.ui.recipes.adapters.RecipesListAdapter
+import com.example.asfoapp.ui.recipes.recipe.RecipeFragment
 
 const val ARG_RECIPE = "ARG_RECIPE"
 

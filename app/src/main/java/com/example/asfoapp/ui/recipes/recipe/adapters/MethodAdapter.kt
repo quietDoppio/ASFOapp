@@ -1,4 +1,4 @@
-package com.example.asfoapp.ui.recipes.adapters
+package com.example.asfoapp.ui.recipes.recipe.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
