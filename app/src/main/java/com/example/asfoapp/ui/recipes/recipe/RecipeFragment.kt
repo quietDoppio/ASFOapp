@@ -1,6 +1,5 @@
 package com.example.asfoapp.ui.recipes.recipe
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -46,8 +45,9 @@ class RecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.recipeState.observe(viewLifecycleOwner) { state ->
-            Log.i("!!!", "onViewCreated: isFavorite - ${state.isFavorite}")
+        viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
+            binding.ibAddToFavoritesButton.isSelected = newState.isFavorite
+            Log.i("!!!", "onViewCreated: isFavorite - ${newState.isFavorite}")
         }
     }
 
@@ -59,17 +59,17 @@ class RecipeFragment : Fragment() {
     private fun initUi() {
         viewModel.loadRecipe(requireArguments().getInt(ARG_RECIPE_ID))
         viewModel.recipeState.value?.let { state ->
-            binding.tvRecipeTitle.text = state.recipe.title
+            binding.tvRecipeTitle.text = state.recipe?.title
             binding.tvPortions.text = getString(R.string.portions, state.portionsCount)
             try {
-                val inputStream = requireContext().assets.open(state.recipe.imageUrl)
+                val inputStream = requireContext().assets.open(state.recipe?.imageUrl ?: "burger.png")
                 val image = Drawable.createFromStream(inputStream, null)
                 binding.ivRecipeImage.setImageDrawable(image)
             } catch (e: Exception) {
                 val stackTrace = Log.getStackTraceString(e)
                 Log.e(
                     "RecipesFragment",
-                    "Image - ${state.recipe.imageUrl} not found in assets\n$stackTrace"
+                    "Image - ${state.recipe?.imageUrl} not found in assets\n$stackTrace"
                 )
             }
 
@@ -77,17 +77,13 @@ class RecipeFragment : Fragment() {
             binding.ibAddToFavoritesButton.setOnClickListener {
                 viewModel.toggleFavoriteState()
             }
-            viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
-                Log.i("LiveDataFragment", "isFavorite: ${newState.isFavorite}")
-                binding.ibAddToFavoritesButton.isSelected = newState.isFavorite
-            }
         }
     }
 
     private fun initRecycler() {
         viewModel.recipeState.value?.let { state ->
-        ingredientsAdapter = IngredientsAdapter(state.recipe.ingredients)
-            val methodAdapter = MethodAdapter(state.recipe.method)
+        ingredientsAdapter = IngredientsAdapter(state.recipe?.ingredients ?: emptyList())
+            val methodAdapter = MethodAdapter(state.recipe?.method ?: emptyList())
             binding.rvIngredients.adapter = ingredientsAdapter
             binding.rvMethod.adapter = methodAdapter
             context?.let { context ->

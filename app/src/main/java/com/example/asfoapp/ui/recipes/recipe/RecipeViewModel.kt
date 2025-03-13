@@ -9,19 +9,14 @@ import androidx.lifecycle.MutableLiveData
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.model.Recipe
 
-class RecipeViewModel : ViewModel() {
-    private val _recipeState: MutableLiveData<RecipeState> = MutableLiveData(RecipeState())
-    val recipeState: LiveData<RecipeState> = _recipeState
 class RecipeViewModel(private val application: Application) : AndroidViewModel(application) {
 
-    private val _recipeState: MutableLiveData<RecipeState> = MutableLiveData()
-    val recipeState: LiveData<RecipeState> get() = _recipeState
+    private val _recipeState: MutableLiveData<RecipeState> = MutableLiveData(RecipeState())
+    val recipeState: LiveData<RecipeState> = _recipeState
 
     init {
-        Log.i("!!!", "RecipeViewModel init. recipeState changed")
+        Log.i("!!!", "RecipeViewModel: init. recipeState changed")
             _recipeState.value = RecipeState(isFavorite = true)
-        Log.i("LiveDataViewModel", "RecipeViewModel init. recipeState changed")
-        _recipeState.value = RecipeState()
     }
 
     fun loadRecipe(recipeId: Int) {
@@ -55,7 +50,7 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
 
     fun toggleFavoriteState() {
         val favoritesIds = getFavoritesIds()
-        _recipeState.value?.recipe?.id?.let { id ->
+        recipeState.value?.recipe?.id?.let { id ->
             val isFavorite = favoritesIds.contains(id.toString())
             if (isFavorite) {
                 favoritesIds.remove(id.toString())
