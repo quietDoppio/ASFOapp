@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
 import com.example.asfoapp.model.Recipe
@@ -47,15 +46,18 @@ class RecipeFragment : Fragment() {
             requireArguments().getParcelable(ARG_RECIPE) as? Recipe
         }
 
-        viewModel.recipeState.observe(viewLifecycleOwner) { state ->
-            Log.i("LiveDataFragment", "${state.isFavorite}")
-        }
-
         setContentView()
         initRecycler()
         initSeekBar()
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.recipeState.observe(viewLifecycleOwner) { state ->
+            Log.i("!!!", "onViewCreated: isFavorite - ${state.isFavorite}")
+        }
     }
 
     override fun onDestroyView() {
