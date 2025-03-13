@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
 import com.example.asfoapp.model.Recipe
@@ -27,6 +28,7 @@ class RecipeFragment : Fragment() {
     private val binding
         get() =
             _binding ?: throw IllegalStateException("binding for RecipeFragment must not be null")
+    private val viewModel: RecipeViewModel by viewModels()
 
     private var recipe: Recipe? = null
 
@@ -49,6 +51,13 @@ class RecipeFragment : Fragment() {
         initSeekBar()
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.recipeState.observe(viewLifecycleOwner) { state ->
+            Log.i("!!!", "onViewCreated: isFavorite - ${state.isFavorite}")
+        }
     }
 
     override fun onDestroyView() {
