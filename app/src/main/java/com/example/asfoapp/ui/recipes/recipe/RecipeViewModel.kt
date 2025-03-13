@@ -9,12 +9,17 @@ import androidx.lifecycle.MutableLiveData
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.model.Recipe
 
+class RecipeViewModel : ViewModel() {
+    private val _recipeState: MutableLiveData<RecipeState> = MutableLiveData(RecipeState())
+    val recipeState: LiveData<RecipeState> = _recipeState
 class RecipeViewModel(private val application: Application) : AndroidViewModel(application) {
 
     private val _recipeState: MutableLiveData<RecipeState> = MutableLiveData()
     val recipeState: LiveData<RecipeState> get() = _recipeState
 
     init {
+        Log.i("!!!", "RecipeViewModel init. recipeState changed")
+            _recipeState.value = RecipeState(isFavorite = true)
         Log.i("LiveDataViewModel", "RecipeViewModel init. recipeState changed")
         _recipeState.value = RecipeState()
     }
@@ -64,13 +69,7 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
     }
 
     data class RecipeState(
-        val recipe: Recipe = Recipe(
-            id = 0,
-            title = "Рецепт",
-            ingredients = emptyList(),
-            method = emptyList(),
-            imageUrl = "null",
-        ),
+        val recipe: Recipe? = null,
         val portionsCount: Int = 1,
         val isFavorite: Boolean = false,
     )

@@ -44,6 +44,13 @@ class RecipeFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.recipeState.observe(viewLifecycleOwner) { state ->
+            Log.i("!!!", "onViewCreated: isFavorite - ${state.isFavorite}")
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
