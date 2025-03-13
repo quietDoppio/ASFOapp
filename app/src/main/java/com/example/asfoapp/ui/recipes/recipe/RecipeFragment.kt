@@ -25,7 +25,6 @@ class RecipeFragment : Fragment() {
     private val binding
         get() =
             _binding ?: throw IllegalStateException("binding for RecipeFragment must not be null")
-
     private val viewModel: RecipeViewModel by viewModels()
 
     private var ingredientsAdapter: IngredientsAdapter? = null
@@ -35,20 +34,21 @@ class RecipeFragment : Fragment() {
     ): View {
         _binding = FragmentRecipeBinding.inflate(layoutInflater, container, false)
         val view = binding.root
-
-        initUi()
-        initRecycler()
-        initSeekBar()
-
+        viewModel.loadRecipe(requireArguments().getInt(ARG_RECIPE_ID))
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
-            binding.ibAddToFavoritesButton.isSelected = newState.isFavorite
+            initUi(newState)
             Log.i("!!!", "onViewCreated: isFavorite - ${newState.isFavorite}")
         }
+        binding.ibAddToFavoritesButton.setOnClickListener {
+            viewModel.toggleFavoriteState()
+        }
+        initRecycler()
+        initSeekBar()
     }
 
     override fun onDestroyView() {
@@ -56,13 +56,13 @@ class RecipeFragment : Fragment() {
         _binding = null
     }
 
-    private fun initUi() {
-        viewModel.loadRecipe(requireArguments().getInt(ARG_RECIPE_ID))
-        viewModel.recipeState.value?.let { state ->
+    private fun initUi(recipeState: RecipeViewModel.RecipeState?) {
+        recipeState?.let { state ->
             binding.tvRecipeTitle.text = state.recipe?.title
             binding.tvPortions.text = getString(R.string.portions, state.portionsCount)
             try {
-                val inputStream = requireContext().assets.open(state.recipe?.imageUrl ?: "burger.png")
+                val inputStream =
+                    requireContext().assets.open(state.recipe?.imageUrl ?: "burger.png")
                 val image = Drawable.createFromStream(inputStream, null)
                 binding.ivRecipeImage.setImageDrawable(image)
             } catch (e: Exception) {
@@ -72,55 +72,52 @@ class RecipeFragment : Fragment() {
                     "Image - ${state.recipe?.imageUrl} not found in assets\n$stackTrace"
                 )
             }
-
             binding.ibAddToFavoritesButton.isSelected = state.isFavorite
-            binding.ibAddToFavoritesButton.setOnClickListener {
-                viewModel.toggleFavoriteState()
-            }
         }
     }
 
-    private fun initRecycler() {
-        viewModel.recipeState.value?.let { state ->
+
+private fun initRecycler() {
+    viewModel.recipeState.value?.let { state ->
         ingredientsAdapter = IngredientsAdapter(state.recipe?.ingredients ?: emptyList())
-            val methodAdapter = MethodAdapter(state.recipe?.method ?: emptyList())
-            binding.rvIngredients.adapter = ingredientsAdapter
-            binding.rvMethod.adapter = methodAdapter
-            context?.let { context ->
-                val divider = MaterialDividerItemDecoration(
-                    context, VERTICAL
-                ).apply {
-                    setDividerInsetEndResource(context, R.dimen.spacing_medium_8dp)
-                    setDividerInsetStartResource(context, R.dimen.spacing_medium_8dp)
-                    setDividerColorResource(context, R.color.figma_gray_light)
-                    isLastItemDecorated = false
-                }
-                binding.rvIngredients.addItemDecoration(divider)
-                binding.rvMethod.addItemDecoration(divider)
+        val methodAdapter = MethodAdapter(state.recipe?.method ?: emptyList())
+        binding.rvIngredients.adapter = ingredientsAdapter
+        binding.rvMethod.adapter = methodAdapter
+        context?.let { context ->
+            val divider = MaterialDividerItemDecoration(
+                context, VERTICAL
+            ).apply {
+                setDividerInsetEndResource(context, R.dimen.spacing_medium_8dp)
+                setDividerInsetStartResource(context, R.dimen.spacing_medium_8dp)
+                setDividerColorResource(context, R.color.figma_gray_light)
+                isLastItemDecorated = false
             }
+            binding.rvIngredients.addItemDecoration(divider)
+            binding.rvMethod.addItemDecoration(divider)
         }
     }
+}
 
-    private fun initSeekBar() {
-        binding.seekBar.apply {
-            min = 1
-            max = 10
-            progress = 1
-            setOnSeekBarChangeListener(
-                object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(
-                        seekBar: SeekBar?,
-                        newProgress: Int,
-                        fromUser: Boolean
-                    ) {
-                        binding.tvPortions.text = getString(R.string.portions, newProgress)
-                        ingredientsAdapter?.updateIngredientsQuantity(newProgress)
-                    }
-
-                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                    override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+private fun initSeekBar() {
+    binding.seekBar.apply {
+        min = 1
+        max = 10
+        progress = 1
+        setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    newProgress: Int,
+                    fromUser: Boolean
+                ) {
+                    binding.tvPortions.text = getString(R.string.portions, newProgress)
+                    ingredientsAdapter?.updateIngredientsQuantity(newProgress)
                 }
-            )
-        }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            }
+        )
     }
+}
 }

@@ -16,7 +16,6 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
 
     init {
         Log.i("!!!", "RecipeViewModel: init. recipeState changed")
-            _recipeState.value = RecipeState(isFavorite = true)
     }
 
     fun loadRecipe(recipeId: Int) {
