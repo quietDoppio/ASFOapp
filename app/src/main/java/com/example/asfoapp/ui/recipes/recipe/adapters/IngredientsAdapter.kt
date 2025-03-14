@@ -1,5 +1,6 @@
 package com.example.asfoapp.ui.recipes.recipe.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.text.isDigitsOnly
@@ -31,6 +32,7 @@ class IngredientsAdapter(dataSet: List<Ingredient>) :
     }
 
     fun updateIngredientsQuantity(progress: Int) {
+
         val newIngredients = dataSet.mapIndexed { index, ingredient ->
             if (defaultQuantities[index].isDigitsOnly()) {
                 ingredient.copy(quantity = (defaultQuantities[index].toInt() * progress).toString())
@@ -39,6 +41,7 @@ class IngredientsAdapter(dataSet: List<Ingredient>) :
             }
         }
         dataSet = newIngredients
+        Log.i("!!!", "updateIngredientsQuantity: ")
     }
 
     class IngredientsItemViewHolder(private val binding: ItemIngredientBinding) :

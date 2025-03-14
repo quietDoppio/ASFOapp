@@ -19,10 +19,14 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
     }
 
     fun loadRecipe(recipeId: Int) {
+       // TODO("LoadFromNetwork")
         val recipe = STUB.getRecipeById(recipeId)
         val isFavorite = getFavoritesIds().contains(recipeId.toString())
         _recipeState.value = recipe?.let {
-            recipeState.value?.copy(recipe = it, isFavorite = isFavorite)
+            recipeState.value?.copy(
+                recipe = it,
+                portionsCount = recipeState.value?.portionsCount ?: 1,
+                isFavorite = isFavorite,)
         }
     }
 
@@ -51,15 +55,14 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
         val favoritesIds = getFavoritesIds()
         recipeState.value?.recipe?.id?.let { id ->
             val isFavorite = favoritesIds.contains(id.toString())
-            if (isFavorite) {
-                favoritesIds.remove(id.toString())
-                saveFavoritesIds(favoritesIds.toSet())
-            } else {
-                favoritesIds.add(id.toString())
-                saveFavoritesIds(favoritesIds)
-            }
+            val updatedFavoritesIds =
+                if (isFavorite) favoritesIds - id.toString() else favoritesIds + id.toString()
+            saveFavoritesIds(updatedFavoritesIds)
             _recipeState.value = recipeState.value?.copy(isFavorite = !isFavorite)
         }
+    }
+    fun setPortionsCount(progress: Int){
+        _recipeState.value = recipeState.value?.copy(portionsCount = progress)
     }
 
     data class RecipeState(

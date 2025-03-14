@@ -34,7 +34,6 @@ class RecipeFragment : Fragment() {
     ): View {
         _binding = FragmentRecipeBinding.inflate(layoutInflater, container, false)
         val view = binding.root
-        viewModel.loadRecipe(requireArguments().getInt(ARG_RECIPE_ID))
         return view
     }
 
@@ -42,13 +41,15 @@ class RecipeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
             initUi(newState)
+            initRecycler(newState)
+            initSeekBar(newState.portionsCount)
             Log.i("!!!", "onViewCreated: isFavorite - ${newState.isFavorite}")
         }
+        initItemDecorator()
+        viewModel.loadRecipe(requireArguments().getInt(ARG_RECIPE_ID))
         binding.ibAddToFavoritesButton.setOnClickListener {
             viewModel.toggleFavoriteState()
         }
-        initRecycler()
-        initSeekBar()
     }
 
     override fun onDestroyView() {
@@ -56,33 +57,32 @@ class RecipeFragment : Fragment() {
         _binding = null
     }
 
-    private fun initUi(recipeState: RecipeViewModel.RecipeState?) {
-        recipeState?.let { state ->
-            binding.tvRecipeTitle.text = state.recipe?.title
-            binding.tvPortions.text = getString(R.string.portions, state.portionsCount)
-            try {
-                val inputStream =
-                    requireContext().assets.open(state.recipe?.imageUrl ?: "burger.png")
-                val image = Drawable.createFromStream(inputStream, null)
-                binding.ivRecipeImage.setImageDrawable(image)
-            } catch (e: Exception) {
-                val stackTrace = Log.getStackTraceString(e)
-                Log.e(
-                    "RecipesFragment",
-                    "Image - ${state.recipe?.imageUrl} not found in assets\n$stackTrace"
-                )
-            }
-            binding.ibAddToFavoritesButton.isSelected = state.isFavorite
+    private fun initUi(recipeState: RecipeViewModel.RecipeState) {
+        binding.tvRecipeTitle.text = recipeState.recipe?.title
+        binding.tvPortions.text = getString(R.string.portions, recipeState.portionsCount)
+        try {
+            val inputStream =
+                requireContext().assets.open(recipeState.recipe?.imageUrl ?: "burger.png")
+            val image = Drawable.createFromStream(inputStream, null)
+            binding.ivRecipeImage.setImageDrawable(image)
+        } catch (e: Exception) {
+            val stackTrace = Log.getStackTraceString(e)
+            Log.e(
+                "RecipesFragment",
+                "Image - ${recipeState.recipe?.imageUrl} not found in assets\n$stackTrace"
+            )
         }
+        binding.ibAddToFavoritesButton.isSelected = recipeState.isFavorite
     }
 
-
-private fun initRecycler() {
-    viewModel.recipeState.value?.let { state ->
-        ingredientsAdapter = IngredientsAdapter(state.recipe?.ingredients ?: emptyList())
-        val methodAdapter = MethodAdapter(state.recipe?.method ?: emptyList())
+    private fun initRecycler(recipeState: RecipeViewModel.RecipeState) {
+        ingredientsAdapter = IngredientsAdapter(recipeState.recipe?.ingredients ?: emptyList())
+        val methodAdapter = MethodAdapter(recipeState.recipe?.method ?: emptyList())
         binding.rvIngredients.adapter = ingredientsAdapter
         binding.rvMethod.adapter = methodAdapter
+    }
+
+    private fun initItemDecorator() {
         context?.let { context ->
             val divider = MaterialDividerItemDecoration(
                 context, VERTICAL
@@ -96,28 +96,32 @@ private fun initRecycler() {
             binding.rvMethod.addItemDecoration(divider)
         }
     }
-}
 
-private fun initSeekBar() {
-    binding.seekBar.apply {
-        min = 1
-        max = 10
-        progress = 1
-        setOnSeekBarChangeListener(
-            object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    newProgress: Int,
-                    fromUser: Boolean
-                ) {
-                    binding.tvPortions.text = getString(R.string.portions, newProgress)
-                    ingredientsAdapter?.updateIngredientsQuantity(newProgress)
+    private fun initSeekBar(newProgress: Int) {
+        binding.seekBar.apply {
+            min = 1
+            max = 10
+            progress = newProgress
+            setOnSeekBarChangeListener(
+                object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(
+                        seekBar: SeekBar?,
+                        newProgress: Int,
+                        fromUser: Boolean
+                    ) {
+                        Log.i("!!!", "onProgressChanged: ")
+                            binding.tvPortions.text = getString(R.string.portions, newProgress)
+                            ingredientsAdapter?.updateIngredientsQuantity(newProgress)
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                        viewModel.setPortionsCount(seekBar?.progress ?: newProgress)
+                        ingredientsAdapter?.updateIngredientsQuantity(newProgress)
+                        Log.i("!!!","onStopTrackingTouch: progress: ${seekBar?.progress}")
+                    }
                 }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-            }
-        )
+            )
+        }
     }
-}
 }
