@@ -28,6 +28,8 @@ class RecipeFragment : Fragment() {
     private val viewModel: RecipeViewModel by viewModels()
 
     private var ingredientsAdapter: IngredientsAdapter? = null
+    private var methodAdapter: MethodAdapter? = null
+    private var isSeekBarInit: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -43,7 +45,6 @@ class RecipeFragment : Fragment() {
             initUi(newState)
             initRecycler(newState)
             initSeekBar(newState.portionsCount)
-            Log.i("!!!", "onViewCreated: isFavorite - ${newState.isFavorite}")
         }
         initItemDecorator()
         viewModel.loadRecipe(requireArguments().getInt(ARG_RECIPE_ID))
@@ -76,10 +77,15 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initRecycler(recipeState: RecipeViewModel.RecipeState) {
-        ingredientsAdapter = IngredientsAdapter(recipeState.recipe?.ingredients ?: emptyList())
-        val methodAdapter = MethodAdapter(recipeState.recipe?.method ?: emptyList())
-        binding.rvIngredients.adapter = ingredientsAdapter
-        binding.rvMethod.adapter = methodAdapter
+        if (binding.rvIngredients.adapter == null || binding.rvMethod.adapter == null) {
+            ingredientsAdapter = IngredientsAdapter(recipeState.recipe?.ingredients ?: emptyList())
+            methodAdapter = MethodAdapter(recipeState.recipe?.method ?: emptyList())
+            binding.rvIngredients.adapter = ingredientsAdapter
+            binding.rvMethod.adapter = methodAdapter
+        } else {
+            ingredientsAdapter?.setData(recipeState.recipe?.ingredients ?: emptyList())
+            methodAdapter?.setData(recipeState.recipe?.method ?: emptyList())
+        }
     }
 
     private fun initItemDecorator() {
@@ -98,30 +104,30 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initSeekBar(newProgress: Int) {
-        binding.seekBar.apply {
-            min = 1
-            max = 10
-            progress = newProgress
-            setOnSeekBarChangeListener(
-                object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(
-                        seekBar: SeekBar?,
-                        newProgress: Int,
-                        fromUser: Boolean
-                    ) {
-                        Log.i("!!!", "onProgressChanged: ")
-                            binding.tvPortions.text = getString(R.string.portions, newProgress)
-                            ingredientsAdapter?.updateIngredientsQuantity(newProgress)
+        binding.seekBar.progress = newProgress
+        if (!isSeekBarInit) {
+            binding.seekBar.apply {
+                min = 1
+                max = 10
+                setOnSeekBarChangeListener(
+                    object : SeekBar.OnSeekBarChangeListener {
+                        override fun onProgressChanged(
+                            seekBar: SeekBar?,
+                            progress: Int,
+                            fromUser: Boolean
+                        ) {
+                            binding.tvPortions.text = getString(R.string.portions, progress)
+                            ingredientsAdapter?.updateIngredientsQuantity(progress)
+                        }
+                        override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                        override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                            viewModel.setPortionsCount(seekBar?.progress ?: newProgress)
+                        }
                     }
-
-                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                        viewModel.setPortionsCount(seekBar?.progress ?: newProgress)
-                        ingredientsAdapter?.updateIngredientsQuantity(newProgress)
-                        Log.i("!!!","onStopTrackingTouch: progress: ${seekBar?.progress}")
-                    }
-                }
-            )
+                )
+            }
+            isSeekBarInit = true
         }
+
     }
 }

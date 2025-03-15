@@ -16,6 +16,7 @@ class IngredientsAdapter(dataSet: List<Ingredient>) :
             field = value
             notifyDataSetChanged()
         }
+
     private var defaultQuantities = dataSet.map { it.quantity }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientsItemViewHolder {
@@ -30,7 +31,14 @@ class IngredientsAdapter(dataSet: List<Ingredient>) :
         val item = dataSet[position]
         holder.bind(item)
     }
-
+    fun setData(data: List<Ingredient>){
+        Log.i("!!!", "setData: ")
+        val newQuantities = data.map { it.quantity }
+        if(defaultQuantities != newQuantities) {
+            dataSet = data
+            defaultQuantities = newQuantities
+        }
+    }
     fun updateIngredientsQuantity(progress: Int) {
 
         val newIngredients = dataSet.mapIndexed { index, ingredient ->
