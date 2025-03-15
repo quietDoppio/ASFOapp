@@ -6,9 +6,13 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.asfoapp.databinding.ItemMethodBinding
 
-class MethodAdapter(private val dataSet: List<String>) :
+class MethodAdapter(dataSet: List<String>) :
     Adapter<MethodAdapter.MethodItemViewHolder>() {
-
+    private var dataSet: List<String> = dataSet
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MethodItemViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ItemMethodBinding.inflate(layoutInflater, parent, false)
@@ -21,7 +25,10 @@ class MethodAdapter(private val dataSet: List<String>) :
         val item = dataSet[position]
         holder.bind(item)
     }
-
+    fun setData(data: List<String>){
+        if(dataSet != data )
+        dataSet = data
+    }
     class MethodItemViewHolder(private val binding: ItemMethodBinding) : ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.method.text = item

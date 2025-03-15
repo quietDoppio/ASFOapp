@@ -10,8 +10,8 @@ object STUB {
     fun getRecipesByCategoryId(categoryId: Int) =
         if (categoryId == 0) burgerRecipes else emptyList()
 
-    fun getRecipeById(recipeId: Int, recipesList: List<Recipe>) =
-        recipesList.find { it.id == recipeId }
+    fun getRecipeById(recipeId: Int) =
+        burgerRecipes.find { it.id == recipeId }
 
     fun getRecipesByIds(idSet: Set<Int>): List<Recipe> =
         burgerRecipes.filter { it.id in idSet }
