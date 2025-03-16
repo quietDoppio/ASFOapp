@@ -1,8 +1,6 @@
 package com.example.asfoapp.ui.recipes.recipe
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -59,20 +57,9 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initUi(recipeState: RecipeViewModel.RecipeState) {
+        if (recipeState.recipeImage != null) binding.ivRecipeImage.setImageDrawable(recipeState.recipeImage)
         binding.tvRecipeTitle.text = recipeState.recipe?.title
         binding.tvPortions.text = getString(R.string.portions, recipeState.portionsCount)
-        try {
-            val inputStream =
-                requireContext().assets.open(recipeState.recipe?.imageUrl ?: "burger.png")
-            val image = Drawable.createFromStream(inputStream, null)
-            binding.ivRecipeImage.setImageDrawable(image)
-        } catch (e: Exception) {
-            val stackTrace = Log.getStackTraceString(e)
-            Log.e(
-                "RecipesFragment",
-                "Image - ${recipeState.recipe?.imageUrl} not found in assets\n$stackTrace"
-            )
-        }
         binding.ibAddToFavoritesButton.isSelected = recipeState.isFavorite
     }
 
