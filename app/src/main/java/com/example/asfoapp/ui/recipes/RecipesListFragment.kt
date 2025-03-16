@@ -13,14 +13,13 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.asfoapp.R
 import com.example.asfoapp.model.Category
-import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.ui.categories.ARG_CATEGORY
 import com.example.asfoapp.ui.recipes.recipe.RecipeFragment
 
-const val ARG_RECIPE = "ARG_RECIPE"
+const val ARG_RECIPE_ID = "ARG_RECIPE_ID"
 
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentRecipesListBinding? = null
@@ -77,7 +76,7 @@ class RecipesListFragment : Fragment() {
             adapter.setOnItemClickListener(
                 object : OnItemClickListener {
                     override fun onItemClick(itemId: Int) {
-                        openRecipeByRecipeId(itemId, recipesList)
+                        openRecipeByRecipeId(itemId)
                     }
                 }
             )
@@ -86,9 +85,8 @@ class RecipesListFragment : Fragment() {
 
     }
 
-    private fun openRecipeByRecipeId(recipeId: Int, recipesList: List<Recipe>) {
-        val recipe = STUB.getRecipeById(recipeId, recipesList)
-        val bundle = bundleOf(ARG_RECIPE to recipe)
+    private fun openRecipeByRecipeId(recipeId: Int) {
+        val bundle = bundleOf(ARG_RECIPE_ID to recipeId)
         requireActivity().supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<RecipeFragment>(R.id.mainContainer, args = bundle)

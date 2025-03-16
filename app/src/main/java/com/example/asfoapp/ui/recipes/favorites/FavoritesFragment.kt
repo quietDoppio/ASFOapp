@@ -14,7 +14,7 @@ import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentFavoritesBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
-import com.example.asfoapp.ui.recipes.ARG_RECIPE
+import com.example.asfoapp.ui.recipes.ARG_RECIPE_ID
 import com.example.asfoapp.ui.recipes.recipe.ASFOAPP_PREFS_FILE_KEY
 import com.example.asfoapp.ui.recipes.recipe.FAVORITES_PREFS_KEY
 import com.example.asfoapp.ui.recipes.recipe.RecipeFragment
@@ -50,7 +50,7 @@ class FavoritesFragment : Fragment() {
         recipesListAdapter.setOnItemClickListener(
             object : OnItemClickListener {
                 override fun onItemClick(itemId: Int) {
-                    openRecipeByRecipeId(itemId, recipes)
+                    openRecipeByRecipeId(itemId)
                 }
             }
         )
@@ -58,9 +58,8 @@ class FavoritesFragment : Fragment() {
         handleRecyclerVisibleStatus(recipes)
     }
 
-    private fun openRecipeByRecipeId(recipeId: Int, recipesList: List<Recipe>) {
-        val recipe = STUB.getRecipeById(recipeId, recipesList)
-        val bundle = bundleOf(ARG_RECIPE to recipe)
+    private fun openRecipeByRecipeId(recipeId: Int) {
+        val bundle = bundleOf(ARG_RECIPE_ID to recipeId)
         requireActivity().supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<RecipeFragment>(R.id.mainContainer, args = bundle)
