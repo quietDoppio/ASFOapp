@@ -41,7 +41,6 @@ class RecipeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
             initUi(newState)
-            initRecycler(newState)
             initSeekBar(newState.portionsCount)
         }
         initItemDecorator()
@@ -61,16 +60,17 @@ class RecipeFragment : Fragment() {
         binding.tvRecipeTitle.text = recipeState.recipe?.title
         binding.tvPortions.text = getString(R.string.portions, recipeState.portionsCount)
         binding.ibAddToFavoritesButton.isSelected = recipeState.isFavorite
-    }
 
-    private fun initRecycler(recipeState: RecipeViewModel.RecipeState) {
         if (binding.rvIngredients.adapter == null || binding.rvMethod.adapter == null) {
             ingredientsAdapter = IngredientsAdapter(recipeState.recipe?.ingredients ?: emptyList())
             methodAdapter = MethodAdapter(recipeState.recipe?.method ?: emptyList())
             binding.rvIngredients.adapter = ingredientsAdapter
             binding.rvMethod.adapter = methodAdapter
         } else {
-            ingredientsAdapter?.setData(recipeState.recipe?.ingredients ?: emptyList())
+            ingredientsAdapter?.let{
+                it.setData(recipeState.recipe?.ingredients ?: emptyList())
+                it.updateIngredientsQuantity(recipeState.portionsCount)
+            }
             methodAdapter?.setData(recipeState.recipe?.method ?: emptyList())
         }
     }
