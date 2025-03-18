@@ -57,7 +57,7 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initUi(recipeState: RecipeViewModel.RecipeState) {
-        if (recipeState.recipeImage != null) binding.ivRecipeImage.setImageDrawable(recipeState.recipeImage)
+        recipeState.recipeImage?.let { binding.ivRecipeImage.setImageDrawable(it) }
         binding.tvRecipeTitle.text = recipeState.recipe?.title
         binding.tvPortions.text = getString(R.string.portions, recipeState.portionsCount)
         binding.ibAddToFavoritesButton.isSelected = recipeState.isFavorite
@@ -106,6 +106,7 @@ class RecipeFragment : Fragment() {
                             binding.tvPortions.text = getString(R.string.portions, progress)
                             ingredientsAdapter?.updateIngredientsQuantity(progress)
                         }
+
                         override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                         override fun onStopTrackingTouch(seekBar: SeekBar?) {
                             viewModel.setPortionsCount(seekBar?.progress ?: newProgress)
