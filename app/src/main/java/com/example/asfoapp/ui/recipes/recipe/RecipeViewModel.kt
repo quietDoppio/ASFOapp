@@ -2,6 +2,7 @@ package com.example.asfoapp.ui.recipes.recipe
 
 import android.app.Application
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -19,14 +20,18 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
     }
 
     fun loadRecipe(recipeId: Int) {
-       // TODO("LoadFromNetwork")
+        // TODO("LoadFromNetwork")
         val recipe = STUB.getRecipeById(recipeId)
         val isFavorite = getFavoritesIds().contains(recipeId.toString())
+        val drawable: Drawable? = getDrawableFromAssets(recipe?.imageUrl ?: "")
+
         _recipeState.value = recipe?.let {
             recipeState.value?.copy(
                 recipe = it,
+                recipeImage = drawable,
                 portionsCount = recipeState.value?.portionsCount ?: 1,
-                isFavorite = isFavorite,)
+                isFavorite = isFavorite,
+            )
         }
     }
 
@@ -51,6 +56,20 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
         }
     }
 
+    private fun getDrawableFromAssets(imageUrl: String): Drawable? {
+        return try {
+            val inputStream = application.applicationContext.assets.open(imageUrl)
+            Drawable.createFromStream(inputStream, null)
+        } catch (e: Exception) {
+            val stackTrace = Log.getStackTraceString(e)
+            Log.e(
+                "RecipesFragment",
+                "Image - $imageUrl not found in assets\n$stackTrace"
+            )
+            null
+        }
+    }
+
     fun toggleFavoriteState() {
         val favoritesIds = getFavoritesIds()
         recipeState.value?.recipe?.id?.let { id ->
@@ -61,12 +80,14 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
             _recipeState.value = recipeState.value?.copy(isFavorite = !isFavorite)
         }
     }
-    fun setPortionsCount(progress: Int){
+
+    fun setPortionsCount(progress: Int) {
         _recipeState.value = recipeState.value?.copy(portionsCount = progress)
     }
 
     data class RecipeState(
         val recipe: Recipe? = null,
+        val recipeImage: Drawable? = null,
         val portionsCount: Int = 1,
         val isFavorite: Boolean = false,
     )
