@@ -39,15 +39,16 @@ class RecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initAdapters()
+        initItemDecorator()
+        binding.ibAddToFavoritesButton.setOnClickListener {
+            viewModel.toggleFavoriteState()
+        }
         viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
             initUi(newState)
             initSeekBar(newState.portionsCount)
         }
-        initItemDecorator()
         viewModel.loadRecipe(requireArguments().getInt(ARG_RECIPE_ID))
-        binding.ibAddToFavoritesButton.setOnClickListener {
-            viewModel.toggleFavoriteState()
-        }
     }
 
     override fun onDestroyView() {
@@ -58,21 +59,21 @@ class RecipeFragment : Fragment() {
     private fun initUi(recipeState: RecipeViewModel.RecipeState) {
         recipeState.recipeImage?.let { binding.ivRecipeImage.setImageDrawable(it) }
         binding.tvRecipeTitle.text = recipeState.recipe?.title
-        binding.tvPortions.text = getString(R.string.portions, recipeState.portionsCount)
         binding.ibAddToFavoritesButton.isSelected = recipeState.isFavorite
 
-        if (binding.rvIngredients.adapter == null || binding.rvMethod.adapter == null) {
-            ingredientsAdapter = IngredientsAdapter(recipeState.recipe?.ingredients ?: emptyList())
-            methodAdapter = MethodAdapter(recipeState.recipe?.method ?: emptyList())
-            binding.rvIngredients.adapter = ingredientsAdapter
-            binding.rvMethod.adapter = methodAdapter
-        } else {
-            ingredientsAdapter?.let{
-                it.setData(recipeState.recipe?.ingredients ?: emptyList())
-                it.updateIngredientsQuantity(recipeState.portionsCount)
-            }
-            methodAdapter?.setData(recipeState.recipe?.method ?: emptyList())
+        binding.tvPortions.text = getString(R.string.portions, recipeState.portionsCount)
+        ingredientsAdapter?.let {
+            it.setData(recipeState.recipe?.ingredients ?: emptyList())
+            it.updateIngredientsQuantity(recipeState.portionsCount)
         }
+        methodAdapter?.setData(recipeState.recipe?.method ?: emptyList())
+    }
+
+    private fun initAdapters() {
+        ingredientsAdapter = IngredientsAdapter()
+        methodAdapter = MethodAdapter()
+        binding.rvIngredients.adapter = ingredientsAdapter
+        binding.rvMethod.adapter = methodAdapter
     }
 
     private fun initItemDecorator() {
@@ -102,15 +103,10 @@ class RecipeFragment : Fragment() {
                             seekBar: SeekBar?,
                             progress: Int,
                             fromUser: Boolean
-                        ) {
-                            binding.tvPortions.text = getString(R.string.portions, progress)
-                            ingredientsAdapter?.updateIngredientsQuantity(progress)
-                        }
+                        ) { viewModel.setPortionsCount(seekBar?.progress ?: newProgress) }
 
                         override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                        override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                            viewModel.setPortionsCount(seekBar?.progress ?: newProgress)
-                        }
+                        override fun onStopTrackingTouch(seekBar: SeekBar?) {}
                     }
                 )
             }

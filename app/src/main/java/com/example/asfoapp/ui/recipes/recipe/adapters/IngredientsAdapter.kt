@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.asfoapp.model.Ingredient
 import com.example.asfoapp.databinding.ItemIngredientBinding
 
-class IngredientsAdapter(dataSet: List<Ingredient>) :
+class IngredientsAdapter(dataSet: List<Ingredient> = emptyList()) :
     Adapter<IngredientsAdapter.IngredientsItemViewHolder>() {
     private var dataSet: List<Ingredient> = dataSet
         set(value) {
