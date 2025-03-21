@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.asfoapp.databinding.ItemMethodBinding
 
-class MethodAdapter(dataSet: List<String>) :
+class MethodAdapter(dataSet: List<String> = emptyList()) :
     Adapter<MethodAdapter.MethodItemViewHolder>() {
     private var dataSet: List<String> = dataSet
         set(value) {
