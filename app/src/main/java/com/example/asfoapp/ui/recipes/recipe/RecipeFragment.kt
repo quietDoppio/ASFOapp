@@ -98,20 +98,18 @@ class RecipeFragment : Fragment() {
                 min = 1
                 max = 10
                 setOnSeekBarChangeListener(
-                    object : SeekBar.OnSeekBarChangeListener {
-                        override fun onProgressChanged(
-                            seekBar: SeekBar?,
-                            progress: Int,
-                            fromUser: Boolean
-                        ) { viewModel.setPortionsCount(seekBar?.progress ?: newProgress) }
-
-                        override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                        override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-                    }
+                    PortionsSeekBarListener { it: Int -> viewModel.setPortionsCount(it) }
                 )
             }
             isSeekBarInit = true
         }
 
     }
+}
+class PortionsSeekBarListener(val onChangePortions: (Int) -> Unit) : SeekBar.OnSeekBarChangeListener{
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        onChangePortions(progress)
+    }
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 }
