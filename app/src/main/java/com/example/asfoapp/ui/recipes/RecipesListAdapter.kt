@@ -10,8 +10,13 @@ import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.ItemRecipeBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 
-class RecipesListAdapter(private val dataSet: List<Recipe>) :
+class RecipesListAdapter(dataSet: List<Recipe> = emptyList()) :
     Adapter<RecipesListAdapter.RecipeItemViewHolder>() {
+    private var dataSet: List<Recipe> = dataSet
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     private var itemClickListener: OnItemClickListener? = null
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -30,7 +35,9 @@ class RecipesListAdapter(private val dataSet: List<Recipe>) :
         val item = dataSet[position]
         holder.bind(item, itemClickListener)
     }
-
+    fun setData(data: List<Recipe>){
+        if(data != dataSet) dataSet = data
+    }
     class RecipeItemViewHolder(private val binding: ItemRecipeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 

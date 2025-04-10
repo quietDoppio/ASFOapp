@@ -6,6 +6,7 @@ import com.example.asfoapp.model.Recipe
 
 object STUB {
     fun getCategories(): List<Category> = categories
+    fun getCategoryById(categoryId: Int): Category? = getCategories().find { it.id == categoryId }
 
     fun getRecipesByCategoryId(categoryId: Int) =
         if (categoryId == 0) burgerRecipes else emptyList()

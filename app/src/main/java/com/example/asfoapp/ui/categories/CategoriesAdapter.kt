@@ -10,12 +10,19 @@ import com.example.asfoapp.model.Category
 import com.example.asfoapp.databinding.ItemCategoryBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 
-class CategoriesListAdapter(private val dataSet: List<Category>) :
-    Adapter<CategoriesListAdapter.CategoryItemViewHolder>() {
-
+class CategoriesAdapter(dataSet: List<Category> = emptyList()) :
+    Adapter<CategoriesAdapter.CategoryItemViewHolder>() {
+    private var dataSet: List<Category> = dataSet
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
     private var itemClickListener: OnItemClickListener? = null
     fun setOnItemClickListener(listener: OnItemClickListener) {
         itemClickListener = listener
+    }
+    fun setData(data: List<Category>) {
+        if(dataSet != data) dataSet = data
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryItemViewHolder {
