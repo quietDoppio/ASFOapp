@@ -1,9 +1,7 @@
 package com.example.asfoapp.ui.recipes
 
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +9,9 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import androidx.fragment.app.viewModels
 import com.example.asfoapp.R
 import com.example.asfoapp.model.Category
-import com.example.asfoapp.data.STUB
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.ui.categories.ARG_CATEGORY
@@ -28,23 +26,29 @@ class RecipesListFragment : Fragment() {
             _binding
                 ?: throw IllegalStateException("binding for RecipesListFragment must not be null")
 
+    private val viewModel: RecipesListViewModel by viewModels()
     private var category: Category? = null
+    private var recipesListAdapter: RecipesListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecipesListBinding.inflate(layoutInflater, container, false)
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         category = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requireArguments().getParcelable(ARG_CATEGORY, Category::class.java)
         } else {
             requireArguments().getParcelable(ARG_CATEGORY) as? Category
         }
-
-        setViewContent()
-        initRecycler()
-
-        return view
+        initAdapter()
+        viewModel.recipesListState.observe(viewLifecycleOwner) { newState ->
+            initUi(newState)
+        }
+        category?.let { viewModel.loadRecipes(it) }
     }
 
     override fun onDestroyView() {
@@ -52,37 +56,24 @@ class RecipesListFragment : Fragment() {
         _binding = null
     }
 
-    private fun setViewContent() {
-        category?.let { category ->
-            binding.categoryName.text = category.title
-            try {
-                val inputStream = requireContext().assets.open(category.imageUrl)
-                val image = Drawable.createFromStream(inputStream, null)
-                binding.categoryImage.setImageDrawable(image)
-            } catch (e: Exception) {
-                val stackTrace = Log.getStackTraceString(e)
-                Log.e(
-                    "RecipesListFragment",
-                    "Image - ${category.imageUrl} not found in assets\n$stackTrace"
-                )
-            }
+    private fun initUi(state: RecipesListViewModel.RecipesListState) {
+            binding.apply {
+                state.imageDrawable?.let { categoryImage.setImageDrawable(state.imageDrawable) }
+                categoryName.text = category?.title
+                recipesListAdapter?.setData(state.recipes)
         }
     }
-
-    private fun initRecycler() {
-        category?.id?.let { categoryId ->
-            val recipesList = STUB.getRecipesByCategoryId(categoryId)
-            val adapter = RecipesListAdapter(recipesList)
-            adapter.setOnItemClickListener(
-                object : OnItemClickListener {
-                    override fun onItemClick(itemId: Int) {
-                        openRecipeByRecipeId(itemId)
+    private fun initAdapter() {
+            recipesListAdapter = RecipesListAdapter().apply {
+                setOnItemClickListener(
+                    object : OnItemClickListener {
+                        override fun onItemClick(itemId: Int) {
+                            openRecipeByRecipeId(itemId)
+                        }
                     }
-                }
-            )
-            binding.rvRecipes.adapter = adapter
-        }
-
+                )
+            }
+            binding.rvRecipes.adapter = recipesListAdapter
     }
 
     private fun openRecipeByRecipeId(recipeId: Int) {
