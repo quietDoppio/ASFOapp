@@ -6,15 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.R
 import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.FragmentFavoritesBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.ui.recipes.ARG_RECIPE_ID
-import com.example.asfoapp.ui.recipes.recipe.RecipeFragment
 import com.example.asfoapp.ui.recipes.RecipesListAdapter
 
 class FavoritesFragment : Fragment() {
@@ -68,11 +66,7 @@ class FavoritesFragment : Fragment() {
 
     private fun openRecipeByRecipeId(recipeId: Int) {
         val bundle = bundleOf(ARG_RECIPE_ID to recipeId)
-        requireActivity().supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace<RecipeFragment>(R.id.mainContainer, args = bundle)
-            addToBackStack("FavoritesFragment")
-        }
+        findNavController().navigate(R.id.action_favoritesFragment_to_recipeFragment, bundle)
     }
 
     private fun handleRecyclerVisibleStatus(recipes: List<Recipe>) {
