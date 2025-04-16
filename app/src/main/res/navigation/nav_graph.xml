@@ -9,7 +9,11 @@
         android:id="@+id/recipeFragment"
         android:name="com.example.asfoapp.ui.recipes.recipe.RecipeFragment"
         android:label="fragment_recipe"
-        tools:layout="@layout/fragment_recipe" />
+        tools:layout="@layout/fragment_recipe" >
+        <argument
+            android:name="recipeId"
+            app:argType="integer" />
+    </fragment>
     <fragment
         android:id="@+id/recipesListFragment"
         android:name="com.example.asfoapp.ui.recipes.RecipesListFragment"
@@ -17,9 +21,10 @@
         tools:layout="@layout/fragment_recipes_list" >
         <action
             android:id="@+id/action_recipesListFragment_to_recipeFragment"
-            app:destination="@id/recipeFragment"
-            app:popUpTo="@id/recipesListFragment"
-            app:popUpToInclusive="false" />
+            app:destination="@id/recipeFragment" />
+        <argument
+            android:name="category"
+            app:argType="com.example.asfoapp.model.Category" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"

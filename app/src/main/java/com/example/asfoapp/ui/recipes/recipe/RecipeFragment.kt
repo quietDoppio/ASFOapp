@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.FragmentRecipeBinding
 import com.example.asfoapp.ui.recipes.recipe.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.recipe.adapters.MethodAdapter
-import com.example.asfoapp.ui.recipes.ARG_RECIPE_ID
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
 const val ASFOAPP_PREFS_FILE_KEY = "ASFOAPP_PREFS_FILE_KEY"
@@ -28,6 +28,7 @@ class RecipeFragment : Fragment() {
     private var ingredientsAdapter: IngredientsAdapter? = null
     private var methodAdapter: MethodAdapter? = null
     private var isSeekBarInit: Boolean = false
+    private val navArgs: RecipeFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -48,7 +49,8 @@ class RecipeFragment : Fragment() {
             initUi(newState)
             initSeekBar(newState.portionsCount)
         }
-        viewModel.loadRecipe(requireArguments().getInt(ARG_RECIPE_ID))
+
+        viewModel.loadRecipe(navArgs.recipeId)
     }
 
     override fun onDestroyView() {
