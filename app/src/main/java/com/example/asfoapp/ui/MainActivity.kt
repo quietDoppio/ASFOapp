@@ -21,9 +21,11 @@ class MainActivity : AppCompatActivity() {
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
 
         binding.buttonFavorites.setOnClickListener {
+            navController.popBackStack(R.id.categoriesListFragment, false)
             navController.navigate(R.id.favoritesFragment)
         }
         binding.buttonCategories.setOnClickListener {
+            navController.popBackStack(R.id.categoriesListFragment, true)
             navController.navigate(R.id.categoriesListFragment)
         }
     }
