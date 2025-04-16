@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
-import com.example.asfoapp.ui.recipes.RecipesListFragment
 
 const val ARG_CATEGORY = "ARG_CATEGORY"
 
@@ -68,12 +66,8 @@ class CategoriesListFragment : Fragment() {
     private fun openRecipesByCategoryId(categoryId: Int) {
         val category = viewModel.getCategoryById(categoryId)
         category?.let {
-            requireActivity().supportFragmentManager.commit {
-                val bundle = bundleOf(ARG_CATEGORY to it)
-                setReorderingAllowed(true)
-                replace<RecipesListFragment>(R.id.mainContainer, args = bundle)
-                addToBackStack("CategoriesListFragment")
-            }
+            val bundle = bundleOf(ARG_CATEGORY to it)
+            findNavController().navigate(R.id.action_categoriesListFragment_to_recipesListFragment, bundle)
         }
     }
 }

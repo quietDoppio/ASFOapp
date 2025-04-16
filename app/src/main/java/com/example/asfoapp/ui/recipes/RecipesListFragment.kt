@@ -7,15 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.R
 import com.example.asfoapp.model.Category
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.ui.categories.ARG_CATEGORY
-import com.example.asfoapp.ui.recipes.recipe.RecipeFragment
 
 const val ARG_RECIPE_ID = "ARG_RECIPE_ID"
 
@@ -57,32 +55,28 @@ class RecipesListFragment : Fragment() {
     }
 
     private fun initUi(state: RecipesListViewModel.RecipesListState) {
-            binding.apply {
-                state.imageDrawable?.let { categoryImage.setImageDrawable(state.imageDrawable) }
-                categoryName.text = category?.title
-                recipesListAdapter?.setData(state.recipes)
+        binding.apply {
+            state.imageDrawable?.let { categoryImage.setImageDrawable(state.imageDrawable) }
+            categoryName.text = category?.title
+            recipesListAdapter?.setData(state.recipes)
         }
     }
     private fun initAdapter() {
-            recipesListAdapter = RecipesListAdapter().apply {
-                setOnItemClickListener(
-                    object : OnItemClickListener {
-                        override fun onItemClick(itemId: Int) {
-                            openRecipeByRecipeId(itemId)
-                        }
+        recipesListAdapter = RecipesListAdapter().apply {
+            setOnItemClickListener(
+                object : OnItemClickListener {
+                    override fun onItemClick(itemId: Int) {
+                        openRecipeByRecipeId(itemId)
                     }
-                )
-            }
-            binding.rvRecipes.adapter = recipesListAdapter
+                }
+            )
+        }
+        binding.rvRecipes.adapter = recipesListAdapter
     }
 
     private fun openRecipeByRecipeId(recipeId: Int) {
         val bundle = bundleOf(ARG_RECIPE_ID to recipeId)
-        requireActivity().supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace<RecipeFragment>(R.id.mainContainer, args = bundle)
-            addToBackStack("RecipesListFragment")
-        }
+        findNavController().navigate(R.id.action_recipesListFragment_to_recipeFragment, bundle)
     }
 
 }
