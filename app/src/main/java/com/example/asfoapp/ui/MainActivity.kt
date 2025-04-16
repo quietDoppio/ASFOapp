@@ -23,5 +23,8 @@ class MainActivity : AppCompatActivity() {
         binding.buttonFavorites.setOnClickListener {
             navController.navigate(R.id.favoritesFragment)
         }
+        binding.buttonCategories.setOnClickListener {
+            navController.navigate(R.id.categoriesListFragment)
+        }
     }
 }
