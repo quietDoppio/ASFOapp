@@ -27,7 +27,6 @@ class RecipeFragment : Fragment() {
 
     private var ingredientsAdapter: IngredientsAdapter? = null
     private var methodAdapter: MethodAdapter? = null
-    private var isSeekBarInit: Boolean = false
     private val navArgs: RecipeFragmentArgs by navArgs()
 
     override fun onCreateView(
