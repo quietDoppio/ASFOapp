@@ -41,13 +41,13 @@ class RecipeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapters()
+        initSeekBar()
         initItemDecorator()
         binding.ibAddToFavoritesButton.setOnClickListener {
             viewModel.toggleFavoriteState()
         }
         viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
             initUi(newState)
-            initSeekBar(newState.portionsCount)
         }
 
         viewModel.loadRecipe(navArgs.recipeId)
@@ -62,7 +62,7 @@ class RecipeFragment : Fragment() {
         recipeState.recipeImage?.let { binding.ivRecipeImage.setImageDrawable(it) }
         binding.tvRecipeTitle.text = recipeState.recipe?.title
         binding.ibAddToFavoritesButton.isSelected = recipeState.isFavorite
-
+        binding.seekBar.progress = recipeState.portionsCount
         binding.tvPortions.text = getString(R.string.portions, recipeState.portionsCount)
         ingredientsAdapter?.let {
             it.setData(recipeState.recipe?.ingredients ?: emptyList())
@@ -93,25 +93,23 @@ class RecipeFragment : Fragment() {
         }
     }
 
-    private fun initSeekBar(newProgress: Int) {
-        binding.seekBar.progress = newProgress
-        if (!isSeekBarInit) {
-            binding.seekBar.apply {
-                min = 1
-                max = 10
-                setOnSeekBarChangeListener(
-                    PortionsSeekBarListener { it: Int -> viewModel.setPortionsCount(it) }
-                )
-            }
-            isSeekBarInit = true
+    private fun initSeekBar() {
+        binding.seekBar.apply {
+            min = 1
+            max = 10
+            setOnSeekBarChangeListener(
+                PortionsSeekBarListener { it: Int -> viewModel.setPortionsCount(it) }
+            )
         }
-
     }
 }
-class PortionsSeekBarListener(val onChangePortions: (Int) -> Unit) : SeekBar.OnSeekBarChangeListener{
+
+class PortionsSeekBarListener(val onChangePortions: (Int) -> Unit) :
+    SeekBar.OnSeekBarChangeListener {
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         onChangePortions(progress)
     }
+
     override fun onStartTrackingTouch(seekBar: SeekBar?) {}
     override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 }
