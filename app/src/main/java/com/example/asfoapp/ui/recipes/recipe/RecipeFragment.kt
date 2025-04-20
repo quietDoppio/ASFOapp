@@ -29,6 +29,7 @@ class RecipeFragment : Fragment() {
     private var methodAdapter: MethodAdapter? = null
     private val navArgs: RecipeFragmentArgs by navArgs()
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
