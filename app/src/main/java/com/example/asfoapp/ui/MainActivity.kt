@@ -12,6 +12,7 @@ import com.example.asfoapp.model.Recipe
 import kotlinx.serialization.json.Json
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         get() = _binding
             ?: throw IllegalStateException("_binding for ActivityMainBinding must not be null")
     private val threadPool = Executors.newFixedThreadPool(10)
+    private val lockObject = Any()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,39 +30,58 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        threadPool.execute{
+        threadPool.execute {
             Log.i("!!!", "Выполняю запрос на потоке: ${Thread.currentThread().name}} ")
             val urlPath = "https://recipes.androidsprint.ru/api"
             val getCategoriesUrl = URL("$urlPath/category")
 
-            var connection: HttpURLConnection = getCategoriesUrl.openConnection() as HttpURLConnection
+            val connection: HttpURLConnection =
+                getCategoriesUrl.openConnection() as HttpURLConnection
             connection.connect()
             val categoriesResponseBody = connection.inputStream.bufferedReader().readText()
-            connection.disconnect()
-
             Log.i("!!!", "body: $categoriesResponseBody")
+            connection.disconnect()
 
             val categoryList = Json.decodeFromString<List<Category>>(categoriesResponseBody)
             val categoryIds = categoryList.map { it.id }
-            val recipesList: MutableMap<Int ,List<Recipe>> = mutableMapOf()
+            val recipesList: MutableMap<Int, List<Recipe>> = mutableMapOf()
 
+            val latch = CountDownLatch(categoryIds.size)
             categoryIds.forEach { id ->
-                connection = URL("$urlPath/category/$id/recipes").openConnection() as HttpURLConnection
-                connection.connect()
-                val recipesListResponseBody = connection.inputStream.bufferedReader().readText()
-                val recipes = Json.decodeFromString<List<Recipe>>(recipesListResponseBody)
-                recipesList[id] = recipes
-                connection.disconnect()
+                threadPool.execute{
+                    try {
+                        val taskConnection =
+                            URL("$urlPath/category/$id/recipes").openConnection() as HttpURLConnection
+                        taskConnection.connect()
+
+                        val recipesListResponseBody =
+                            taskConnection.inputStream.bufferedReader().readText()
+
+                        val recipes = Json.decodeFromString<List<Recipe>>(recipesListResponseBody)
+
+                        synchronized(lockObject) {
+                            recipesList[id] = recipes
+                        }
+
+                        taskConnection.disconnect()
+                        latch.countDown()
+                    } catch (e: Exception) {
+                        Log.e("!!!", "Ошибка при получении рецепта из категории $id: ${e.message}")
+                    }
+                }
             }
-            val recipesListString = """
-                |recipes:
-                |${recipesList.map {
-                        "category id - ${it.key}, ${it.value.joinToString(", ") {str -> str.title }}"
-                    }.joinToString("\n")}
-            """.trimMargin("|")
+
+            latch.await()
+
+            val recipesListString = buildString {
+                for ((categoryId, recipes) in recipesList) {
+                    val titles = recipes.joinToString(", ") { it.title }
+                    append("category id - $categoryId, $titles\n")
+                }
+            }
+
             Log.i("!!!", "categories list: ${categoryList.joinToString(", ") { it.title }}")
             Log.i("!!!", recipesListString)
-
         }
 
         val navController =
