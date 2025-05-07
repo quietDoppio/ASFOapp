@@ -10,8 +10,9 @@ import com.example.asfoapp.databinding.ActivityMainBinding
 import com.example.asfoapp.model.Category
 import com.example.asfoapp.model.Recipe
 import kotlinx.serialization.json.Json
-import java.net.HttpURLConnection
-import java.net.URL
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
@@ -21,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         get() = _binding
             ?: throw IllegalStateException("_binding for ActivityMainBinding must not be null")
     private val threadPool = Executors.newFixedThreadPool(10)
-    private val lockObject = Any()
+    private val monitor = Any()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,57 +32,49 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         threadPool.execute {
-            Log.i("!!!", "Выполняю запрос на потоке: ${Thread.currentThread().name}} ")
             val urlPath = "https://recipes.androidsprint.ru/api"
-            val getCategoriesUrl = URL("$urlPath/category")
 
-            val connection: HttpURLConnection =
-                getCategoriesUrl.openConnection() as HttpURLConnection
-            connection.connect()
-            val categoriesResponseBody = connection.inputStream.bufferedReader().readText()
-            Log.i("!!!", "body: $categoriesResponseBody")
-            connection.disconnect()
+            val interceptor = HttpLoggingInterceptor() { message ->
+                Log.i("!!!", message)
+            }.apply { level = HttpLoggingInterceptor.Level.BODY }
 
-            val categoryList = Json.decodeFromString<List<Category>>(categoriesResponseBody)
+            val client = OkHttpClient().newBuilder().addInterceptor(interceptor).build()
+            val getCategoryRequest: Request = Request.Builder().url("$urlPath/category").build()
+
+            var categoryList: List<Category> = emptyList()
+
+            try {
+                client.newCall(getCategoryRequest).execute().use { response ->
+                    response.body?.string()?.let { body ->
+                        categoryList = Json.decodeFromString<List<Category>>(body)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("!!!", "Ошибка при получении категорий: ${e.message}")
+            }
+
             val categoryIds = categoryList.map { it.id }
-            val recipesList: MutableMap<Int, List<Recipe>> = mutableMapOf()
+            val recipesMap: MutableMap<Int, List<Recipe>> = mutableMapOf()
 
-            val latch = CountDownLatch(categoryIds.size)
             categoryIds.forEach { id ->
-                threadPool.execute{
+                threadPool.execute {
                     try {
-                        val taskConnection =
-                            URL("$urlPath/category/$id/recipes").openConnection() as HttpURLConnection
-                        taskConnection.connect()
-
-                        val recipesListResponseBody =
-                            taskConnection.inputStream.bufferedReader().readText()
-
-                        val recipes = Json.decodeFromString<List<Recipe>>(recipesListResponseBody)
-
-                        synchronized(lockObject) {
-                            recipesList[id] = recipes
+                        val getRecipeRequest: Request = Request.Builder()
+                            .url("$urlPath/category/$id/recipes")
+                            .build()
+                        client.newCall(getRecipeRequest).execute().use { response ->
+                            response.body?.string()?.let { body ->
+                                val recipes = Json.decodeFromString<List<Recipe>>(body)
+                                synchronized(monitor) {
+                                    recipesMap[id] = recipes
+                                }
+                            }
                         }
-
-                        taskConnection.disconnect()
-                        latch.countDown()
                     } catch (e: Exception) {
                         Log.e("!!!", "Ошибка при получении рецепта из категории $id: ${e.message}")
                     }
                 }
             }
-
-            latch.await()
-
-            val recipesListString = buildString {
-                for ((categoryId, recipes) in recipesList) {
-                    val titles = recipes.joinToString(", ") { it.title }
-                    append("category id - $categoryId, $titles\n")
-                }
-            }
-
-            Log.i("!!!", "categories list: ${categoryList.joinToString(", ") { it.title }}")
-            Log.i("!!!", recipesListString)
         }
 
         val navController =
