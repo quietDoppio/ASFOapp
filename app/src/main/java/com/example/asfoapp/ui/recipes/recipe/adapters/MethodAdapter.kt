@@ -1,13 +1,20 @@
 package com.example.asfoapp.ui.recipes.recipe.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.asfoapp.databinding.ItemMethodBinding
+import com.example.asfoapp.ui.categories.TAG
 
 class MethodAdapter(dataSet: List<String> = emptyList()) :
     Adapter<MethodAdapter.MethodItemViewHolder>() {
+
+    init {
+        Log.i(TAG, "MethodAdapter is created")
+    }
+
     private var dataSet: List<String> = dataSet
         set(value) {
             field = value

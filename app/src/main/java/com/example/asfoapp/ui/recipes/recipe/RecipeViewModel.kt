@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.asfoapp.data.STUB
+import com.example.asfoapp.data.RecipeRepository
 import com.example.asfoapp.model.Recipe
 
 class RecipeViewModel(private val application: Application) : AndroidViewModel(application) {
@@ -20,19 +20,20 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
     }
 
     fun loadRecipe(recipeId: Int) {
-        // TODO("LoadFromNetwork")
-        val recipe = STUB.getRecipeById(recipeId)
-        val isFavorite = getFavoritesIds().contains(recipeId.toString())
-        val drawable: Drawable? = getDrawableFromAssets(recipe?.imageUrl ?: "")
+        RecipeRepository.getRecipeById(recipeId) { recipe ->
+            val isFavorite = getFavoritesIds().contains(recipeId.toString())
+            val drawable: Drawable? = getDrawableFromAssets(recipe?.imageUrl ?: "")
 
-        _recipeState.value = recipe?.let {
-            recipeState.value?.copy(
-                recipe = it,
-                recipeImage = drawable,
-                portionsCount = recipeState.value?.portionsCount ?: 1,
-                isFavorite = isFavorite,
-            )
+            _recipeState.value = recipe?.let {
+                recipeState.value?.copy(
+                    recipe = it,
+                    recipeImage = drawable,
+                    portionsCount = recipeState.value?.portionsCount ?: 1,
+                    isFavorite = isFavorite,
+                )
+            }
         }
+
     }
 
     private fun getFavoritesIds(): MutableSet<String> {
@@ -63,7 +64,7 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
         } catch (e: Exception) {
             val stackTrace = Log.getStackTraceString(e)
             Log.e(
-                "RecipesFragment",
+                "!!!",
                 "Image - $imageUrl not found in assets\n$stackTrace"
             )
             null

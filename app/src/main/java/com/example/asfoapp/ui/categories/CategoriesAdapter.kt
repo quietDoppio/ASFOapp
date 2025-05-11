@@ -17,6 +17,9 @@ class CategoriesAdapter(dataSet: List<Category> = emptyList()) :
             field = value
             notifyDataSetChanged()
         }
+    init {
+        Log.i("!!!", "CategoriesAdapter is created")
+    }
     private var itemClickListener: OnItemClickListener? = null
     fun setOnItemClickListener(listener: OnItemClickListener) {
         itemClickListener = listener

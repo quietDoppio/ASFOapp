@@ -8,9 +8,15 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.asfoapp.model.Ingredient
 import com.example.asfoapp.databinding.ItemIngredientBinding
+import com.example.asfoapp.ui.categories.TAG
 
 class IngredientsAdapter(dataSet: List<Ingredient> = emptyList()) :
     Adapter<IngredientsAdapter.IngredientsItemViewHolder>() {
+
+        init {
+            Log.i(TAG, "IngredientsAdapter is created")
+        }
+
     private var dataSet: List<Ingredient> = dataSet
         set(value) {
             field = value
@@ -44,8 +50,10 @@ class IngredientsAdapter(dataSet: List<Ingredient> = emptyList()) :
         val newIngredients = dataSet.mapIndexed { index, ingredient ->
             if (defaultQuantities[index].isDigitsOnly()) {
                 ingredient.copy(quantity = (defaultQuantities[index].toInt() * progress).toString())
-            } else {
+            } else if(defaultQuantities[index].toDoubleOrNull() != null){
                 ingredient.copy(quantity = (defaultQuantities[index].toDouble() * progress).toString())
+            } else {
+                ingredient
             }
         }
         dataSet = newIngredients

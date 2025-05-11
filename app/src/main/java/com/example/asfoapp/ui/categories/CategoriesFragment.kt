@@ -1,6 +1,7 @@
 package com.example.asfoapp.ui.categories
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
-
-
+const val TAG: String = "!!!"
 class CategoriesListFragment : Fragment() {
     private var _binding: FragmentCategoriesListBinding? = null
     private val binding
@@ -19,7 +19,10 @@ class CategoriesListFragment : Fragment() {
 
     private val viewModel: CategoriesViewModel by viewModels()
     private var categoriesAdapter: CategoriesAdapter? = null
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.i(TAG, "CategoriesListFragment is created")
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
