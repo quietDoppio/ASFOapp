@@ -46,7 +46,6 @@ class CategoriesListFragment : Fragment() {
             Toast.makeText(context, message, Toast.LENGTH_SHORT,).show()
         }
         viewModel.loadCategories()
-
     }
 
     override fun onDestroyView() {
