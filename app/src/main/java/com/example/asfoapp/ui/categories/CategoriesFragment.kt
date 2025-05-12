@@ -5,12 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
-const val TAG: String = "!!!"
+import com.example.asfoapp.ui.TAG
+
+
 class CategoriesListFragment : Fragment() {
     private var _binding: FragmentCategoriesListBinding? = null
     private val binding
@@ -23,6 +26,7 @@ class CategoriesListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         Log.i(TAG, "CategoriesListFragment is created")
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,7 +42,11 @@ class CategoriesListFragment : Fragment() {
         viewModel.categoriesState.observe(viewLifecycleOwner) { newState ->
             initUi(newState)
         }
+        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT,).show()
+        }
         viewModel.loadCategories()
+
     }
 
     override fun onDestroyView() {
@@ -64,13 +72,19 @@ class CategoriesListFragment : Fragment() {
     }
 
     private fun openRecipesByCategoryId(categoryId: Int) {
-        val category = viewModel.getCategoryById(categoryId)
-        category?.let {
-            val action = CategoriesListFragmentDirections.actionCategoriesListFragmentToRecipesListFragment(it)
-            findNavController().navigate(action)
+        viewModel.getCategoryById(categoryId) { category ->
+            category?.let {
+                val action =
+                    CategoriesListFragmentDirections.actionCategoriesListFragmentToRecipesListFragment(
+                        it
+                    )
+                findNavController().navigate(action)
+            }
         }
     }
+
 }
+
 
 
 

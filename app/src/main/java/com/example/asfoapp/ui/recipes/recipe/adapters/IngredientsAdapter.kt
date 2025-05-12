@@ -1,6 +1,5 @@
 package com.example.asfoapp.ui.recipes.recipe.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.text.isDigitsOnly
@@ -8,14 +7,9 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.asfoapp.model.Ingredient
 import com.example.asfoapp.databinding.ItemIngredientBinding
-import com.example.asfoapp.ui.categories.TAG
 
 class IngredientsAdapter(dataSet: List<Ingredient> = emptyList()) :
     Adapter<IngredientsAdapter.IngredientsItemViewHolder>() {
-
-        init {
-            Log.i(TAG, "IngredientsAdapter is created")
-        }
 
     private var dataSet: List<Ingredient> = dataSet
         set(value) {
@@ -38,7 +32,6 @@ class IngredientsAdapter(dataSet: List<Ingredient> = emptyList()) :
         holder.bind(item)
     }
     fun setData(data: List<Ingredient>){
-        Log.i("!!!", "setData: ")
         val newQuantities = data.map { it.quantity }
         if(defaultQuantities != newQuantities) {
             dataSet = data
@@ -57,7 +50,6 @@ class IngredientsAdapter(dataSet: List<Ingredient> = emptyList()) :
             }
         }
         dataSet = newIngredients
-        Log.i("!!!", "updateIngredientsQuantity: ")
     }
 
     class IngredientsItemViewHolder(private val binding: ItemIngredientBinding) :

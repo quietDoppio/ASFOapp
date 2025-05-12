@@ -1,17 +1,16 @@
 package com.example.asfoapp.ui.recipes.favorites
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.FragmentFavoritesBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
-import com.example.asfoapp.ui.categories.TAG
 import com.example.asfoapp.ui.recipes.RecipesListAdapter
 
 class FavoritesFragment : Fragment() {
@@ -21,10 +20,7 @@ class FavoritesFragment : Fragment() {
             ?: throw IllegalStateException("binding for FavoritesFragment must not be null")
     private val viewModel: FavoritesViewModel by viewModels()
     private var recipesListAdapter: RecipesListAdapter? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i(TAG, "FavoritesFragment is created")
-    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,6 +36,9 @@ class FavoritesFragment : Fragment() {
         viewModel.favoritesState.observe(viewLifecycleOwner) { newState ->
             initUi(newState)
         }
+        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
         viewModel.loadRecipes()
     }
 
@@ -49,10 +48,9 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun initUi(state: FavoritesViewModel.FavoritesState) {
-        state.favoritesRecipes?.let { recipes ->
-            handleRecyclerVisibleStatus(recipes)
-            recipesListAdapter?.setData(recipes)
-        }
+        handleRecyclerVisibleStatus(state.favoritesRecipes)
+        recipesListAdapter?.setData(state.favoritesRecipes)
+
     }
 
     private fun initAdapter() {

@@ -8,6 +8,9 @@ import androidx.navigation.navOptions
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.ActivityMainBinding
 
+const val TAG: String = "!!!"
+const val NET_ERROR_MESSAGE = "Ошибка загрузки данных из сети"
+
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding

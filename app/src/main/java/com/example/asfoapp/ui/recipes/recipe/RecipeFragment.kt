@@ -1,18 +1,17 @@
 package com.example.asfoapp.ui.recipes.recipe
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.FragmentRecipeBinding
-import com.example.asfoapp.ui.categories.TAG
 import com.example.asfoapp.ui.recipes.recipe.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.recipe.adapters.MethodAdapter
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -30,11 +29,6 @@ class RecipeFragment : Fragment() {
     private var ingredientsAdapter: IngredientsAdapter? = null
     private var methodAdapter: MethodAdapter? = null
     private val navArgs: RecipeFragmentArgs by navArgs()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i(TAG, "RecipeFragment is created")
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -55,7 +49,9 @@ class RecipeFragment : Fragment() {
         viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
             initUi(newState)
         }
-
+        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
         viewModel.loadRecipe(navArgs.recipeId)
     }
 

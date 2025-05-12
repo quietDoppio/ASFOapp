@@ -1,17 +1,16 @@
 package com.example.asfoapp.ui.recipes
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
-import com.example.asfoapp.ui.categories.TAG
 
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentRecipesListBinding? = null
@@ -23,11 +22,6 @@ class RecipesListFragment : Fragment() {
     private val viewModel: RecipesListViewModel by viewModels()
     private val navAgs: RecipesListFragmentArgs by navArgs()
     private var recipesListAdapter: RecipesListAdapter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i(TAG, "RecipeListFragment is created")
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -41,6 +35,9 @@ class RecipesListFragment : Fragment() {
         initAdapter()
         viewModel.recipesListState.observe(viewLifecycleOwner) { newState ->
             initUi(newState)
+        }
+        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
         viewModel.loadRecipes(navAgs.category)
     }

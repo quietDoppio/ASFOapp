@@ -7,7 +7,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-
 interface RecipeApiService {
 
     @GET("category")
@@ -20,7 +19,7 @@ interface RecipeApiService {
     fun getRecipesByCategoryId(@Path("id") id: Int?): Call<List<Recipe>>
 
     @GET("recipes")
-    fun getRecipes(@Query("ids") ids: List<String>): Call<List<Recipe>>
+    fun getRecipes(@Query("ids") ids: Set<String>): Call<List<Recipe>>
 
     @GET("recipe/{id}")
     fun getRecipeById(@Path("id") id: Int?): Call<Recipe>

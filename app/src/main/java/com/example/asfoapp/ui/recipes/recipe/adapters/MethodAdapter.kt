@@ -1,19 +1,13 @@
 package com.example.asfoapp.ui.recipes.recipe.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.asfoapp.databinding.ItemMethodBinding
-import com.example.asfoapp.ui.categories.TAG
 
 class MethodAdapter(dataSet: List<String> = emptyList()) :
     Adapter<MethodAdapter.MethodItemViewHolder>() {
-
-    init {
-        Log.i(TAG, "MethodAdapter is created")
-    }
 
     private var dataSet: List<String> = dataSet
         set(value) {
@@ -33,7 +27,7 @@ class MethodAdapter(dataSet: List<String> = emptyList()) :
         holder.bind(item)
     }
     fun setData(data: List<String>){
-        if(dataSet != data )
+        if(dataSet != data)
         dataSet = data
     }
     class MethodItemViewHolder(private val binding: ItemMethodBinding) : ViewHolder(binding.root) {

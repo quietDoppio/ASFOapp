@@ -9,13 +9,10 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.ItemRecipeBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
-import com.example.asfoapp.ui.categories.TAG
 
 class RecipesListAdapter(dataSet: List<Recipe> = emptyList()) :
     Adapter<RecipesListAdapter.RecipeItemViewHolder>() {
-        init {
-            Log.i(TAG, "RecipesListAdapter is created")
-        }
+
     private var dataSet: List<Recipe> = dataSet
         set(value) {
             field = value
@@ -55,7 +52,7 @@ class RecipesListAdapter(dataSet: List<Recipe> = emptyList()) :
             } catch (e: Exception) {
                 val stackTrace = Log.getStackTraceString(e)
                 Log.e(
-                    "!!!",
+                    "RecipeListAdapter",
                     "Image - ${item.imageUrl} not found in assets\n$stackTrace"
                 )
             }
