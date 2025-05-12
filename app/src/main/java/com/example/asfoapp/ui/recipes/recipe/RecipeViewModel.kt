@@ -20,15 +20,15 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
     val toastMessage: LiveData<String> get() = _toastMessage
 
     fun loadRecipe(recipeId: Int) {
-        val safeStateCopy = recipeState.value?.copy()
+
         RecipeRepository.getRecipeById(recipeId) { recipe ->
             if (recipe == null) {
                 _toastMessage.postValue(NET_ERROR_MESSAGE)
             } else {
                 val isFavorite = getFavoritesIds().contains(recipeId.toString())
-                val drawable: Drawable? = getDrawableFromAssets(recipe?.imageUrl ?: "")
+                val drawable: Drawable? = getDrawableFromAssets(recipe.imageUrl)
                 _recipeState.postValue(
-                    safeStateCopy?.copy(
+                    recipeState.value?.copy(
                         recipe = recipe,
                         recipeImage = drawable,
                         portionsCount = recipeState.value?.portionsCount ?: 1,

@@ -20,12 +20,12 @@ class FavoritesViewModel(private val application: Application) : AndroidViewMode
     val toastMessage: LiveData<String> get() = _toastMessage
 
     fun loadRecipes() {
-        val safeStateCopy = favoritesState.value?.copy()
+
         RecipeRepository.getRecipes(getFavoritesIds()) { recipes ->
             if (recipes == null) {
                 _toastMessage.postValue(NET_ERROR_MESSAGE)
             } else {
-                _favoritesState.postValue(safeStateCopy?.copy(favoritesRecipes = recipes))
+                _favoritesState.postValue(favoritesState.value?.copy(favoritesRecipes = recipes))
             }
 
         }

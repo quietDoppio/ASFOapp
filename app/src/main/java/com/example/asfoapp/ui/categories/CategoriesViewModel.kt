@@ -17,13 +17,12 @@ class CategoriesViewModel : ViewModel() {
     val toastMessage: LiveData<String> get() = _toastMessage
 
     fun loadCategories() {
-        val safeStateCopy = categoriesState.value?.copy()
         RecipeRepository.getCategories { categories ->
             if (categories == null) {
                 _toastMessage.postValue(NET_ERROR_MESSAGE)
             } else {
                 _categoriesState.postValue(
-                    safeStateCopy?.copy(
+                    categoriesState.value?.copy(
                         categoriesList = categories
                     )
                 )
