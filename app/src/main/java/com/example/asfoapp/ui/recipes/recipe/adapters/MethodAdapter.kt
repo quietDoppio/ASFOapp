@@ -8,6 +8,7 @@ import com.example.asfoapp.databinding.ItemMethodBinding
 
 class MethodAdapter(dataSet: List<String> = emptyList()) :
     Adapter<MethodAdapter.MethodItemViewHolder>() {
+
     private var dataSet: List<String> = dataSet
         set(value) {
             field = value
@@ -26,7 +27,7 @@ class MethodAdapter(dataSet: List<String> = emptyList()) :
         holder.bind(item)
     }
     fun setData(data: List<String>){
-        if(dataSet != data )
+        if(dataSet != data)
         dataSet = data
     }
     class MethodItemViewHolder(private val binding: ItemMethodBinding) : ViewHolder(binding.root) {

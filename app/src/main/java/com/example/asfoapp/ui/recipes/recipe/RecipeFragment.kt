@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
@@ -29,7 +30,6 @@ class RecipeFragment : Fragment() {
     private var methodAdapter: MethodAdapter? = null
     private val navArgs: RecipeFragmentArgs by navArgs()
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -49,7 +49,9 @@ class RecipeFragment : Fragment() {
         viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
             initUi(newState)
         }
-
+        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
         viewModel.loadRecipe(navArgs.recipeId)
     }
 

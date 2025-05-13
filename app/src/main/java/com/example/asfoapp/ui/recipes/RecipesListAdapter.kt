@@ -12,6 +12,7 @@ import com.example.asfoapp.interfaces.OnItemClickListener
 
 class RecipesListAdapter(dataSet: List<Recipe> = emptyList()) :
     Adapter<RecipesListAdapter.RecipeItemViewHolder>() {
+
     private var dataSet: List<Recipe> = dataSet
         set(value) {
             field = value
@@ -51,7 +52,7 @@ class RecipesListAdapter(dataSet: List<Recipe> = emptyList()) :
             } catch (e: Exception) {
                 val stackTrace = Log.getStackTraceString(e)
                 Log.e(
-                    "RecipesListAdapter",
+                    "RecipeListAdapter",
                     "Image - ${item.imageUrl} not found in assets\n$stackTrace"
                 )
             }

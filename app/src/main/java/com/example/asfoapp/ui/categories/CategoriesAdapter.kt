@@ -12,12 +12,15 @@ import com.example.asfoapp.interfaces.OnItemClickListener
 
 class CategoriesAdapter(dataSet: List<Category> = emptyList()) :
     Adapter<CategoriesAdapter.CategoryItemViewHolder>() {
+
     private var dataSet: List<Category> = dataSet
         set(value) {
             field = value
             notifyDataSetChanged()
         }
+
     private var itemClickListener: OnItemClickListener? = null
+
     fun setOnItemClickListener(listener: OnItemClickListener) {
         itemClickListener = listener
     }
