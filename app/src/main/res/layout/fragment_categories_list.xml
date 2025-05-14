@@ -15,6 +15,7 @@
         android:layout_height="@dimen/layout_height_categories_header">
 
         <ImageView
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/content_description_default_header_food_picture"

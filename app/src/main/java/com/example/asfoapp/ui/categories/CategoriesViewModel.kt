@@ -3,9 +3,9 @@ package com.example.asfoapp.ui.categories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.asfoapp.Constants
 import com.example.asfoapp.data.RecipeRepository
 import com.example.asfoapp.model.Category
-import com.example.asfoapp.ui.NET_ERROR_MESSAGE
 
 class CategoriesViewModel : ViewModel() {
 
@@ -19,12 +19,10 @@ class CategoriesViewModel : ViewModel() {
     fun loadCategories() {
         RecipeRepository.getCategories { categories ->
             if (categories == null) {
-                _toastMessage.postValue(NET_ERROR_MESSAGE)
+                _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
             } else {
                 _categoriesState.postValue(
-                    categoriesState.value?.copy(
-                        categoriesList = categories
-                    )
+                    categoriesState.value?.copy(categoriesList = categories)
                 )
             }
         }

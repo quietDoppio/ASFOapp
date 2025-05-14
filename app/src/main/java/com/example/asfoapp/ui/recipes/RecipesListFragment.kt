@@ -1,6 +1,8 @@
 package com.example.asfoapp.ui.recipes
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,13 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.example.asfoapp.Constants
+import com.example.asfoapp.R
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 
@@ -22,6 +31,7 @@ class RecipesListFragment : Fragment() {
     private val viewModel: RecipesListViewModel by viewModels()
     private val navAgs: RecipesListFragmentArgs by navArgs()
     private var recipesListAdapter: RecipesListAdapter? = null
+    private val glideRequestListener = GlideRequestListener()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -48,8 +58,13 @@ class RecipesListFragment : Fragment() {
     }
 
     private fun initUi(state: RecipesListViewModel.RecipesListState) {
+        Glide.with(this)
+            .load(state.apiHeaderImageUrl)
+            .placeholder(R.drawable.img_placeholder)
+            .error(R.drawable.img_error)
+            .listener(glideRequestListener)
+            .into(binding.categoryImage)
         binding.apply {
-            state.imageDrawable?.let { categoryImage.setImageDrawable(state.imageDrawable) }
             categoryName.text = navAgs.category.title
             recipesListAdapter?.setData(state.recipes)
         }
@@ -72,6 +87,30 @@ class RecipesListFragment : Fragment() {
         val action = RecipesListFragmentDirections
             .actionRecipesListFragmentToRecipeFragment(recipeId)
         findNavController().navigate(action)
+    }
+
+}
+
+class GlideRequestListener: RequestListener<Drawable> {
+    override fun onLoadFailed(
+        e: GlideException?,
+        model: Any?,
+        target: Target<Drawable>?,
+        isFirstResource: Boolean
+    ): Boolean {
+        e?.logRootCauses(Constants.LOG_TAG)
+        Log.e(Constants.LOG_TAG, "Load of image failed", e)
+        return false
+    }
+
+    override fun onResourceReady(
+        resource: Drawable?,
+        model: Any?,
+        target: Target<Drawable>?,
+        dataSource: DataSource?,
+        isFirstResource: Boolean
+    ): Boolean {
+        return false
     }
 
 }

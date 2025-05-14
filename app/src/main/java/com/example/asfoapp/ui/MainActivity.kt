@@ -1,15 +1,11 @@
 package com.example.asfoapp.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navOptions
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.ActivityMainBinding
-
-const val TAG: String = "!!!"
-const val NET_ERROR_MESSAGE = "Ошибка загрузки данных из сети"
 
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
@@ -18,7 +14,7 @@ class MainActivity : AppCompatActivity() {
             ?: throw IllegalStateException("_binding for ActivityMainBinding must not be null")
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.i("!!!", "MAIN ACTIVITY IS CREATED")
+
         super.onCreate(savedInstanceState)
 
         _binding = ActivityMainBinding.inflate(layoutInflater)

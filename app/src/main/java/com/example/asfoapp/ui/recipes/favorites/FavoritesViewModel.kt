@@ -5,11 +5,9 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.asfoapp.Constants
 import com.example.asfoapp.data.RecipeRepository
 import com.example.asfoapp.model.Recipe
-import com.example.asfoapp.ui.NET_ERROR_MESSAGE
-import com.example.asfoapp.ui.recipes.recipe.ASFOAPP_PREFS_FILE_KEY
-import com.example.asfoapp.ui.recipes.recipe.FAVORITES_PREFS_KEY
 
 class FavoritesViewModel(private val application: Application) : AndroidViewModel(application) {
 
@@ -24,7 +22,7 @@ class FavoritesViewModel(private val application: Application) : AndroidViewMode
         if (favoritesIds.isNotEmpty()) {
             RecipeRepository.getRecipes(favoritesIds) { recipes ->
                 if (recipes == null) {
-                    _toastMessage.postValue(NET_ERROR_MESSAGE)
+                    _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
                 } else {
                     _favoritesState.postValue(favoritesState.value?.copy(favoritesRecipes = recipes))
                 }
@@ -35,10 +33,10 @@ class FavoritesViewModel(private val application: Application) : AndroidViewMode
 
     private fun getFavoritesIds(): MutableSet<String> {
         val sharedPrefs = application.applicationContext.getSharedPreferences(
-            ASFOAPP_PREFS_FILE_KEY,
+            Constants.ASFOAPP_PREFS_FILE_KEY,
             Context.MODE_PRIVATE
         )
-        return HashSet(sharedPrefs?.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet())
+        return HashSet(sharedPrefs?.getStringSet(Constants.FAVORITES_PREFS_KEY, emptySet()) ?: emptySet())
     }
 
     data class FavoritesState(
