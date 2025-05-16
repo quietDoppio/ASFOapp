@@ -13,14 +13,14 @@ interface RecipeApiService {
     fun getCategories(): Call<List<Category>>
 
     @GET("category/{id}")
-    fun getCategoryById(@Path("id") id: Int?): Call<Category>
+    fun getCategoryById(@Path("id") id: Int): Call<Category>
 
     @GET("category/{id}/recipes")
-    fun getRecipesByCategoryId(@Path("id") id: Int?): Call<List<Recipe>>
+    fun getRecipesByCategoryId(@Path("id") id: Int): Call<List<Recipe>>
 
     @GET("recipes")
     fun getRecipes(@Query("ids") ids: Set<String>): Call<List<Recipe>>
 
     @GET("recipe/{id}")
-    fun getRecipeById(@Path("id") id: Int?): Call<Recipe>
+    fun getRecipeById(@Path("id") id: Int): Call<Recipe>
 }

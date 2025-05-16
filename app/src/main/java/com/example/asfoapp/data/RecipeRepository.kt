@@ -3,9 +3,9 @@ package com.example.asfoapp.data
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import com.example.asfoapp.Constants
 import com.example.asfoapp.model.Category
 import com.example.asfoapp.model.Recipe
-import com.example.asfoapp.ui.TAG
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Call
@@ -18,7 +18,7 @@ object RecipeRepository {
     private val threadPool = Executors.newFixedThreadPool(10)
     private val handler by lazy { Handler(Looper.getMainLooper()) }
     private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("https://recipes.androidsprint.ru/api/")
+        .baseUrl(Constants.BASE_URL)
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .build()
     private val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
@@ -92,22 +92,22 @@ object RecipeRepository {
 
     private fun<T> executeCall(call: Call<T>): T? {
         val callerFunName = Throwable().stackTrace[1].methodName
-        Log.i(TAG, "!!!: callerFunName - $callerFunName")
+        Log.i(Constants.LOG_TAG, "callerFunName - $callerFunName")
 
         return try {
             val response = call.execute()
             if (response.isSuccessful) {
                 response.body() ?: run {
-                    Log.i(TAG, "$callerFunName: пустое тело ответа")
+                    Log.i(Constants.LOG_TAG, "$callerFunName: пустое тело ответа")
                     null
                 }
             } else {
-                Log.i(TAG, "$callerFunName: ошибка при запросе рецепта. ${response.message()}")
+                Log.i(Constants.LOG_TAG, "$callerFunName: ошибка при запросе рецепта. ${response.message()}")
                 response.errorBody()?.close()
                 null
             }
         } catch (e: Exception) {
-            Log.e(TAG, "$callerFunName: ${Log.getStackTraceString(e)}")
+            Log.e(Constants.LOG_TAG, "$callerFunName: ${Log.getStackTraceString(e)}")
             null
         }
     }

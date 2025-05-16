@@ -1,11 +1,12 @@
 package com.example.asfoapp.ui.categories
 
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import com.bumptech.glide.Glide
+import com.example.asfoapp.Constants
+import com.example.asfoapp.R
 import com.example.asfoapp.model.Category
 import com.example.asfoapp.databinding.ItemCategoryBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
@@ -24,8 +25,9 @@ class CategoriesAdapter(dataSet: List<Category> = emptyList()) :
     fun setOnItemClickListener(listener: OnItemClickListener) {
         itemClickListener = listener
     }
+
     fun setData(data: List<Category>) {
-        if(dataSet != data) dataSet = data
+        if (dataSet != data) dataSet = data
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryItemViewHolder {
@@ -46,20 +48,14 @@ class CategoriesAdapter(dataSet: List<Category> = emptyList()) :
     class CategoryItemViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Category, itemClickListener: OnItemClickListener?) {
+            Glide.with(binding.root)
+                .load("${Constants.BASE_URL}images/${item.imageUrl}")
+                .error(R.drawable.img_error)
+                .placeholder(R.drawable.img_placeholder)
+                .into(binding.cardViewImage)
             binding.cardViewTitle.text = item.title
             binding.cardViewDescription.text = item.description
-            try {
-                val inputStream = itemView.context.assets.open(item.imageUrl)
-                val image = Drawable.createFromStream(inputStream, null)
-                binding.cardViewImage.setImageDrawable(image)
-                binding.cardViewImage.contentDescription = "${item.title} - ${item.description}"
-            } catch (e: Exception) {
-                val stackTrace = Log.getStackTraceString(e)
-                Log.e(
-                    "CategoriesListAdapter",
-                    "Image - ${item.imageUrl} not found in assets\n$stackTrace"
-                )
-            }
+
             binding.root.setOnClickListener {
                 itemClickListener?.onItemClick(item.id)
             }

@@ -1,11 +1,12 @@
 package com.example.asfoapp.ui.recipes
 
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import com.bumptech.glide.Glide
+import com.example.asfoapp.Constants
+import com.example.asfoapp.R
 import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.ItemRecipeBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
@@ -36,26 +37,21 @@ class RecipesListAdapter(dataSet: List<Recipe> = emptyList()) :
         val item = dataSet[position]
         holder.bind(item, itemClickListener)
     }
-    fun setData(data: List<Recipe>){
-        if(data != dataSet) dataSet = data
+
+    fun setData(data: List<Recipe>) {
+        if (data != dataSet) dataSet = data
     }
+
     class RecipeItemViewHolder(private val binding: ItemRecipeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Recipe, itemClickListener: OnItemClickListener?) {
             binding.tvRecipeName.text = item.title
-            try {
-                val inputStream = itemView.context.assets.open(item.imageUrl)
-                val image = Drawable.createFromStream(inputStream, null)
-                binding.ivRecipeImage.setImageDrawable(image)
-                binding.ivRecipeImage.contentDescription = "$item.title"
-            } catch (e: Exception) {
-                val stackTrace = Log.getStackTraceString(e)
-                Log.e(
-                    "RecipeListAdapter",
-                    "Image - ${item.imageUrl} not found in assets\n$stackTrace"
-                )
-            }
+            Glide.with(binding.root)
+                .load("${Constants.BASE_URL}images/${item.imageUrl}")
+                .error(R.drawable.img_error)
+                .placeholder(R.drawable.img_placeholder)
+                .into(binding.ivRecipeImage)
             binding.root.setOnClickListener {
                 itemClickListener?.onItemClick(item.id)
             }

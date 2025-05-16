@@ -10,14 +10,12 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
+import com.bumptech.glide.Glide
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.FragmentRecipeBinding
 import com.example.asfoapp.ui.recipes.recipe.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.recipe.adapters.MethodAdapter
 import com.google.android.material.divider.MaterialDividerItemDecoration
-
-const val ASFOAPP_PREFS_FILE_KEY = "ASFOAPP_PREFS_FILE_KEY"
-const val FAVORITES_PREFS_KEY = "FAVORITES_PREFS_KEY"
 
 class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
@@ -40,6 +38,7 @@ class RecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initAdapters()
         initSeekBar()
         initItemDecorator()
@@ -61,7 +60,12 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initUi(recipeState: RecipeViewModel.RecipeState) {
-        recipeState.recipeImage?.let { binding.ivRecipeImage.setImageDrawable(it) }
+        Glide.with(this)
+            .load(recipeState.apiHeaderImageUrl)
+            .error(R.drawable.img_error)
+            .placeholder(R.drawable.img_placeholder)
+            .into(binding.ivRecipeImage)
+
         binding.tvRecipeTitle.text = recipeState.recipe?.title
         binding.ibAddToFavoritesButton.isSelected = recipeState.isFavorite
         binding.seekBar.progress = recipeState.portionsCount

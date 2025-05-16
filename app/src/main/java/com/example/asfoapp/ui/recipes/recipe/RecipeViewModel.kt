@@ -2,14 +2,12 @@ package com.example.asfoapp.ui.recipes.recipe
 
 import android.app.Application
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.asfoapp.Constants
 import com.example.asfoapp.data.RecipeRepository
 import com.example.asfoapp.model.Recipe
-import com.example.asfoapp.ui.NET_ERROR_MESSAGE
 
 class RecipeViewModel(private val application: Application) : AndroidViewModel(application) {
 
@@ -23,14 +21,13 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
 
         RecipeRepository.getRecipeById(recipeId) { recipe ->
             if (recipe == null) {
-                _toastMessage.postValue(NET_ERROR_MESSAGE)
+                _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
             } else {
                 val isFavorite = getFavoritesIds().contains(recipeId.toString())
-                val drawable: Drawable? = getDrawableFromAssets(recipe.imageUrl)
                 _recipeState.postValue(
                     recipeState.value?.copy(
                         recipe = recipe,
-                        recipeImage = drawable,
+                        apiHeaderImageUrl = "${Constants.BASE_URL}images/${recipe.imageUrl}",
                         portionsCount = recipeState.value?.portionsCount ?: 1,
                         isFavorite = isFavorite,
                     )
@@ -41,33 +38,20 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
 
     private fun getFavoritesIds(): MutableSet<String> {
         val sharedPreferences = application.applicationContext.getSharedPreferences(
-            ASFOAPP_PREFS_FILE_KEY, Context.MODE_PRIVATE
+            Constants.ASFOAPP_PREFS_FILE_KEY, Context.MODE_PRIVATE
         )
         return HashSet(
-            sharedPreferences?.getStringSet(FAVORITES_PREFS_KEY, emptySet()) ?: emptySet()
+            sharedPreferences?.getStringSet(Constants.FAVORITES_PREFS_KEY, emptySet()) ?: emptySet()
         )
     }
 
     private fun saveFavoritesIds(recipesIdSet: Set<String>) {
         val sharedPreferences = application.applicationContext.getSharedPreferences(
-            ASFOAPP_PREFS_FILE_KEY, Context.MODE_PRIVATE
+            Constants.ASFOAPP_PREFS_FILE_KEY, Context.MODE_PRIVATE
         )
         with(sharedPreferences.edit()) {
-            putStringSet(FAVORITES_PREFS_KEY, recipesIdSet)
+            putStringSet(Constants.FAVORITES_PREFS_KEY, recipesIdSet)
             apply()
-        }
-    }
-
-    private fun getDrawableFromAssets(imageUrl: String): Drawable? {
-        return try {
-            val inputStream = application.applicationContext.assets.open(imageUrl)
-            Drawable.createFromStream(inputStream, null)
-        } catch (e: Exception) {
-            val stackTrace = Log.getStackTraceString(e)
-            Log.e(
-                "RecipeViewModel", "Image - $imageUrl not found in assets\n$stackTrace"
-            )
-            null
         }
     }
 
@@ -88,7 +72,7 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
 
     data class RecipeState(
         val recipe: Recipe? = null,
-        val recipeImage: Drawable? = null,
+        val apiHeaderImageUrl: String = "",
         val portionsCount: Int = 1,
         val isFavorite: Boolean = false,
     )
