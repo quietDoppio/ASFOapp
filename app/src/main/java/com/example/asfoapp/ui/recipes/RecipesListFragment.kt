@@ -65,7 +65,8 @@ class RecipesListFragment : Fragment() {
             .listener(glideRequestListener)
             .into(binding.categoryImage)
         binding.apply {
-            categoryName.text = navAgs.category.title
+            val title = state.categoryTitle
+            if(title.isNotBlank()) { categoryName.text = title }
             recipesListAdapter?.setData(state.recipes)
         }
     }
@@ -91,7 +92,7 @@ class RecipesListFragment : Fragment() {
 
 }
 
-class GlideRequestListener: RequestListener<Drawable> {
+class GlideRequestListener : RequestListener<Drawable> {
     override fun onLoadFailed(
         e: GlideException?,
         model: Any?,

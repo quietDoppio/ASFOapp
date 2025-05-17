@@ -28,6 +28,7 @@
             app:popExitAnim="@anim/slide_out_right"/>
         <argument
             android:name="category"
+            app:nullable="true"
             app:argType="com.example.asfoapp.model.Category" />
     </fragment>
     <fragment

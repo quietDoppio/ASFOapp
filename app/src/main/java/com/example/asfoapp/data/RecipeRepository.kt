@@ -1,22 +1,18 @@
 package com.example.asfoapp.data
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import com.example.asfoapp.Constants
 import com.example.asfoapp.model.Category
 import com.example.asfoapp.model.Recipe
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
-import java.util.concurrent.Executors
 
 object RecipeRepository {
 
-    private val threadPool = Executors.newFixedThreadPool(10)
-    private val handler by lazy { Handler(Looper.getMainLooper()) }
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(Constants.BASE_URL)
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
@@ -27,91 +23,64 @@ object RecipeRepository {
     private val categoryByIdCache = mutableMapOf<Int, Category>()
     private val recipesByCategoryIdCache = mutableMapOf<Int, List<Recipe>>()
     private val recipeByIdCache = mutableMapOf<Int, Recipe>()
-    private val recipesListByIdsCache = mutableMapOf<Set<String>, List<Recipe>>()
+    private val recipesListByIdsCache = mutableMapOf<String, List<Recipe>>()
 
-    fun getCategories(callback: (List<Category>?) -> Unit) {
-        categoriesCache?.let {
-            handler.post { callback(it) }
-            return
-        }
-        threadPool.execute{
-            val result = executeCall(service.getCategories())
-            categoriesCache = result
-            handler.post { callback (result) }
-        }
+    suspend fun getCategories(): List<Category>? {
+        categoriesCache?.let { return it }
+
+        val result = safeExecuteRequest { service.getCategories() }
+        if (result != null) categoriesCache = result
+        return result
     }
 
-    fun getCategoryById(id: Int, callback: (Category?) -> Unit) {
-        categoryByIdCache[id]?.let {
-            handler.post { callback(it) }
-            return
-        }
-        threadPool.execute {
-            val result = executeCall(service.getCategoryById(id))
-            result?.let { categoryByIdCache[id] = it }
-            handler.post { callback(result) }
-        }
+    suspend fun getCategoryById(id: Int): Category? {
+        categoryByIdCache[id]?.let { return it }
+
+        val result = safeExecuteRequest { service.getCategoryById(id) }
+        if (result != null) categoryByIdCache[id] = result
+        return result
     }
 
-    fun getRecipesByCategoryId(id: Int, callback: (List<Recipe>?) -> Unit) {
-        recipesByCategoryIdCache[id]?.let {
-            handler.post { callback(it) }
-            return
-        }
-        threadPool.execute {
-            val result = executeCall(service.getRecipesByCategoryId(id))
-            result?.let { recipesByCategoryIdCache[id] = it }
-            handler.post { callback(result) }
-        }
+    suspend fun getRecipesByCategoryId(id: Int): List<Recipe>? {
+        recipesByCategoryIdCache[id]?.let { return it }
+
+        val result = safeExecuteRequest { service.getRecipesByCategoryId(id) }
+        if (result != null) recipesByCategoryIdCache[id] = result
+        return result
     }
 
-    fun getRecipes(ids: Set<String>, callback: (List<Recipe>?) -> Unit) {
-        recipesListByIdsCache[ids]?.let {
-            handler.post { callback(it) }
-            return
-        }
-        threadPool.execute {
-            val result = executeCall(service.getRecipes(ids))
-            result?.let { recipesListByIdsCache[ids] = it }
-            handler.post { callback(result) }
-        }
+    suspend fun getRecipes(ids: List<String>): List<Recipe>? {
+        val joinedIds = ids.joinToString(",")
+        recipesListByIdsCache[joinedIds]?.let { return it }
+
+        val result = safeExecuteRequest { service.getRecipes(joinedIds) }
+        if (result != null) recipesListByIdsCache[joinedIds] = result
+        return result
     }
 
+    suspend fun getRecipeById(id: Int): Recipe? {
+        recipeByIdCache[id]?.let { return it }
 
-    fun getRecipeById(id: Int, callback: (Recipe?) -> Unit) {
-        recipeByIdCache[id]?.let {
-            handler.post { callback(it) }
-            return
-        }
-        threadPool.execute {
-            val result = executeCall(service.getRecipeById(id))
-            result?.let { recipeByIdCache[id] = it }
-            handler.post { callback(result) }
-        }
+        val result = safeExecuteRequest { service.getRecipeById(id) }
+        if (result != null) recipeByIdCache[id] = result
+        return result
     }
 
-    private fun<T> executeCall(call: Call<T>): T? {
+    private suspend fun <T> safeExecuteRequest(task: suspend () -> T): T? {
         val callerFunName = Throwable().stackTrace[1].methodName
-        Log.i(Constants.LOG_TAG, "callerFunName - $callerFunName")
-
-        return try {
-            val response = call.execute()
-            if (response.isSuccessful) {
-                response.body() ?: run {
-                    Log.i(Constants.LOG_TAG, "$callerFunName: пустое тело ответа")
-                    null
-                }
-            } else {
-                Log.i(Constants.LOG_TAG, "$callerFunName: ошибка при запросе рецепта. ${response.message()}")
-                response.errorBody()?.close()
+        return withContext(Dispatchers.IO) {
+            try {
+                task()
+            } catch (e: Exception) {
+                Log.e(
+                    Constants.LOG_TAG,
+                    "$callerFunName - Ошибка загрузки данных, ${Log.getStackTraceString(e)}"
+                )
                 null
             }
-        } catch (e: Exception) {
-            Log.e(Constants.LOG_TAG, "$callerFunName: ${Log.getStackTraceString(e)}")
-            null
         }
     }
-
 }
+
 
 

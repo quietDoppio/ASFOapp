@@ -5,9 +5,11 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.asfoapp.Constants
 import com.example.asfoapp.data.RecipeRepository
 import com.example.asfoapp.model.Recipe
+import kotlinx.coroutines.launch
 
 class RecipeViewModel(private val application: Application) : AndroidViewModel(application) {
 
@@ -18,8 +20,8 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
     val toastMessage: LiveData<String> get() = _toastMessage
 
     fun loadRecipe(recipeId: Int) {
-
-        RecipeRepository.getRecipeById(recipeId) { recipe ->
+        viewModelScope.launch {
+            val recipe = RecipeRepository.getRecipeById(recipeId)
             if (recipe == null) {
                 _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
             } else {

@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
+import kotlinx.coroutines.launch
 
 class CategoriesListFragment : Fragment() {
     private var _binding: FragmentCategoriesListBinding? = null
@@ -36,7 +38,7 @@ class CategoriesListFragment : Fragment() {
             initUi(newState)
         }
         viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
-            Toast.makeText(context, message, Toast.LENGTH_SHORT,).show()
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
         viewModel.loadCategories()
 
@@ -65,18 +67,18 @@ class CategoriesListFragment : Fragment() {
     }
 
     private fun openRecipesByCategoryId(categoryId: Int) {
-        viewModel.getCategoryById(categoryId) { category ->
-            category?.let {
-                val action =
-                    CategoriesListFragmentDirections.actionCategoriesListFragmentToRecipesListFragment(
-                        it
-                    )
-                findNavController().navigate(action)
-            }
+        viewLifecycleOwner.lifecycleScope.launch {
+            val category = viewModel.getCategoryById(categoryId)
+            val action =
+                CategoriesListFragmentDirections.actionCategoriesListFragmentToRecipesListFragment(
+                    category
+                )
+            findNavController().navigate(action)
         }
     }
-
 }
+
+
 
 
 
