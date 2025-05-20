@@ -3,9 +3,11 @@ package com.example.asfoapp.ui.categories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.asfoapp.Constants
 import com.example.asfoapp.data.RecipeRepository
 import com.example.asfoapp.model.Category
+import kotlinx.coroutines.launch
 
 class CategoriesViewModel : ViewModel() {
 
@@ -17,7 +19,8 @@ class CategoriesViewModel : ViewModel() {
     val toastMessage: LiveData<String> get() = _toastMessage
 
     fun loadCategories() {
-        RecipeRepository.getCategories { categories ->
+        viewModelScope.launch {
+            val categories = RecipeRepository.getCategories()
             if (categories == null) {
                 _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
             } else {
@@ -28,11 +31,7 @@ class CategoriesViewModel : ViewModel() {
         }
     }
 
-    fun getCategoryById(id: Int, callback: (Category?) -> Unit) {
-        RecipeRepository.getCategoryById(id) { category ->
-            callback(category)
-        }
-    }
+    suspend fun getCategoryById(id: Int) = RecipeRepository.getCategoryById(id)
 
     data class CategoriesState(
         val categoriesList: List<Category> = emptyList(),
