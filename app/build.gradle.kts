@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "2.1.20"
+    id("com.google.devtools.ksp") version "2.1.20-2.0.1"
     id("androidx.navigation.safeargs.kotlin") version "2.8.9"
 }
 
@@ -36,13 +37,18 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
 }
 
 dependencies {
-    implementation ("com.github.bumptech.glide:glide:4.14.2")
+    val room_version = "2.7.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+
+    implementation("com.github.bumptech.glide:glide:4.14.2")
     implementation("com.squareup.retrofit2:converter-kotlinx-serialization:2.11.0")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
