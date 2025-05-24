@@ -6,8 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.asfoapp.Constants
-import com.example.asfoapp.data.RecipeRepository
+import com.example.asfoapp.data.Constants
+import com.example.asfoapp.data.repositories.CommonRepository
 import com.example.asfoapp.model.Recipe
 import kotlinx.coroutines.launch
 
@@ -21,7 +21,7 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
 
     fun loadRecipe(recipeId: Int) {
         viewModelScope.launch {
-            val recipe = RecipeRepository.getRecipeById(recipeId)
+            val recipe = CommonRepository.getRecipeById(recipeId)
             if (recipe == null) {
                 _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
             } else {
