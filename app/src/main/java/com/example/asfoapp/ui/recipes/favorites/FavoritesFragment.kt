@@ -50,7 +50,6 @@ class FavoritesFragment : Fragment() {
     private fun initUi(state: FavoritesViewModel.FavoritesState) {
         handleRecyclerVisibleStatus(state.favoritesRecipes)
         recipesListAdapter?.setData(state.favoritesRecipes)
-
     }
 
     private fun initAdapter() {
@@ -77,5 +76,4 @@ class FavoritesFragment : Fragment() {
             rvRecipes.visibility = View.GONE.takeIf { recipes.isEmpty() } ?: View.VISIBLE
         }
     }
-
 }

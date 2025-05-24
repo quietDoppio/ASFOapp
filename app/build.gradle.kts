@@ -5,6 +5,7 @@ plugins {
     kotlin("plugin.serialization") version "2.1.20"
     id("com.google.devtools.ksp") version "2.1.20-2.0.1"
     id("androidx.navigation.safeargs.kotlin") version "2.8.9"
+    id("androidx.room")
 }
 
 android {
@@ -39,6 +40,9 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 }
 

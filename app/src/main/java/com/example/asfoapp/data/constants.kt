@@ -1,4 +1,4 @@
-package com.example.asfoapp
+package com.example.asfoapp.data
 
 object Constants {
     const val BASE_URL = "https://recipes.androidsprint.ru/api/"

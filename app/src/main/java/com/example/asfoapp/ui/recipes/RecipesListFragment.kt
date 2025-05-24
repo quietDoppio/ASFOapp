@@ -16,7 +16,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.example.asfoapp.Constants
+import com.example.asfoapp.data.Constants
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
@@ -113,6 +113,4 @@ class GlideRequestListener : RequestListener<Drawable> {
     ): Boolean {
         return false
     }
-
 }
-

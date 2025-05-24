@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.asfoapp.Constants
-import com.example.asfoapp.data.RecipeRepository
+import com.example.asfoapp.data.Constants
+import com.example.asfoapp.data.repositories.CommonRepository
 import com.example.asfoapp.model.Category
 import com.example.asfoapp.model.Recipe
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ class RecipesListViewModel : ViewModel() {
     fun loadRecipes(category: Category?) {
         if (category != null) {
             viewModelScope.launch {
-                val recipes = RecipeRepository.getRecipesByCategoryId(category.id)
+                val recipes = CommonRepository.getRecipesByCategoryId(category.id)
                 if (recipes == null) {
                     _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
                 } else {

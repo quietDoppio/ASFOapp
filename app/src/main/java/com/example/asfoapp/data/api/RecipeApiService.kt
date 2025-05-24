@@ -1,4 +1,4 @@
-package com.example.asfoapp.data
+package com.example.asfoapp.data.api
 
 import com.example.asfoapp.model.Category
 import com.example.asfoapp.model.Recipe
