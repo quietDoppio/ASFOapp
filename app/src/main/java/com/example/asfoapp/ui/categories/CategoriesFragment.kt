@@ -13,6 +13,7 @@ import com.example.asfoapp.di.AsfoApplication
 import com.example.asfoapp.ui.ViewModelFactory
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
+import com.example.asfoapp.model.Category
 import kotlinx.coroutines.launch
 
 class CategoriesListFragment : Fragment() {
@@ -79,7 +80,7 @@ class CategoriesListFragment : Fragment() {
 
     private fun openRecipesByCategoryId(categoryId: Int) {
         viewLifecycleOwner.lifecycleScope.launch {
-            val category = viewModel?.getCategoryById(categoryId)
+            val category: Category? = viewModel?.getCategoryById(categoryId)
             val action =
                 CategoriesListFragmentDirections.actionCategoriesListFragmentToRecipesListFragment(
                     category

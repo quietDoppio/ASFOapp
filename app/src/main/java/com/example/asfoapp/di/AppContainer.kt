@@ -7,7 +7,6 @@ import com.example.asfoapp.data.api.RecipeApiService
 import com.example.asfoapp.data.database.AppDatabase
 import com.example.asfoapp.data.database.CategoryDao
 import com.example.asfoapp.data.repositories.CategoryRepository
-import com.example.asfoapp.interfaces.SafeRequestExecutorImpl
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
@@ -28,13 +27,11 @@ class AppContainer(context: Context) {
 
     private val recipeApiService: RecipeApiService by lazy { retrofit.create(RecipeApiService::class.java) }
 
-    private val executor: SafeRequestExecutorImpl by lazy { SafeRequestExecutorImpl() }
-
     private val categoryDao: CategoryDao by lazy { database.categoryDao() }
 
     // TODO: private val recipesDap: RecipesDao by lazy { database.recipesDao() }
 
-    val categoryRepository by lazy { CategoryRepository(categoryDao, recipeApiService, executor) }
+    val categoryRepository by lazy { CategoryRepository(categoryDao, recipeApiService) }
 
     // TODO: val recipesRepository by lazy { RecipesRepository(recipesDao, recipeApiService, executor) }
 }

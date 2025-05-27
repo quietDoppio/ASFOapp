@@ -1,5 +1,6 @@
 package com.example.asfoapp.ui.categories
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.asfoapp.data.Constants
 import com.example.asfoapp.data.repositories.CategoryRepository
 import com.example.asfoapp.model.Category
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class CategoriesViewModel(private val repository: CategoryRepository) : ViewModel() {
@@ -20,26 +22,39 @@ class CategoriesViewModel(private val repository: CategoryRepository) : ViewMode
 
     fun loadCategories() {
         viewModelScope.launch {
-            val cashedCategories = repository.getCategoriesFromCash()
-            if (cashedCategories.isNotEmpty()) {
+            try {
+                val cached = async { repository.getCachedCategories() }
+                val remote = async { repository.getCategories() }
                 _categoriesState.value =
-                    categoriesState.value?.copy(categoriesList = cashedCategories)
-                return@launch
-            }
-
-            val categories = repository.getCategories()
-            if (categories.isNotEmpty()) {
+                    categoriesState.value?.copy(categoriesList = cached.await())
                 _categoriesState.value =
-                    categoriesState.value?.copy(categoriesList = categories)
-                return@launch
+                    categoriesState.value?.copy(categoriesList = remote.await())
+            } catch (e: Exception) {
+                Log.e(
+                    Constants.LOG_TAG,
+                    "loadCategories: ошибка загрузки данных. ${Log.getStackTraceString(e)}"
+                )
+                _toastMessage.value = Constants.NET_ERROR_MESSAGE
             }
-
-            _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
         }
     }
 
-    suspend fun getCategoryById(id: Int): Category? =
-        repository.getCategoryByIdFromCash(id) ?: repository.getCategoryById(id)
+    suspend fun getCategoryById(id: Int): Category? {
+        return try {
+            try {
+                repository.getCachedCategoryById(id)
+            } catch (e: Exception) {
+                repository.getCategoryById(id)
+            }
+        } catch (e: Exception) {
+            Log.d(
+                Constants.LOG_TAG,
+                "getCategoryById: ошибка получения данных, ${Log.getStackTraceString(e)}"
+            )
+            null
+        }
+    }
+
 
     data class CategoriesState(
         val categoriesList: List<Category> = emptyList(),
