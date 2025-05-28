@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
-import com.example.asfoapp.Constants
+import com.example.asfoapp.data.Constants
 import com.example.asfoapp.R
 import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.ItemRecipeBinding
