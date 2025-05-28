@@ -59,7 +59,7 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
 
     fun toggleFavoriteState() {
         val favoritesIds = getFavoritesIds()
-        recipeState.value?.recipe?.id?.let { id ->
+        recipeState.value?.recipe?.recipeId?.let { id ->
             val isFavorite = favoritesIds.contains(id.toString())
             val updatedFavoritesIds =
                 if (isFavorite) favoritesIds - id.toString() else favoritesIds + id.toString()

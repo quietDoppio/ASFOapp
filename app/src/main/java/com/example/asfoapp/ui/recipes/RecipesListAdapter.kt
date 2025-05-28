@@ -53,7 +53,7 @@ class RecipesListAdapter(dataSet: List<Recipe> = emptyList()) :
                 .placeholder(R.drawable.img_placeholder)
                 .into(binding.ivRecipeImage)
             binding.root.setOnClickListener {
-                itemClickListener?.onItemClick(item.id)
+                itemClickListener?.onItemClick(item.recipeId)
             }
         }
     }
