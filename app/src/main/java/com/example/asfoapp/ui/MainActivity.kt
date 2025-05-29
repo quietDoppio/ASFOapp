@@ -14,9 +14,9 @@ class MainActivity : AppCompatActivity() {
             ?: throw IllegalStateException("_binding for ActivityMainBinding must not be null")
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
+        //this.applicationContext.deleteDatabase("app_database")
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

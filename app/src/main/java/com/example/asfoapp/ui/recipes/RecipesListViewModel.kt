@@ -1,16 +1,18 @@
 package com.example.asfoapp.ui.recipes
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.asfoapp.data.Constants
-import com.example.asfoapp.data.repositories.CommonRepository
+import com.example.asfoapp.data.repositories.RecipesRepository
 import com.example.asfoapp.model.Category
 import com.example.asfoapp.model.Recipe
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class RecipesListViewModel : ViewModel() {
+class RecipesListViewModel(private val repository: RecipesRepository) : ViewModel() {
 
     private val _recipesListState: MutableLiveData<RecipesListState> =
         MutableLiveData(RecipesListState())
@@ -22,20 +24,23 @@ class RecipesListViewModel : ViewModel() {
     fun loadRecipes(category: Category?) {
         if (category != null) {
             viewModelScope.launch {
-                val recipes = CommonRepository.getRecipesByCategoryId(category.id)
-                if (recipes == null) {
-                    _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
-                } else {
-                    _recipesListState.postValue(
+                try {
+                    val cached = async { repository.getCachedRecipesByCategoryId(category.id) }
+                    val remote = async { repository.getRecipesByCategoryId(category.id) }
+                    _recipesListState.value =
                         recipesListState.value?.copy(
                             categoryTitle = category.title,
-                            recipes = recipes,
+                            recipes = cached.await(),
                             apiHeaderImageUrl = "${Constants.BASE_URL}images/${category.imageUrl}"
                         )
-                    )
+                    _recipesListState.value = recipesListState.value?.copy(recipes = remote.await())
+                } catch (e: Exception) {
+                    Log.d(Constants.LOG_TAG, "loadRecipes: ошибка загрузки данных")
+                    _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
                 }
             }
         } else {
+            Log.d(Constants.LOG_TAG, "loadRecipes: категория не обнаружена")
             _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
         }
     }

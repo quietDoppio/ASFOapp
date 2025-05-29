@@ -1,12 +1,13 @@
 package com.example.asfoapp.di
 
 import android.content.Context
-import androidx.room.Room
 import com.example.asfoapp.data.Constants
 import com.example.asfoapp.data.api.RecipeApiService
 import com.example.asfoapp.data.database.AppDatabase
 import com.example.asfoapp.data.database.CategoryDao
+import com.example.asfoapp.data.database.RecipeDao
 import com.example.asfoapp.data.repositories.CategoryRepository
+import com.example.asfoapp.data.repositories.RecipesRepository
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
@@ -14,9 +15,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 class AppContainer(context: Context) {
 
-    private val database by lazy {
-        Room.databaseBuilder(context, AppDatabase::class.java, "app_database").build()
-    }
+    private val database by lazy { AppDatabase.getDatabase(context) }
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
@@ -29,9 +28,9 @@ class AppContainer(context: Context) {
 
     private val categoryDao: CategoryDao by lazy { database.categoryDao() }
 
-    // TODO: private val recipesDap: RecipesDao by lazy { database.recipesDao() }
+    private val recipesDao: RecipeDao by lazy { database.recipeDao() }
 
     val categoryRepository by lazy { CategoryRepository(categoryDao, recipeApiService) }
 
-    // TODO: val recipesRepository by lazy { RecipesRepository(recipesDao, recipeApiService, executor) }
+    val recipesRepository by lazy { RecipesRepository(recipesDao, recipeApiService) }
 }
