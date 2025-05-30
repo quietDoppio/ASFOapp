@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import com.bumptech.glide.Glide
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.FragmentRecipeBinding
+import com.example.asfoapp.di.AsfoApplication
+import com.example.asfoapp.ui.ViewModelFactory
 import com.example.asfoapp.ui.recipes.recipe.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.recipe.adapters.MethodAdapter
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -22,8 +24,7 @@ class RecipeFragment : Fragment() {
     private val binding
         get() =
             _binding ?: throw IllegalStateException("binding for RecipeFragment must not be null")
-    private val viewModel: RecipeViewModel by viewModels()
-
+    private var viewModel: RecipeViewModel? = null
     private var ingredientsAdapter: IngredientsAdapter? = null
     private var methodAdapter: MethodAdapter? = null
     private val navArgs: RecipeFragmentArgs by navArgs()
@@ -38,20 +39,22 @@ class RecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initAdapters()
         initSeekBar()
         initItemDecorator()
-        binding.ibAddToFavoritesButton.setOnClickListener {
-            viewModel.toggleFavoriteState()
+        initViewModel()
+        viewModel?.let { vm ->
+            binding.ibAddToFavoritesButton.setOnClickListener {
+                vm.toggleFavoriteState()
+            }
+            vm.recipeState.observe(viewLifecycleOwner) { newState ->
+                initUi(newState)
+            }
+            vm.toastMessage.observe(viewLifecycleOwner) { message ->
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
+            vm.loadRecipe(navArgs.recipeId)
         }
-        viewModel.recipeState.observe(viewLifecycleOwner) { newState ->
-            initUi(newState)
-        }
-        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-        }
-        viewModel.loadRecipe(navArgs.recipeId)
     }
 
     override fun onDestroyView() {
@@ -84,6 +87,16 @@ class RecipeFragment : Fragment() {
         binding.rvMethod.adapter = methodAdapter
     }
 
+    private fun initViewModel() {
+        context?.applicationContext?.let {
+            val repository = (it as AsfoApplication).container.recipesRepository
+            val factory = ViewModelFactory(
+                mapOf(RecipeViewModel::class.java to { RecipeViewModel(repository) })
+            )
+            viewModel = ViewModelProvider(this, factory)[RecipeViewModel::class.java]
+        }
+    }
+
     private fun initItemDecorator() {
         context?.let { context ->
             val divider = MaterialDividerItemDecoration(
@@ -104,7 +117,7 @@ class RecipeFragment : Fragment() {
             min = 1
             max = 10
             setOnSeekBarChangeListener(
-                PortionsSeekBarListener { it: Int -> viewModel.setPortionsCount(it) }
+                PortionsSeekBarListener { it: Int -> viewModel?.setPortionsCount(it) }
             )
         }
     }

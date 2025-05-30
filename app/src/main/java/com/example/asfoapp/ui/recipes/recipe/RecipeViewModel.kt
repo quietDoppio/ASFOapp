@@ -1,17 +1,16 @@
 package com.example.asfoapp.ui.recipes.recipe
 
-import android.app.Application
-import android.content.Context
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.asfoapp.data.Constants
-import com.example.asfoapp.data.repositories.CommonRepository
+import com.example.asfoapp.data.repositories.RecipesRepository
 import com.example.asfoapp.model.Recipe
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class RecipeViewModel(private val application: Application) : AndroidViewModel(application) {
+class RecipeViewModel(private val repository: RecipesRepository) : ViewModel() {
 
     private val _recipeState: MutableLiveData<RecipeState> = MutableLiveData(RecipeState())
     val recipeState: LiveData<RecipeState> = _recipeState
@@ -21,50 +20,38 @@ class RecipeViewModel(private val application: Application) : AndroidViewModel(a
 
     fun loadRecipe(recipeId: Int) {
         viewModelScope.launch {
-            val recipe = CommonRepository.getRecipeById(recipeId)
-            if (recipe == null) {
-                _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
-            } else {
-                val isFavorite = getFavoritesIds().contains(recipeId.toString())
-                _recipeState.postValue(
+            try {
+                val cached = async { repository.getCachedRecipe(recipeId) }
+                val remote = async { repository.getRecipe(recipeId) }
+                val isFavorite = async { repository.isRecipeFavorite(recipeId) }
+
+                val cachedAwait = cached.await()
+                _recipeState.value =
                     recipeState.value?.copy(
-                        recipe = recipe,
-                        apiHeaderImageUrl = "${Constants.BASE_URL}images/${recipe.imageUrl}",
+                        recipe = cachedAwait,
+                        apiHeaderImageUrl = "${Constants.API_BASE_URL}images/${cachedAwait.imageUrl}",
                         portionsCount = recipeState.value?.portionsCount ?: 1,
-                        isFavorite = isFavorite,
+                        isFavorite = isFavorite.await(),
                     )
-                )
+                val remotedAwait = remote.await()
+                _recipeState.value =
+                    recipeState.value?.copy(
+                        recipe = remotedAwait,
+                        apiHeaderImageUrl = "${Constants.API_BASE_URL}images/${remotedAwait.imageUrl}"
+                    )
+            } catch (e: Exception) {
+                _toastMessage.value = Constants.ERROR_MESSAGE
             }
         }
     }
 
-    private fun getFavoritesIds(): MutableSet<String> {
-        val sharedPreferences = application.applicationContext.getSharedPreferences(
-            Constants.ASFOAPP_PREFS_FILE_KEY, Context.MODE_PRIVATE
-        )
-        return HashSet(
-            sharedPreferences?.getStringSet(Constants.FAVORITES_PREFS_KEY, emptySet()) ?: emptySet()
-        )
-    }
-
-    private fun saveFavoritesIds(recipesIdSet: Set<String>) {
-        val sharedPreferences = application.applicationContext.getSharedPreferences(
-            Constants.ASFOAPP_PREFS_FILE_KEY, Context.MODE_PRIVATE
-        )
-        with(sharedPreferences.edit()) {
-            putStringSet(Constants.FAVORITES_PREFS_KEY, recipesIdSet)
-            apply()
-        }
-    }
-
     fun toggleFavoriteState() {
-        val favoritesIds = getFavoritesIds()
-        recipeState.value?.recipe?.recipeId?.let { id ->
-            val isFavorite = favoritesIds.contains(id.toString())
-            val updatedFavoritesIds =
-                if (isFavorite) favoritesIds - id.toString() else favoritesIds + id.toString()
-            saveFavoritesIds(updatedFavoritesIds)
-            _recipeState.value = recipeState.value?.copy(isFavorite = !isFavorite)
+        viewModelScope.launch {
+            recipeState.value?.recipe?.recipeId?.let { id ->
+                val isFavorite = repository.isRecipeFavorite(id)
+                repository.setFavoriteState(id, !isFavorite)
+                _recipeState.value = recipeState.value?.copy(isFavorite = !isFavorite)
+            }
         }
     }
 

@@ -34,7 +34,7 @@ class CategoriesViewModel(private val repository: CategoryRepository) : ViewMode
                     Constants.LOG_TAG,
                     "loadCategories: ошибка загрузки данных. ${Log.getStackTraceString(e)}"
                 )
-                _toastMessage.value = Constants.NET_ERROR_MESSAGE
+                _toastMessage.value = Constants.ERROR_MESSAGE
             }
         }
     }

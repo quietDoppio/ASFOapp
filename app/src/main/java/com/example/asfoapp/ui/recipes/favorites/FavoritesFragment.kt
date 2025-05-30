@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.FragmentFavoritesBinding
+import com.example.asfoapp.di.AsfoApplication
 import com.example.asfoapp.interfaces.OnItemClickListener
+import com.example.asfoapp.ui.ViewModelFactory
 import com.example.asfoapp.ui.recipes.RecipesListAdapter
 
 class FavoritesFragment : Fragment() {
@@ -18,7 +20,7 @@ class FavoritesFragment : Fragment() {
     private val binding
         get() = _binding
             ?: throw IllegalStateException("binding for FavoritesFragment must not be null")
-    private val viewModel: FavoritesViewModel by viewModels()
+    private var viewModel: FavoritesViewModel? = null
     private var recipesListAdapter: RecipesListAdapter? = null
 
     override fun onCreateView(
@@ -33,13 +35,16 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
-        viewModel.favoritesState.observe(viewLifecycleOwner) { newState ->
-            initUi(newState)
+        initViewModel()
+        viewModel?.let { vm ->
+            vm.favoritesState.observe(viewLifecycleOwner) { newState ->
+                initUi(newState)
+            }
+            vm.toastMessage.observe(viewLifecycleOwner) { message ->
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
+            vm.loadRecipes()
         }
-        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-        }
-        viewModel.loadRecipes()
     }
 
     override fun onDestroyView() {
@@ -63,6 +68,16 @@ class FavoritesFragment : Fragment() {
             )
         }
         binding.rvRecipes.adapter = recipesListAdapter
+    }
+
+    private fun initViewModel() {
+        context?.applicationContext?.let {
+            val repository = (it as AsfoApplication).container.recipesRepository
+            val factory = ViewModelFactory(
+                mapOf(FavoritesViewModel::class.java to { FavoritesViewModel(repository) })
+            )
+            viewModel = ViewModelProvider(this, factory)[FavoritesViewModel::class.java]
+        }
     }
 
     private fun openRecipeByRecipeId(recipeId: Int) {

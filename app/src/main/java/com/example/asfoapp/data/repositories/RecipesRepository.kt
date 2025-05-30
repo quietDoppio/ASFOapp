@@ -6,16 +6,25 @@ import com.example.asfoapp.model.Recipe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class RecipesRepository(private val dao: RecipeDao, private val service: RecipeApiService) {
+class RecipesRepository(
+    private val dao: RecipeDao,
+    private val service: RecipeApiService,
+) {
+    suspend fun getFavoritesRecipes(): List<Recipe> =
+        withContext(Dispatchers.IO) { dao.getFavoritesRecipes() }
+
+    suspend fun isRecipeFavorite(id: Int): Boolean {
+        return withContext(Dispatchers.IO) { dao.isRecipeFavorite(id) }
+    }
+
+    suspend fun setFavoriteState(id: Int, state: Boolean) {
+        withContext(Dispatchers.IO) { dao.setFavoriteState(id, state) }
+    }
 
     suspend fun getCachedRecipesByCategoryId(id: Int): List<Recipe> =
         withContext(Dispatchers.IO) { dao.getRecipesByCategoryId(id) }
 
-    suspend fun getCachedRecipes(ids: List<Int>): List<Recipe> {
-        return withContext(Dispatchers.IO) { dao.getRecipesByIds(ids) }
-    }
-
-    suspend fun getCachedRecipes(id: Int): Recipe {
+    suspend fun getCachedRecipe(id: Int): Recipe {
         return withContext(Dispatchers.IO) { dao.getRecipesByIds(id) }
     }
 
@@ -26,13 +35,7 @@ class RecipesRepository(private val dao: RecipeDao, private val service: RecipeA
         return recipes
     }
 
-    suspend fun getRecipes(ids: List<String>): List<Recipe> {
-        val joinedIds = ids.joinToString(",")
-        val recipes = withContext(Dispatchers.IO) { service.getRecipes(joinedIds) }
-        return recipes
-    }
-
-    suspend fun getRecipes(id: Int): Recipe {
+    suspend fun getRecipe(id: Int): Recipe {
         val recipe = withContext(Dispatchers.IO) { service.getRecipeById(id) }
         return recipe
     }

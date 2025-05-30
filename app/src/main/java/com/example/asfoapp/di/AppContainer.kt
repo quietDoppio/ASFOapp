@@ -18,10 +18,8 @@ class AppContainer(context: Context) {
     private val database by lazy { AppDatabase.getDatabase(context) }
 
     private val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-            .build()
+        Retrofit.Builder().baseUrl(Constants.API_BASE_URL)
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType())).build()
     }
 
     private val recipeApiService: RecipeApiService by lazy { retrofit.create(RecipeApiService::class.java) }

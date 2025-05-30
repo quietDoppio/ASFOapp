@@ -112,7 +112,6 @@ class GlideRequestListener : RequestListener<Drawable> {
         Log.e(Constants.LOG_TAG, "Load of image failed", e)
         return false
     }
-
     override fun onResourceReady(
         resource: Drawable?,
         model: Any?,
