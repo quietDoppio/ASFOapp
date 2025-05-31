@@ -25,13 +25,19 @@ class RecipesRepository(
         withContext(Dispatchers.IO) { dao.getRecipesByCategoryId(id) }
 
     suspend fun getCachedRecipe(id: Int): Recipe {
-        return withContext(Dispatchers.IO) { dao.getRecipesByIds(id) }
+        return withContext(Dispatchers.IO) { dao.getRecipeById(id) }
     }
 
     suspend fun getRecipesByCategoryId(id: Int): List<Recipe> {
         val recipes = withContext(Dispatchers.IO) { service.getRecipesByCategoryId(id) }
-        val updatedRecipes = recipes.map { it.copy(categoryId = id) }
-        dao.insertRecipes(updatedRecipes)
+        val updatedRecipes = recipes.map { apiRecipes ->
+            val cached = withContext(Dispatchers.IO) { dao.getRecipeById(apiRecipes.recipeId) }
+            apiRecipes.copy(
+                categoryId = id,
+                isFavorite = cached.isFavorite
+            )
+        }
+        dao.upsertRecipes(updatedRecipes)
         return recipes
     }
 

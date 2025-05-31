@@ -19,7 +19,7 @@ class FavoritesViewModel(
     private var _toastMessage = MutableLiveData<String>()
     val toastMessage: LiveData<String> get() = _toastMessage
 
-    fun loadRecipes() {
+    fun loadFavorites() {
         viewModelScope.launch {
             try {
                 val favorites = repository.getFavoritesRecipes()

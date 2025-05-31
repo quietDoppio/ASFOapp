@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.asfoapp.data.Constants
 import com.example.asfoapp.data.repositories.RecipesRepository
 import com.example.asfoapp.model.Recipe
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -21,23 +22,24 @@ class RecipeViewModel(private val repository: RecipesRepository) : ViewModel() {
     fun loadRecipe(recipeId: Int) {
         viewModelScope.launch {
             try {
-                val cached = async { repository.getCachedRecipe(recipeId) }
-                val remote = async { repository.getRecipe(recipeId) }
-                val isFavorite = async { repository.isRecipeFavorite(recipeId) }
+                val deferredCachedRecipe: Deferred<Recipe> =
+                    async { repository.getCachedRecipe(recipeId) }
+                val deferredRemotedRecipe: Deferred<Recipe> =
+                    async { repository.getRecipe(recipeId) }
 
-                val cachedAwait = cached.await()
+                val cached = deferredCachedRecipe.await()
                 _recipeState.value =
                     recipeState.value?.copy(
-                        recipe = cachedAwait,
-                        apiHeaderImageUrl = "${Constants.API_BASE_URL}images/${cachedAwait.imageUrl}",
+                        recipe = cached,
+                        apiHeaderImageUrl = "${Constants.API_BASE_URL}images/${cached.imageUrl}",
                         portionsCount = recipeState.value?.portionsCount ?: 1,
-                        isFavorite = isFavorite.await(),
+                        isFavorite = cached.isFavorite,
                     )
-                val remotedAwait = remote.await()
+                val remotedAwait = deferredRemotedRecipe.await()
                 _recipeState.value =
                     recipeState.value?.copy(
                         recipe = remotedAwait,
-                        apiHeaderImageUrl = "${Constants.API_BASE_URL}images/${remotedAwait.imageUrl}"
+                        apiHeaderImageUrl = "${Constants.API_BASE_URL}images/${remotedAwait.imageUrl}",
                     )
             } catch (e: Exception) {
                 _toastMessage.value = Constants.ERROR_MESSAGE
