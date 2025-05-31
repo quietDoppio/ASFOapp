@@ -31,17 +31,17 @@ class RecipesListViewModel(private val repository: RecipesRepository) : ViewMode
                         recipesListState.value?.copy(
                             categoryTitle = category.title,
                             recipes = cached.await(),
-                            apiHeaderImageUrl = "${Constants.BASE_URL}images/${category.imageUrl}"
+                            apiHeaderImageUrl = "${Constants.API_BASE_URL}images/${category.imageUrl}"
                         )
                     _recipesListState.value = recipesListState.value?.copy(recipes = remote.await())
                 } catch (e: Exception) {
                     Log.d(Constants.LOG_TAG, "loadRecipes: ошибка загрузки данных")
-                    _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
+                    _toastMessage.value = Constants.ERROR_MESSAGE
                 }
             }
         } else {
             Log.d(Constants.LOG_TAG, "loadRecipes: категория не обнаружена")
-            _toastMessage.postValue(Constants.NET_ERROR_MESSAGE)
+            _toastMessage.value = Constants.ERROR_MESSAGE
         }
     }
 

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.di.AsfoApplication
@@ -21,7 +21,14 @@ class CategoriesListFragment : Fragment() {
     private val binding
         get() = _binding
             ?: throw IllegalStateException("binding for CategoriesListFragment must not be null")
-    private var viewModel: CategoriesViewModel? = null
+    private val repository by lazy {
+        (requireContext().applicationContext as AsfoApplication).container.categoryRepository
+    }
+    private val viewModel: CategoriesViewModel by viewModels() {
+        ViewModelFactory(
+            mapOf(CategoriesViewModel::class.java to { CategoriesViewModel(repository) })
+        )
+    }
     private var categoriesAdapter: CategoriesAdapter? = null
 
     override fun onCreateView(
@@ -33,18 +40,16 @@ class CategoriesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewModel()
         initAdapter()
-        viewModel?.let { vm ->
-            vm.categoriesState.observe(viewLifecycleOwner) { newState ->
-                initUi(newState)
-            }
-            vm.toastMessage.observe(viewLifecycleOwner) { message ->
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-            }
-            vm.loadCategories()
+        viewModel.categoriesState.observe(viewLifecycleOwner) { newState ->
+            initUi(newState)
         }
+        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+        viewModel.loadCategories()
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -66,21 +71,9 @@ class CategoriesListFragment : Fragment() {
         binding.rvCategories.adapter = categoriesAdapter
     }
 
-    private fun initViewModel() {
-        val context = context?.applicationContext
-        context?.let {
-            val repository =
-                (context as AsfoApplication).container.categoryRepository
-            val factory = ViewModelFactory(
-                mapOf(CategoriesViewModel::class.java to { CategoriesViewModel(repository) })
-            )
-            viewModel = ViewModelProvider(this, factory)[CategoriesViewModel::class.java]
-        }
-    }
-
     private fun openRecipesByCategoryId(categoryId: Int) {
         viewLifecycleOwner.lifecycleScope.launch {
-            val category: Category? = viewModel?.getCategoryById(categoryId)
+            val category: Category? = viewModel.getCategoryById(categoryId)
             val action =
                 CategoriesListFragmentDirections.actionCategoriesListFragmentToRecipesListFragment(
                     category

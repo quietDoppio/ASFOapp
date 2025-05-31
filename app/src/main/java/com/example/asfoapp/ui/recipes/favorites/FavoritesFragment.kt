@@ -10,7 +10,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.FragmentFavoritesBinding
+import com.example.asfoapp.di.AsfoApplication
 import com.example.asfoapp.interfaces.OnItemClickListener
+import com.example.asfoapp.ui.ViewModelFactory
 import com.example.asfoapp.ui.recipes.RecipesListAdapter
 
 class FavoritesFragment : Fragment() {
@@ -18,13 +20,19 @@ class FavoritesFragment : Fragment() {
     private val binding
         get() = _binding
             ?: throw IllegalStateException("binding for FavoritesFragment must not be null")
-    private val viewModel: FavoritesViewModel by viewModels()
+
+    private val repository by lazy {
+        (requireContext().applicationContext as AsfoApplication).container.recipesRepository
+    }
+    private val viewModel: FavoritesViewModel by viewModels {
+        ViewModelFactory(
+            mapOf(FavoritesViewModel::class.java to { FavoritesViewModel(repository) })
+        )
+    }
     private var recipesListAdapter: RecipesListAdapter? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         return binding.root
@@ -39,7 +47,7 @@ class FavoritesFragment : Fragment() {
         viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
-        viewModel.loadRecipes()
+        viewModel.loadFavorites()
     }
 
     override fun onDestroyView() {
@@ -54,13 +62,11 @@ class FavoritesFragment : Fragment() {
 
     private fun initAdapter() {
         recipesListAdapter = RecipesListAdapter().apply {
-            setOnItemClickListener(
-                object : OnItemClickListener {
-                    override fun onItemClick(itemId: Int) {
-                        openRecipeByRecipeId(itemId)
-                    }
+            setOnItemClickListener(object : OnItemClickListener {
+                override fun onItemClick(itemId: Int) {
+                    openRecipeByRecipeId(itemId)
                 }
-            )
+            })
         }
         binding.rvRecipes.adapter = recipesListAdapter
     }

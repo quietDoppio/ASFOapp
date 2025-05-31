@@ -49,7 +49,7 @@ class CategoriesAdapter(dataSet: List<Category> = emptyList()) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Category, itemClickListener: OnItemClickListener?) {
             Glide.with(binding.root)
-                .load("${Constants.BASE_URL}images/${item.imageUrl}")
+                .load("${Constants.API_BASE_URL}images/${item.imageUrl}")
                 .error(R.drawable.img_error)
                 .placeholder(R.drawable.img_placeholder)
                 .into(binding.cardViewImage)
