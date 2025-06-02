@@ -48,7 +48,7 @@ class RecipesListAdapter(dataSet: List<Recipe> = emptyList()) :
         fun bind(item: Recipe, itemClickListener: OnItemClickListener?) {
             binding.tvRecipeName.text = item.title
             Glide.with(binding.root)
-                .load("${Constants.BASE_URL}images/${item.imageUrl}")
+                .load("${Constants.API_BASE_URL}images/${item.imageUrl}")
                 .error(R.drawable.img_error)
                 .placeholder(R.drawable.img_placeholder)
                 .into(binding.ivRecipeImage)

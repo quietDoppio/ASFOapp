@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -28,8 +28,14 @@ class RecipesListFragment : Fragment() {
     private val binding
         get() = _binding
             ?: throw IllegalStateException("binding for RecipesListFragment must not be null")
-
-    private var viewModel: RecipesListViewModel? = null
+    private val repository by lazy {
+        (requireContext().applicationContext as AsfoApplication).container.recipesRepository
+    }
+    private val viewModel: RecipesListViewModel by viewModels {
+        ViewModelFactory(
+            mapOf(RecipesListViewModel::class.java to { RecipesListViewModel(repository) })
+        )
+    }
     private val navAgs: RecipesListFragmentArgs by navArgs()
     private var recipesListAdapter: RecipesListAdapter? = null
     private val glideRequestListener = GlideRequestListener()
@@ -44,16 +50,13 @@ class RecipesListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
-        initViewModel()
-        viewModel?.let { vm ->
-            vm.recipesListState.observe(viewLifecycleOwner) { newState ->
-                initUi(newState)
-            }
-            vm.toastMessage.observe(viewLifecycleOwner) { message ->
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-            }
-            vm.loadRecipes(navAgs.category)
+        viewModel.recipesListState.observe(viewLifecycleOwner) { newState ->
+            initUi(newState)
         }
+        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
+        viewModel.loadRecipes(navAgs.category)
     }
 
     override fun onDestroyView() {
@@ -82,18 +85,6 @@ class RecipesListFragment : Fragment() {
             })
         }
         binding.rvRecipes.adapter = recipesListAdapter
-    }
-
-    private fun initViewModel() {
-        val context = context?.applicationContext
-        context?.let {
-            val repository = (it as AsfoApplication).container.recipesRepository
-            val factory =
-                ViewModelFactory(
-                    mapOf(RecipesListViewModel::class.java to { RecipesListViewModel(repository) })
-                )
-            viewModel = ViewModelProvider(this, factory)[RecipesListViewModel::class.java]
-        }
     }
 
     private fun openRecipeByRecipeId(recipeId: Int) {
