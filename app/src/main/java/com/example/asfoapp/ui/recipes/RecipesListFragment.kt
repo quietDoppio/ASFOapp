@@ -12,30 +12,23 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
-import com.example.asfoapp.di.AsfoApplication
 import com.example.asfoapp.di.GlideRequestListener
 import com.example.asfoapp.interfaces.OnItemClickListener
-import com.example.asfoapp.di.ViewModelsFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentRecipesListBinding? = null
     private val binding
         get() = _binding
             ?: throw IllegalStateException("binding for RecipesListFragment must not be null")
-    private var recipesListAdapter: RecipesListAdapter? = null
+
+    @Inject
+    internal lateinit var glideRequestListener: GlideRequestListener
+    private val viewModel: RecipesListViewModel by viewModels()
     private val navAgs: RecipesListFragmentArgs by navArgs()
-    private val diContainer by lazy {
-        (requireContext().applicationContext as AsfoApplication).container
-    }
-    private val glideRequestListener: GlideRequestListener? by lazy {
-        diContainer.glideRequestListener
-    }
-    private val repository by lazy { diContainer.recipesRepository }
-    private val viewModel: RecipesListViewModel by viewModels {
-        ViewModelsFactory(
-            mapOf(RecipesListViewModel::class.java to { RecipesListViewModel(repository) })
-        )
-    }
+    private var recipesListAdapter: RecipesListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
