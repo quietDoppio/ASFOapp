@@ -8,6 +8,8 @@ import com.example.asfoapp.data.database.CategoryDao
 import com.example.asfoapp.data.database.RecipeDao
 import com.example.asfoapp.data.repositories.CategoryRepository
 import com.example.asfoapp.data.repositories.RecipesRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
@@ -22,13 +24,21 @@ class AppContainer(context: Context) {
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType())).build()
     }
 
+    private val dispatcherIO: CoroutineDispatcher by lazy { Dispatchers.IO }
+
     private val recipeApiService: RecipeApiService by lazy { retrofit.create(RecipeApiService::class.java) }
 
     private val categoryDao: CategoryDao by lazy { database.categoryDao() }
 
     private val recipesDao: RecipeDao by lazy { database.recipeDao() }
 
-    val categoryRepository by lazy { CategoryRepository(categoryDao, recipeApiService) }
+    val glideRequestListener: GlideRequestListener by lazy {
+        GlideRequestListener()
+    }
 
-    val recipesRepository by lazy { RecipesRepository(recipesDao, recipeApiService) }
+    val categoryRepository by lazy {
+        CategoryRepository(categoryDao, recipeApiService, dispatcherIO)
+    }
+
+    val recipesRepository by lazy { RecipesRepository(recipesDao, recipeApiService, dispatcherIO) }
 }

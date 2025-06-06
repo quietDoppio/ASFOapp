@@ -3,35 +3,36 @@ package com.example.asfoapp.data.repositories
 import com.example.asfoapp.data.api.RecipeApiService
 import com.example.asfoapp.data.database.RecipeDao
 import com.example.asfoapp.model.Recipe
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 class RecipesRepository(
     private val dao: RecipeDao,
     private val service: RecipeApiService,
+    private val dispatcher: CoroutineDispatcher
 ) {
     suspend fun getFavoritesRecipes(): List<Recipe> =
-        withContext(Dispatchers.IO) { dao.getFavoritesRecipes() }
+        withContext(dispatcher) { dao.getFavoritesRecipes() }
 
     suspend fun isRecipeFavorite(id: Int): Boolean {
-        return withContext(Dispatchers.IO) { dao.isRecipeFavorite(id) }
+        return withContext(dispatcher) { dao.isRecipeFavorite(id) }
     }
 
     suspend fun setFavoriteState(id: Int, state: Boolean) {
-        withContext(Dispatchers.IO) { dao.setFavoriteState(id, state) }
+        withContext(dispatcher) { dao.setFavoriteState(id, state) }
     }
 
     suspend fun getCachedRecipesByCategoryId(id: Int): List<Recipe> =
-        withContext(Dispatchers.IO) { dao.getRecipesByCategoryId(id) }
+        withContext(dispatcher) { dao.getRecipesByCategoryId(id) }
 
     suspend fun getCachedRecipe(id: Int): Recipe {
-        return withContext(Dispatchers.IO) { dao.getRecipeById(id) }
+        return withContext(dispatcher) { dao.getRecipeById(id) }
     }
 
     suspend fun getRecipesByCategoryId(id: Int): List<Recipe> {
-        val recipes = withContext(Dispatchers.IO) { service.getRecipesByCategoryId(id) }
+        val recipes = withContext(dispatcher) { service.getRecipesByCategoryId(id) }
         val updatedRecipes = recipes.map { apiRecipes ->
-            val cached = withContext(Dispatchers.IO) { dao.getRecipeById(apiRecipes.recipeId) }
+            val cached = withContext(dispatcher) { dao.getRecipeById(apiRecipes.recipeId) }
             apiRecipes.copy(
                 categoryId = id,
                 isFavorite = cached.isFavorite
@@ -42,7 +43,7 @@ class RecipesRepository(
     }
 
     suspend fun getRecipe(id: Int): Recipe {
-        val recipe = withContext(Dispatchers.IO) { service.getRecipeById(id) }
+        val recipe = withContext(dispatcher) { service.getRecipeById(id) }
         return recipe
     }
 }

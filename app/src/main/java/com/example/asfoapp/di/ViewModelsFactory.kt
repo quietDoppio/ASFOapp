@@ -1,9 +1,9 @@
-package com.example.asfoapp.ui
+package com.example.asfoapp.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class ViewModelFactory(
+class ViewModelsFactory(
     private val constructors: Map<Class<out ViewModel>, () -> ViewModel>,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

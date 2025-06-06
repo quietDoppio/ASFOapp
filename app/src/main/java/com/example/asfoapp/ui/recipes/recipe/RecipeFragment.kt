@@ -16,7 +16,7 @@ import com.example.asfoapp.R
 import com.example.asfoapp.data.Constants
 import com.example.asfoapp.databinding.FragmentRecipeBinding
 import com.example.asfoapp.di.AsfoApplication
-import com.example.asfoapp.ui.ViewModelFactory
+import com.example.asfoapp.di.ViewModelsFactory
 import com.example.asfoapp.ui.recipes.recipe.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.recipe.adapters.MethodAdapter
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -30,7 +30,7 @@ class RecipeFragment : Fragment() {
         (requireContext().applicationContext as AsfoApplication).container.recipesRepository
     }
     private val viewModel: RecipeViewModel by viewModels {
-        ViewModelFactory(
+        ViewModelsFactory(
             mapOf(RecipeViewModel::class.java to { RecipeViewModel(repository) })
         )
     }

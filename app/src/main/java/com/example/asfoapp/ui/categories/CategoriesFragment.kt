@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.asfoapp.di.AsfoApplication
-import com.example.asfoapp.ui.ViewModelFactory
+import com.example.asfoapp.di.ViewModelsFactory
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.model.Category
@@ -25,7 +25,7 @@ class CategoriesListFragment : Fragment() {
         (requireContext().applicationContext as AsfoApplication).container.categoryRepository
     }
     private val viewModel: CategoriesViewModel by viewModels() {
-        ViewModelFactory(
+        ViewModelsFactory(
             mapOf(CategoriesViewModel::class.java to { CategoriesViewModel(repository) })
         )
     }

@@ -1,8 +1,6 @@
 package com.example.asfoapp.ui.recipes
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,33 +10,32 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.example.asfoapp.data.Constants
 import com.example.asfoapp.R
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.di.AsfoApplication
+import com.example.asfoapp.di.GlideRequestListener
 import com.example.asfoapp.interfaces.OnItemClickListener
-import com.example.asfoapp.ui.ViewModelFactory
+import com.example.asfoapp.di.ViewModelsFactory
 
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentRecipesListBinding? = null
     private val binding
         get() = _binding
             ?: throw IllegalStateException("binding for RecipesListFragment must not be null")
-    private val repository by lazy {
-        (requireContext().applicationContext as AsfoApplication).container.recipesRepository
+    private var recipesListAdapter: RecipesListAdapter? = null
+    private val navAgs: RecipesListFragmentArgs by navArgs()
+    private val diContainer by lazy {
+        (requireContext().applicationContext as AsfoApplication).container
     }
+    private val glideRequestListener: GlideRequestListener? by lazy {
+        diContainer.glideRequestListener
+    }
+    private val repository by lazy { diContainer.recipesRepository }
     private val viewModel: RecipesListViewModel by viewModels {
-        ViewModelFactory(
+        ViewModelsFactory(
             mapOf(RecipesListViewModel::class.java to { RecipesListViewModel(repository) })
         )
     }
-    private val navAgs: RecipesListFragmentArgs by navArgs()
-    private var recipesListAdapter: RecipesListAdapter? = null
-    private val glideRequestListener = GlideRequestListener()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -91,26 +88,5 @@ class RecipesListFragment : Fragment() {
         val action =
             RecipesListFragmentDirections.actionRecipesListFragmentToRecipeFragment(recipeId)
         findNavController().navigate(action)
-    }
-
-}
-
-class GlideRequestListener : RequestListener<Drawable> {
-    override fun onLoadFailed(
-        e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean
-    ): Boolean {
-        e?.logRootCauses(Constants.LOG_TAG)
-        Log.e(Constants.LOG_TAG, "Load of image failed", e)
-        return false
-    }
-
-    override fun onResourceReady(
-        resource: Drawable?,
-        model: Any?,
-        target: Target<Drawable>?,
-        dataSource: DataSource?,
-        isFirstResource: Boolean
-    ): Boolean {
-        return false
     }
 }
