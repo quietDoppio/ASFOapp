@@ -21,7 +21,7 @@ import com.example.asfoapp.R
 import com.example.asfoapp.databinding.FragmentRecipesListBinding
 import com.example.asfoapp.di.AsfoApplication
 import com.example.asfoapp.interfaces.OnItemClickListener
-import com.example.asfoapp.ui.ViewModelFactory
+import com.example.asfoapp.di.ViewModelsFactory
 
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentRecipesListBinding? = null
@@ -32,7 +32,7 @@ class RecipesListFragment : Fragment() {
         (requireContext().applicationContext as AsfoApplication).container.recipesRepository
     }
     private val viewModel: RecipesListViewModel by viewModels {
-        ViewModelFactory(
+        ViewModelsFactory(
             mapOf(RecipesListViewModel::class.java to { RecipesListViewModel(repository) })
         )
     }
