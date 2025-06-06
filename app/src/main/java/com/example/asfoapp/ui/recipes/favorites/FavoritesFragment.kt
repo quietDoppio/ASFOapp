@@ -12,7 +12,7 @@ import com.example.asfoapp.model.Recipe
 import com.example.asfoapp.databinding.FragmentFavoritesBinding
 import com.example.asfoapp.di.AsfoApplication
 import com.example.asfoapp.interfaces.OnItemClickListener
-import com.example.asfoapp.ui.ViewModelFactory
+import com.example.asfoapp.di.ViewModelsFactory
 import com.example.asfoapp.ui.recipes.RecipesListAdapter
 
 class FavoritesFragment : Fragment() {
@@ -25,7 +25,7 @@ class FavoritesFragment : Fragment() {
         (requireContext().applicationContext as AsfoApplication).container.recipesRepository
     }
     private val viewModel: FavoritesViewModel by viewModels {
-        ViewModelFactory(
+        ViewModelsFactory(
             mapOf(FavoritesViewModel::class.java to { FavoritesViewModel(repository) })
         )
     }
