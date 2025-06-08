@@ -9,9 +9,7 @@ import com.example.asfoapp.data.repositories.RecipesRepository
 import com.example.asfoapp.model.Recipe
 import kotlinx.coroutines.launch
 
-class FavoritesViewModel(
-    private val repository: RecipesRepository,
-) : ViewModel() {
+class FavoritesViewModel(private val repository: RecipesRepository) : ViewModel() {
 
     private val _favoritesState: MutableLiveData<FavoritesState> = MutableLiveData(FavoritesState())
     val favoritesState: LiveData<FavoritesState> get() = _favoritesState
