@@ -20,24 +20,19 @@ import com.example.asfoapp.di.ViewModelsFactory
 import com.example.asfoapp.ui.recipes.recipe.adapters.IngredientsAdapter
 import com.example.asfoapp.ui.recipes.recipe.adapters.MethodAdapter
 import com.google.android.material.divider.MaterialDividerItemDecoration
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
     private val binding
         get() = _binding
             ?: throw IllegalStateException("binding for RecipeFragment must not be null")
-    private val repository by lazy {
-        (requireContext().applicationContext as AsfoApplication).container.recipesRepository
-    }
-    private val viewModel: RecipeViewModel by viewModels {
-        ViewModelsFactory(
-            mapOf(RecipeViewModel::class.java to { RecipeViewModel(repository) })
-        )
-    }
+
+    private val viewModel: RecipeViewModel by viewModels()
     private val navArgs: RecipeFragmentArgs by navArgs()
     private var ingredientsAdapter: IngredientsAdapter? = null
     private var methodAdapter: MethodAdapter? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

@@ -14,21 +14,16 @@ import com.example.asfoapp.di.AsfoApplication
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.di.ViewModelsFactory
 import com.example.asfoapp.ui.recipes.RecipesListAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FavoritesFragment : Fragment() {
     private var _binding: FragmentFavoritesBinding? = null
     private val binding
         get() = _binding
             ?: throw IllegalStateException("binding for FavoritesFragment must not be null")
 
-    private val repository by lazy {
-        (requireContext().applicationContext as AsfoApplication).container.recipesRepository
-    }
-    private val viewModel: FavoritesViewModel by viewModels {
-        ViewModelsFactory(
-            mapOf(FavoritesViewModel::class.java to { FavoritesViewModel(repository) })
-        )
-    }
+    private val viewModel: FavoritesViewModel by viewModels()
     private var recipesListAdapter: RecipesListAdapter? = null
 
     override fun onCreateView(

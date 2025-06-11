@@ -8,10 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.asfoapp.data.Constants
 import com.example.asfoapp.data.repositories.CategoryRepository
 import com.example.asfoapp.model.Category
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CategoriesViewModel(private val repository: CategoryRepository) : ViewModel() {
+@HiltViewModel
+class CategoriesViewModel @Inject constructor(private val repository: CategoryRepository) : ViewModel() {
 
     private var _categoriesState: MutableLiveData<CategoriesState> =
         MutableLiveData(CategoriesState())
@@ -54,7 +57,6 @@ class CategoriesViewModel(private val repository: CategoryRepository) : ViewMode
             null
         }
     }
-
 
     data class CategoriesState(
         val categoriesList: List<Category> = emptyList(),

@@ -7,9 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.asfoapp.data.Constants
 import com.example.asfoapp.data.repositories.RecipesRepository
 import com.example.asfoapp.model.Recipe
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FavoritesViewModel(private val repository: RecipesRepository) : ViewModel() {
+@HiltViewModel
+class FavoritesViewModel @Inject constructor(private val repository: RecipesRepository) :
+    ViewModel() {
 
     private val _favoritesState: MutableLiveData<FavoritesState> = MutableLiveData(FavoritesState())
     val favoritesState: LiveData<FavoritesState> get() = _favoritesState

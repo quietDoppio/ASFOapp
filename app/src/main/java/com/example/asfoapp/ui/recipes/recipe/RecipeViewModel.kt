@@ -7,11 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.asfoapp.data.Constants
 import com.example.asfoapp.data.repositories.RecipesRepository
 import com.example.asfoapp.model.Recipe
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RecipeViewModel(private val repository: RecipesRepository) : ViewModel() {
+@HiltViewModel
+class RecipeViewModel @Inject constructor(private val repository: RecipesRepository) : ViewModel() {
 
     private val _recipeState: MutableLiveData<RecipeState> = MutableLiveData(RecipeState())
     val recipeState: LiveData<RecipeState> = _recipeState

@@ -14,21 +14,17 @@ import com.example.asfoapp.di.ViewModelsFactory
 import com.example.asfoapp.databinding.FragmentCategoriesListBinding
 import com.example.asfoapp.interfaces.OnItemClickListener
 import com.example.asfoapp.model.Category
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class CategoriesListFragment : Fragment() {
     private var _binding: FragmentCategoriesListBinding? = null
     private val binding
         get() = _binding
             ?: throw IllegalStateException("binding for CategoriesListFragment must not be null")
-    private val repository by lazy {
-        (requireContext().applicationContext as AsfoApplication).container.categoryRepository
-    }
-    private val viewModel: CategoriesViewModel by viewModels() {
-        ViewModelsFactory(
-            mapOf(CategoriesViewModel::class.java to { CategoriesViewModel(repository) })
-        )
-    }
+
+    private val viewModel: CategoriesViewModel by viewModels()
     private var categoriesAdapter: CategoriesAdapter? = null
 
     override fun onCreateView(

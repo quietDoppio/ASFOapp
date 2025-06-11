@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("plugin.serialization")
     id("kotlin-parcelize")
-    kotlin("plugin.serialization") version "2.1.20"
-    id("com.google.devtools.ksp") version "2.1.20-2.0.1"
-    id("androidx.navigation.safeargs.kotlin") version "2.8.9"
+    id("com.google.devtools.ksp")
+    id("androidx.navigation.safeargs.kotlin")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -48,24 +49,29 @@ android {
 }
 
 dependencies {
+    val hiltVersion = "2.56.2"
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    ksp("com.google.dagger:hilt-compiler:$hiltVersion")
 
-    val room_version = "2.7.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
+    val roomVersion = "2.7.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
-    implementation("com.github.bumptech.glide:glide:4.14.2")
+    val retrofitVersion = "2.11.0"
+    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:$retrofitVersion")
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
 
-    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:2.11.0")
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    val okHttpVersion = "4.12.0"
+    implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
+    implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation("com.github.bumptech.glide:glide:4.14.2")
+    implementation("androidx.fragment:fragment-ktx:$1.8.6")
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation("androidx.fragment:fragment-ktx:$1.8.6")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
