@@ -5,10 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.asfoapp.model.Category
-import com.example.asfoapp.model.Recipe
+import com.example.asfoapp.data.database.dao.CategoryDao
+import com.example.asfoapp.data.database.dao.RecipeDao
+import com.example.asfoapp.data.database.entities.CategoryEntity
+import com.example.asfoapp.data.database.entities.RecipeEntity
 
-@Database(entities = [Category::class, Recipe::class], version = 1, exportSchema = true)
+@Database(entities = [CategoryEntity::class, RecipeEntity::class], version = 1, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
@@ -17,16 +19,15 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
-        fun getDatabase(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
+        fun getDatabase(context: Context): AppDatabase =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
                     context,
                     AppDatabase::class.java,
                     "app_database"
-                ).build()
-                INSTANCE = instance
-                return instance
+                ).build().also { instance ->
+                    INSTANCE = instance
+                }
             }
-        }
     }
 }

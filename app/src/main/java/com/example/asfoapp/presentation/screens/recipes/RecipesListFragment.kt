@@ -1,0 +1,88 @@
+package com.example.asfoapp.presentation.screens.recipes
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.example.asfoapp.R
+import com.example.asfoapp.databinding.FragmentRecipesListBinding
+import com.example.asfoapp.presentation.GlideRequestListener
+import com.example.asfoapp.presentation.interfaces.OnItemClickListener
+import com.example.asfoapp.presentation.model.toDomain
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
+@AndroidEntryPoint
+class RecipesListFragment : Fragment() {
+    private var _binding: FragmentRecipesListBinding? = null
+    private val binding
+        get() = _binding
+            ?: throw IllegalStateException("binding for RecipesListFragment must not be null")
+
+    @Inject
+    internal lateinit var glideRequestListener: GlideRequestListener
+    private val viewModel: RecipesListViewModel by viewModels()
+    private val navAgs: RecipesListFragmentArgs by navArgs()
+    private var recipesListAdapter: RecipesListAdapter? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentRecipesListBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initAdapter()
+        viewModel.recipesListState.observe(viewLifecycleOwner) { newState ->
+            initUi(newState)
+        }
+        viewModel.toastMessage.observe(viewLifecycleOwner) { messageRes ->
+            messageRes?.let {
+                Toast.makeText(context, getString(it), Toast.LENGTH_LONG).show()
+            }
+        }
+        viewModel.loadRecipes(navAgs.category?.toDomain())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initUi(state: RecipesListState) {
+        Glide.with(this).load(state.apiHeaderImageUrl).placeholder(R.drawable.img_placeholder)
+            .error(R.drawable.img_error).listener(glideRequestListener).into(binding.categoryImage)
+        binding.apply {
+            val title = state.categoryTitle
+            if (title.isNotBlank()) {
+                categoryName.text = title
+            }
+            recipesListAdapter?.setData(state.recipes)
+        }
+    }
+
+    private fun initAdapter() {
+        recipesListAdapter = RecipesListAdapter().apply {
+            setOnItemClickListener(object : OnItemClickListener {
+                override fun onItemClick(itemId: Int) {
+                    openRecipeByRecipeId(itemId)
+                }
+            })
+        }
+        binding.rvRecipes.adapter = recipesListAdapter
+    }
+
+    private fun openRecipeByRecipeId(recipeId: Int) {
+        val action =
+            RecipesListFragmentDirections.actionRecipesListFragmentToRecipeFragment(recipeId)
+        findNavController().navigate(action)
+    }
+}

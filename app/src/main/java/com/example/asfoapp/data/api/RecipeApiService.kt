@@ -1,7 +1,7 @@
 package com.example.asfoapp.data.api
 
-import com.example.asfoapp.model.Category
-import com.example.asfoapp.model.Recipe
+import com.example.asfoapp.data.api.model.CategoryDto
+import com.example.asfoapp.data.api.model.RecipeDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -9,17 +9,17 @@ import retrofit2.http.Query
 interface RecipeApiService {
 
     @GET("category")
-    suspend fun getCategories(): List<Category>
+    suspend fun getCategories(): List<CategoryDto>
 
     @GET("category/{id}")
-    suspend fun getCategoryById(@Path("id") id: Int): Category
+    suspend fun getCategoryById(@Path("id") id: Int): CategoryDto
 
     @GET("category/{id}/recipes")
-    suspend fun getRecipesByCategoryId(@Path("id") id: Int): List<Recipe>
+    suspend fun getRecipesByCategoryId(@Path("id") id: Int): List<RecipeDto>
 
     @GET("recipes")
-    suspend fun getRecipes(@Query("ids") ids: String): List<Recipe>
+    suspend fun getRecipes(@Query("ids") ids: String): List<RecipeDto>
 
     @GET("recipe/{id}")
-    suspend fun getRecipeById(@Path("id") id: Int): Recipe
+    suspend fun getRecipeById(@Path("id") id: Int): RecipeDto
 }

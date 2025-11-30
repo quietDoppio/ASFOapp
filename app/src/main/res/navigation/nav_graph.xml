@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/recipeFragment"
-        android:name="com.example.asfoapp.ui.recipes.recipe.RecipeFragment"
+        android:name="com.example.asfoapp.presentation.screens.recipe.RecipeFragment"
         android:label="fragment_recipe"
         tools:layout="@layout/fragment_recipe" >
         <argument
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/recipesListFragment"
-        android:name="com.example.asfoapp.ui.recipes.RecipesListFragment"
+        android:name="com.example.asfoapp.presentation.screens.recipes.RecipesListFragment"
         android:label="fragment_recipes_list"
         tools:layout="@layout/fragment_recipes_list" >
         <action
@@ -29,11 +29,11 @@
         <argument
             android:name="category"
             app:nullable="true"
-            app:argType="com.example.asfoapp.model.Category" />
+            app:argType="com.example.asfoapp.presentation.model.CategoryUiModel" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="com.example.asfoapp.ui.recipes.favorites.FavoritesFragment"
+        android:name="com.example.asfoapp.presentation.screens.favorites.FavoritesFragment"
         android:label="fragment_favorites"
         tools:layout="@layout/fragment_favorites" >
 
@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/categoriesListFragment"
-        android:name="com.example.asfoapp.ui.categories.CategoriesListFragment"
+        android:name="com.example.asfoapp.presentation.screens.categories.CategoriesListFragment"
         android:label="fragment_categories_list"
         tools:layout="@layout/fragment_categories_list" >
         <action

@@ -22,4 +22,6 @@
 
     <string name="recipe_id_set_preferences_key">RECIPE_ID_SET</string>
 
+    <string name="error_loading_data">Ошибка загрузки данных</string>
+
 </resources>
