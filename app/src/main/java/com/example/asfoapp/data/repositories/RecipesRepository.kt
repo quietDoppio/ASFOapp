@@ -1,52 +1,56 @@
 package com.example.asfoapp.data.repositories
 
 import com.example.asfoapp.data.api.RecipeApiService
-import com.example.asfoapp.data.database.RecipeDao
-import com.example.asfoapp.di.IoDispatcher
-import com.example.asfoapp.model.Recipe
+import com.example.asfoapp.data.database.dao.RecipeDao
+import com.example.asfoapp.data.di.IoDispatcher
+import com.example.asfoapp.data.mappers.toDomain
+import com.example.asfoapp.data.mappers.toEntity
+import com.example.asfoapp.domain.models.Recipe
+import com.example.asfoapp.domain.repositories.RecipesRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class RecipesRepository @Inject constructor(
+class RecipesRepositoryImpl @Inject constructor(
     private val dao: RecipeDao,
     private val service: RecipeApiService,
     @IoDispatcher
     private val ioDispatcher: CoroutineDispatcher
-) {
-    suspend fun getFavoritesRecipes(): List<Recipe> =
-        withContext(ioDispatcher) { dao.getFavoritesRecipes() }
+) : RecipesRepository {
+    override suspend fun getFavoritesRecipes(): List<Recipe> =
+        withContext(ioDispatcher) { dao.getFavoritesRecipes().map { it.toDomain() } }
 
-    suspend fun isRecipeFavorite(id: Int): Boolean {
-        return withContext(ioDispatcher) { dao.isRecipeFavorite(id) }
-    }
+    override suspend fun isRecipeFavorite(id: Int): Boolean =
+        withContext(ioDispatcher) { dao.isRecipeFavorite(id) }
 
-    suspend fun setFavoriteState(id: Int, state: Boolean) {
+    override suspend fun setFavoriteState(id: Int, state: Boolean) {
         withContext(ioDispatcher) { dao.setFavoriteState(id, state) }
     }
 
-    suspend fun getCachedRecipesByCategoryId(id: Int): List<Recipe> =
-        withContext(ioDispatcher) { dao.getRecipesByCategoryId(id) }
+    override suspend fun getCachedRecipesByCategoryId(id: Int): List<Recipe> =
+        withContext(ioDispatcher) { dao.getRecipesByCategoryId(id).map { it.toDomain() } }
 
-    suspend fun getCachedRecipe(id: Int): Recipe {
-        return withContext(ioDispatcher) { dao.getRecipeById(id) }
-    }
+    override suspend fun getCachedRecipe(id: Int): Recipe =
+        withContext(ioDispatcher) { dao.getRecipeById(id).toDomain() }
 
-    suspend fun getRecipesByCategoryId(id: Int): List<Recipe> {
-        val recipes = withContext(ioDispatcher) { service.getRecipesByCategoryId(id) }
-        val updatedRecipes = recipes.map { apiRecipes ->
-            val cached = withContext(ioDispatcher) { dao.getRecipeById(apiRecipes.recipeId) }
-            apiRecipes.copy(
-                categoryId = id,
-                isFavorite = cached.isFavorite
-            )
+    override suspend fun getRecipesByCategoryId(id: Int): List<Recipe> =
+        withContext(ioDispatcher) {
+            val cachedById = dao.getRecipesByCategoryId(id).associateBy { it.recipeId }
+            val remoteRecipes = service.getRecipesByCategoryId(id)
+            val entities = remoteRecipes.map { dto ->
+                val cachedFavorite = cachedById[dto.id]?.isFavorite ?: false
+                dto.toEntity(isFavorite = cachedFavorite, categoryIdOverride = id)
+            }
+            dao.upsertRecipes(entities)
+            entities.map { it.toDomain() }
         }
-        dao.upsertRecipes(updatedRecipes)
-        return recipes
-    }
 
-    suspend fun getRecipe(id: Int): Recipe {
-        val recipe = withContext(ioDispatcher) { service.getRecipeById(id) }
-        return recipe
-    }
+    override suspend fun getRecipe(id: Int): Recipe =
+        withContext(ioDispatcher) {
+            val cached = runCatching { dao.getRecipeById(id) }.getOrNull()
+            val remote = service.getRecipeById(id)
+            val entity = remote.toEntity(isFavorite = cached?.isFavorite ?: false)
+            dao.upsertRecipes(listOf(entity))
+            entity.toDomain()
+        }
 }
