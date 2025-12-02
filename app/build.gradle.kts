@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.asfoapp"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.asfoapp"
@@ -49,26 +49,22 @@ android {
 }
 
 dependencies {
-    val hiltVersion = "2.56.2"
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    ksp("com.google.dagger:hilt-compiler:$hiltVersion")
+    implementation(libs.dagger.hilt.android)
+    ksp(libs.dagger.hilt.compiler)
 
-    val roomVersion = "2.7.1"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
-    val retrofitVersion = "2.11.0"
-    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:$retrofitVersion")
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation(libs.converter.kotlinx.serialization)
+    implementation(libs.retrofit)
 
-    val okHttpVersion = "4.12.0"
-    implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
-    implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
+    implementation(libs.logging.interceptor)
+    implementation(libs.okhttp)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
-    implementation("com.github.bumptech.glide:glide:4.14.2")
-    implementation("androidx.fragment:fragment-ktx:$1.8.6")
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.glide)
+    implementation(libs.androidx.fragment.ktx)
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
